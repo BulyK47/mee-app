@@ -1,0 +1,418 @@
+{
+ "worldId": "M01",
+ "order": 1,
+ "demo": true,
+ "worldTitle": {
+  "ro": "Mărimi (demo)",
+  "en": "Quantities (demo)"
+ },
+ "lessons": [
+  {
+   "id": "demo-l1",
+   "title": {
+    "ro": "Demo: mărimi și unități",
+    "en": "Demo: quantities and units"
+   },
+   "exercises": [
+    {
+     "id": "demo-1",
+     "type": "mcq",
+     "points": 10,
+     "prompt": {
+      "ro": "Care este unitatea de măsură din Sistemul Internațional pentru intensitatea curentului electric?",
+      "en": "Which is the SI unit of electric current?"
+     },
+     "choices": [
+      {
+       "id": "a",
+       "label": {
+        "ro": "Voltul (V)",
+        "en": "The volt (V)"
+       }
+      },
+      {
+       "id": "b",
+       "label": {
+        "ro": "Amperul (A)",
+        "en": "The ampere (A)"
+       }
+      },
+      {
+       "id": "c",
+       "label": {
+        "ro": "Ohmul (Ω)",
+        "en": "The ohm (Ω)"
+       }
+      },
+      {
+       "id": "d",
+       "label": {
+        "ro": "Wattul (W)",
+        "en": "The watt (W)"
+       }
+      }
+     ],
+     "correct": [
+      "b"
+     ],
+     "hint": {
+      "ro": "Trei dintre variante măsoară tensiune, rezistență și putere. Caut-o pe cea care apare în definiția mărimilor fundamentale SI.",
+      "en": "Three of the options measure voltage, resistance and power. Look for the one that appears among the SI base quantities."
+     },
+     "explanation": {
+      "ro": "Intensitatea curentului electric este una dintre cele șapte mărimi fundamentale SI, iar unitatea ei este amperul (A). Voltul, ohmul și wattul sunt unități derivate.",
+      "en": "Electric current is one of the seven SI base quantities and its unit is the ampere (A). The volt, ohm and watt are derived units."
+     },
+     "visual": {
+      "kind": "concept",
+      "params": {
+       "note": {
+        "ro": "Unitățile fundamentale sunt puține și independente; cele derivate se exprimă prin ele.",
+        "en": "Base units are few and independent; derived ones are expressed through them."
+       }
+      }
+     }
+    },
+    {
+     "id": "demo-2",
+     "type": "numeric",
+     "points": 15,
+     "prompt": {
+      "ro": "Un rezistor de R = 4 Ω este alimentat la tensiunea U = 12 V. Determinați intensitatea curentului I, în amperi (A).",
+      "en": "A resistor of R = 4 Ω is supplied at a voltage U = 12 V. Determine the current I, in amperes (A)."
+     },
+     "answer": 3,
+     "unit": "A",
+     "tolerance": {
+      "abs": 0.1
+     },
+     "hint": {
+      "ro": "Legea lui Ohm leagă cele trei mărimi: U = R·I. Scoate din ea mărimea cerută și înlocuiește datele.",
+      "en": "Ohm's law links the three quantities: U = R·I. Solve it for the required quantity and substitute the data."
+     },
+     "explanation": {
+      "ro": "Din legea lui Ohm, I = U/R = 12/4 = 3 A. Curentul este direct proporțional cu tensiunea și invers proporțional cu rezistența.",
+      "en": "From Ohm's law, I = U/R = 12/4 = 3 A. The current is proportional to the voltage and inversely proportional to the resistance."
+     },
+     "visual": {
+      "kind": "concept",
+      "params": {
+       "relation": "U = R · I",
+       "note": {
+        "ro": "Legea lui Ohm pentru o porțiune de circuit.",
+        "en": "Ohm's law for a circuit branch."
+       }
+      }
+     }
+    },
+    {
+     "id": "demo-3",
+     "type": "truefalse",
+     "points": 10,
+     "prompt": {
+      "ro": "Rezistența electrică se măsoară în ohmi (Ω).",
+      "en": "Electrical resistance is measured in ohms (Ω)."
+     },
+     "correct": true,
+     "hint": {
+      "ro": "Gândește-te la unitatea care apare în legea lui Ohm alături de volt și amper.",
+      "en": "Think of the unit that appears in Ohm's law next to the volt and the ampere."
+     },
+     "explanation": {
+      "ro": "Ohmul (Ω) este unitatea derivată a rezistenței: 1 Ω = 1 V/A, adică rezistența unui conductor prin care trece 1 A la o tensiune de 1 V.",
+      "en": "The ohm (Ω) is the derived unit of resistance: 1 Ω = 1 V/A, the resistance of a conductor carrying 1 A at 1 V."
+     }
+    },
+    {
+     "id": "demo-4",
+     "type": "numeric",
+     "points": 15,
+     "prompt": {
+      "ro": "Un receptor este alimentat la U = 230 V și absoarbe curentul I = 2 A. Determinați puterea absorbită P, în wați (W). (Se consideră receptor pur rezistiv.)",
+      "en": "A load is supplied at U = 230 V and draws a current I = 2 A. Determine the absorbed power P, in watts (W). (Assume a purely resistive load.)"
+     },
+     "answer": 460,
+     "unit": "W",
+     "tolerance": {
+      "abs": 1
+     },
+     "hint": {
+      "ro": "La un receptor rezistiv puterea se obține din produsul celor două mărimi electrice măsurate; nu intervine niciun factor suplimentar.",
+      "en": "For a resistive load the power comes from the product of the two measured electrical quantities; no extra factor is involved."
+     },
+     "explanation": {
+      "ro": "P = U · I = 230 · 2 = 460 W. La un receptor pur rezistiv tensiunea și curentul sunt în fază, deci factorul de putere este 1.",
+      "en": "P = U · I = 230 · 2 = 460 W. In a purely resistive load voltage and current are in phase, so the power factor is 1."
+     },
+     "visual": {
+      "kind": "concept",
+      "params": {
+       "relation": "P = U · I   [W]",
+       "note": {
+        "ro": "Puterea activă la un receptor rezistiv.",
+        "en": "Active power in a resistive load."
+       }
+      }
+     }
+    },
+    {
+     "id": "demo-5",
+     "type": "mcq",
+     "points": 10,
+     "prompt": {
+      "ro": "Ce factor de multiplicare reprezintă prefixul „mili” (m)?",
+      "en": "Which multiplying factor does the prefix \"milli\" (m) represent?"
+     },
+     "choices": [
+      {
+       "id": "a",
+       "label": {
+        "ro": "10³",
+        "en": "10³"
+       }
+      },
+      {
+       "id": "b",
+       "label": {
+        "ro": "10⁻³",
+        "en": "10⁻³"
+       }
+      },
+      {
+       "id": "c",
+       "label": {
+        "ro": "10⁻⁶",
+        "en": "10⁻⁶"
+       }
+      },
+      {
+       "id": "d",
+       "label": {
+        "ro": "10⁻⁹",
+        "en": "10⁻⁹"
+       }
+      }
+     ],
+     "correct": [
+      "b"
+     ],
+     "hint": {
+      "ro": "Prefixele din domeniul mic merg din o mie în o mie. Situează „mili” față de vecinii lui de pe scară înainte de a alege.",
+      "en": "Prefixes in the small range step by factors of a thousand. Place \"milli\" relative to its neighbours on that scale before choosing."
+     },
+     "explanation": {
+      "ro": "Prefixul mili înseamnă a mia parte, deci 10⁻³: 1 mA = 0,001 A. Micro (10⁻⁶) și nano (10⁻⁹) sunt următoarele trepte, iar kilo (10³) merge în sens invers.",
+      "en": "The prefix milli means one thousandth, i.e. 10⁻³: 1 mA = 0.001 A. Micro (10⁻⁶) and nano (10⁻⁹) are the next steps, while kilo (10³) goes the other way."
+     },
+     "visual": {
+      "kind": "concept",
+      "params": {
+       "note": {
+        "ro": "Prefixul mută doar virgula: mărimea rămâne aceeași, se schimbă unitatea în care o scrii.",
+        "en": "A prefix only moves the decimal point: the quantity is unchanged, only the unit you write it in."
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "demo-l2",
+   "title": {
+    "ro": "Demo: citirea unui semnal",
+    "en": "Demo: reading a signal"
+   },
+   "exercises": [
+    {
+     "id": "demo-6",
+     "type": "numeric",
+     "points": 15,
+     "prompt": {
+      "ro": "Pe ecranul de mai jos, un ciclu complet al semnalului verde ocupă 4 diviziuni pe orizontală. Cât este perioada lui? Introduceți valoarea în milisecunde (ms), ca un întreg.",
+      "en": "On the screen below, one full cycle of the green signal spans 4 horizontal divisions. What is its period? Enter the value in milliseconds (ms), as an integer."
+     },
+     "answer": 20,
+     "unit": "ms",
+     "tolerance": {
+      "abs": 2
+     },
+     "integerOnly": true,
+     "hint": {
+      "ro": "Numără câte diviziuni orizontale ocupă un ciclu complet, apoi folosește baza de timp înscrisă pe ecran. Constanta pe verticală nu intervine.",
+      "en": "Count how many horizontal divisions one full cycle spans, then use the time base shown on screen. The vertical constant plays no part."
+     },
+     "explanation": {
+      "ro": "Un ciclu complet ocupă 4 diviziuni orizontale, iar baza de timp este 5 ms/div, deci T = 4 · 5 = 20 ms.",
+      "en": "One full cycle spans 4 horizontal divisions and the time base is 5 ms/div, so T = 4 · 5 = 20 ms."
+     },
+     "visual": {
+      "kind": "scope",
+      "params": {
+       "vdiv": "2 V/div",
+       "tdiv": "5 ms/div",
+       "traces": [
+        {
+         "color": "green",
+         "period": 4,
+         "amp": 2,
+         "wave": "sine"
+        }
+       ]
+      }
+     }
+    },
+    {
+     "id": "demo-7",
+     "type": "mcq",
+     "points": 10,
+     "prompt": {
+      "ro": "Ce reprezintă amplitudinea unui semnal sinusoidal?",
+      "en": "What does the amplitude of a sinusoidal signal represent?"
+     },
+     "choices": [
+      {
+       "id": "a",
+       "label": {
+        "ro": "Valoarea maximă atinsă față de axa de referință",
+        "en": "The maximum value reached relative to the reference axis"
+       }
+      },
+      {
+       "id": "b",
+       "label": {
+        "ro": "Durata unui ciclu complet",
+        "en": "The duration of one full cycle"
+       }
+      },
+      {
+       "id": "c",
+       "label": {
+        "ro": "Numărul de cicluri pe secundă",
+        "en": "The number of cycles per second"
+       }
+      },
+      {
+       "id": "d",
+       "label": {
+        "ro": "Decalajul față de un al doilea semnal",
+        "en": "The offset relative to a second signal"
+       }
+      }
+     ],
+     "correct": [
+      "a"
+     ],
+     "hint": {
+      "ro": "Trei dintre variante descriu mărimi de pe axa timpului sau o relație între două semnale. Caut-o pe cea citită pe verticală.",
+      "en": "Three options describe quantities on the time axis or a relation between two signals. Look for the one read on the vertical axis."
+     },
+     "explanation": {
+      "ro": "Amplitudinea este valoarea de vârf, măsurată pe verticală de la axă la maxim. Durata unui ciclu este perioada, numărul de cicluri pe secundă este frecvența, iar decalajul dintre două semnale este defazajul.",
+      "en": "The amplitude is the peak value, measured vertically from the axis to the maximum. The cycle duration is the period, cycles per second is the frequency, and the offset between two signals is the phase shift."
+     }
+    },
+    {
+     "id": "demo-8",
+     "type": "numeric",
+     "points": 10,
+     "prompt": {
+      "ro": "Exprimați rezistența de 2,2 kΩ în ohmi (Ω).",
+      "en": "Express a resistance of 2.2 kΩ in ohms (Ω)."
+     },
+     "answer": 2200,
+     "unit": "Ω",
+     "tolerance": {
+      "abs": 1
+     },
+     "hint": {
+      "ro": "Prefixul kilo schimbă doar unitatea, nu și mărimea fizică. Aplică factorul corespunzător lui kilo.",
+      "en": "The prefix kilo changes only the unit, not the physical quantity. Apply the factor that kilo stands for."
+     },
+     "explanation": {
+      "ro": "Kilo înseamnă ·1000, deci 2,2 kΩ = 2,2 · 1000 = 2200 Ω.",
+      "en": "Kilo means ·1000, so 2.2 kΩ = 2.2 · 1000 = 2200 Ω."
+     }
+    },
+    {
+     "id": "demo-9",
+     "type": "truefalse",
+     "points": 10,
+     "prompt": {
+      "ro": "Ampermetrul se conectează în serie cu consumatorul al cărui curent se măsoară.",
+      "en": "An ammeter is connected in series with the load whose current is being measured."
+     },
+     "correct": true,
+     "hint": {
+      "ro": "Pornește de la ce trebuie să treacă prin aparat ca să poată măsura curentul consumatorului.",
+      "en": "Start from what has to flow through the instrument for it to measure the load current."
+     },
+     "explanation": {
+      "ro": "Ca să măsoare curentul consumatorului, ampermetrul trebuie parcurs chiar de acel curent, deci se leagă în serie; de aceea are rezistență internă foarte mică. Voltmetrul, dimpotrivă, se leagă în paralel.",
+      "en": "To measure the load current the ammeter must be traversed by that very current, so it is connected in series; that is why its internal resistance is very small. The voltmeter, by contrast, is connected in parallel."
+     }
+    },
+    {
+     "id": "demo-10",
+     "type": "multi",
+     "points": 15,
+     "prompt": {
+      "ro": "Care dintre următoarele sunt unități fundamentale în Sistemul Internațional? (mai multe răspunsuri corecte)",
+      "en": "Which of the following are SI base units? (several correct answers)"
+     },
+     "choices": [
+      {
+       "id": "a",
+       "label": {
+        "ro": "Metrul (m)",
+        "en": "The metre (m)"
+       }
+      },
+      {
+       "id": "b",
+       "label": {
+        "ro": "Amperul (A)",
+        "en": "The ampere (A)"
+       }
+      },
+      {
+       "id": "c",
+       "label": {
+        "ro": "Voltul (V)",
+        "en": "The volt (V)"
+       }
+      },
+      {
+       "id": "d",
+       "label": {
+        "ro": "Secunda (s)",
+        "en": "The second (s)"
+       }
+      }
+     ],
+     "correct": [
+      "a",
+      "b",
+      "d"
+     ],
+     "hint": {
+      "ro": "Verifică fiecare unitate: dacă poate fi scrisă cu ajutorul altora, atunci este derivată, nu fundamentală.",
+      "en": "Check each unit: if it can be written in terms of others, it is derived rather than a base unit."
+     },
+     "explanation": {
+      "ro": "Metrul, amperul și secunda fac parte din cele șapte unități fundamentale SI. Voltul este derivat, fiindcă se exprimă prin altele: 1 V = 1 W/A.",
+      "en": "The metre, the ampere and the second are among the seven SI base units. The volt is derived, since it is expressed through others: 1 V = 1 W/A."
+     },
+     "visual": {
+      "kind": "concept",
+      "params": {
+       "note": {
+        "ro": "Cele 7 unități de bază stau singure; toate celelalte se construiesc din ele.",
+        "en": "The 7 base units stand on their own; every other unit is built from them."
+       }
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

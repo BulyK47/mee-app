@@ -1,0 +1,44 @@
+{
+ "worldId": "M01",
+ "demo": true,
+ "title": {
+  "ro": "Mărimi (demo)",
+  "en": "Quantities (demo)"
+ },
+ "items": [
+  {
+   "ro": "O mărime fizică se exprimă printr-o valoare numerică și o unitate de măsură.",
+   "en": "A physical quantity is expressed by a numerical value and a unit of measurement."
+  },
+  {
+   "ro": "Sistemul Internațional are șapte unități fundamentale; metrul, amperul și secunda sunt trei dintre ele.",
+   "en": "The International System has seven base units; the metre, the ampere and the second are three of them."
+  },
+  {
+   "ro": "Unitățile derivate se exprimă prin cele fundamentale: 1 V = 1 W/A, 1 Ω = 1 V/A.",
+   "en": "Derived units are expressed through the base ones: 1 V = 1 W/A, 1 Ω = 1 V/A."
+  },
+  {
+   "ro": "Prefixele schimbă doar unitatea, nu mărimea: kilo = 10³, mili = 10⁻³, micro = 10⁻⁶.",
+   "en": "Prefixes change only the unit, not the quantity: kilo = 10³, milli = 10⁻³, micro = 10⁻⁶."
+  },
+  {
+   "ro": "Acesta este un modul DEMO, inclus în depozitul public pentru ca aplicația să poată fi rulată. Banca reală de întrebări nu este publicată.",
+   "en": "This is a DEMO module, shipped with the public repository so that the app can be run. The real question bank is not published."
+  }
+ ],
+ "formulas": [
+  {
+   "ro": "U = R · I   [V]",
+   "en": "U = R · I   [V]"
+  },
+  {
+   "ro": "P = U · I   [W]",
+   "en": "P = U · I   [W]"
+  },
+  {
+   "ro": "1 kΩ = 10^{3} Ω ; 1 mA = 10^{-3} A ; 1 µF = 10^{-6} F",
+   "en": "1 kΩ = 10^{3} Ω ; 1 mA = 10^{-3} A ; 1 µF = 10^{-6} F"
+  }
+ ]
+}

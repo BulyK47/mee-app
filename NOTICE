@@ -1,0 +1,61 @@
+MEE — Măsurări Electrice și Electronice
+Copyright 2026 Iulian-Teodor Voicila and George-Calin Seritan
+
+  Iulian-Teodor Voicila   https://orcid.org/0000-0002-6033-2934
+  George-Calin Seritan    https://orcid.org/0000-0001-7009-2615
+
+This product includes software developed for the course "Măsurări Electrice
+și Electronice" (Electrical and Electronic Measurements) at Universitatea
+Politehnică din București.
+
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+ATTRIBUTION
+-----------
+If you use this software, or a derivative of it, in teaching or in research,
+please keep this NOTICE file intact and cite the work as described in
+CITATION.cff and in the "How to cite" section of README.md.
+
+TRADEMARKS
+----------
+The Apache License does not grant permission to use the trade names, the
+project name "MEE — Laboratorul meu", the application icon, or the visual
+identity of the original author, except as required for reasonable and
+customary use in describing the origin of the work (Apache-2.0, section 6).
+A fork must be published under a different name and icon.
+
+QUESTION BANK
+-------------
+The graded question bank — the exercises, answer keys, hints and theory
+summaries actually used to assess students — lives in a separate private
+repository. It is withheld deliberately: students must not be able to read the
+answers. Nothing under content-private/ is part of this repository, and no
+licence is granted to it here.
+
+Everything this repository does ship is covered by the Apache-2.0 licence
+above, including the content files:
+
+  src/content/worlds/M01.demo.json   a ten-exercise demonstration module,
+                                     written for this purpose, with its own
+                                     keys, hints and explanations
+  src/content/recaps/M01.demo.json   the matching demonstration theory recap
+  src/content/equipmentInfo.ts       instrument specifications, working
+                                     principles and glossary (RO/EN)
+
+Those three are original to this project and are not drawn from the graded
+bank, so a fork may redistribute them under Apache-2.0 like any other file
+here. The boundary is the directory: content-private/ is withheld, the rest
+is licensed.
+
+THIRD-PARTY COMPONENTS
+----------------------
+This product bundles third-party open-source components, each under its own
+license; see the respective packages for details:
+
+  React, React DOM                     MIT
+  Vite, @vitejs/plugin-react           MIT
+  Tailwind CSS, @tailwindcss/vite      MIT
+  Motion (framer-motion)               MIT
+  canvas-confetti                      ISC
+  Inter, JetBrains Mono                SIL Open Font License 1.1
+  Chakra Petch                         SIL Open Font License 1.1

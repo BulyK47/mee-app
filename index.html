@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Învață măsurări electrice și electronice — joc cu laborator virtual." />
+    <meta name="theme-color" content="#0A0E12" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/icons/app-512.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/app-192.png" />
+    <!-- iOS ignores SVG favicons and the manifest icons: it needs a PNG apple-touch-icon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/app-180.png" />
+    <!-- the standard name is what Chrome/Android reads; the apple- one is still needed by iOS Safari -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="MEE" />
+    <title>MEE — Măsurări Electrice și Electronice</title>
+    <!--
+      Theme, before the first paint. App.tsx sets data-theme in an effect, which runs after React
+      has already painted a frame — and index.css only defines the light palette under
+      :root[data-theme="light"], with dark as the default. So every cold start flashed a dark frame
+      at a student who had chosen the light theme: dark background, dark surfaces, then a jump.
+      Reading localStorage synchronously here is the only way to have the value before anything is
+      drawn. It stays deliberately tiny and total-failure-tolerant — a blocked storage API or a
+      malformed value must not stop the app from booting, so anything unexpected simply leaves the
+      dark default in place, which is what the app looked like a moment ago anyway.
+      The value is JSON ("light" with quotes), because usePersisted writes it with JSON.stringify.
+    -->
+    <script>
+      try {
+        var t = JSON.parse(localStorage.getItem('meem_theme') || '""')
+        if (t === 'light') {
+          document.documentElement.dataset.theme = 'light'
+          var m = document.querySelector('meta[name="theme-color"]')
+          if (m) m.setAttribute('content', '#F4F7F5')
+        }
+      } catch (e) { /* storage unavailable or value unreadable — keep the dark default */ }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

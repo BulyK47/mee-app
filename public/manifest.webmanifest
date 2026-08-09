@@ -1,0 +1,47 @@
+{
+  "id": "/",
+  "name": "MEE — Măsurări Electrice și Electronice",
+  "short_name": "MEE",
+  "description": "Învață măsurări electrice — lecții scurte, figuri de aparate desenate de aplicație și un laborator virtual. / Learn electrical measurements with short lessons, app-drawn instrument figures and a virtual lab.",
+  "lang": "ro",
+  "dir": "ltr",
+  "categories": [
+    "education"
+  ],
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "portrait",
+  "background_color": "#0A0E12",
+  "theme_color": "#0A0E12",
+  "icons": [
+    {
+      "src": "/icons/app-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/app-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/app-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/app-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

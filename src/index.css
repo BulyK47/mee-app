@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+/* LAYER 1 — primitives (generate --color-* vars + Tailwind utilities) */
+@theme {
+  --color-ink-950:#0A0E12; --color-ink-900:#111820; --color-ink-850:#151F2A; --color-ink-800:#18212B;
+  --color-ink-700:#1E2A36; --color-ink-600:#2A3B4A; --color-ink-500:#3D4F5E; --color-ink-400:#5E7482;
+  --color-ink-300:#9DB0BC; --color-ink-200:#B6C6D2; --color-ink-100:#DBE6EC; --color-ink-50:#E8F0F4;
+
+  --color-phosphor-400:#7DFFC0; --color-phosphor-500:#2BF5A0; --color-phosphor-600:#12C77E; --color-phosphor-dim:#158F63;
+  --color-phosphor-glow:#2BF5A055;
+  --color-cyan-400:#5FE3EE; --color-cyan-500:#38D6E3;
+  --color-volt-300:#FFD070; --color-volt-400:#FFB020; --color-volt-500:#F59000;
+  --color-ch1-500:#F5D033;
+  --color-fault-400:#FF6E7C; --color-fault-500:#FF4D5E;
+  --color-copper:#C08457; --color-solder:#0D3B2E;
+
+  --radius-tile:14px; --radius-lcd:6px;
+
+  --font-body:"Inter", system-ui, sans-serif;
+  --font-display:"Chakra Petch", "Inter", sans-serif;
+  --font-mono:"JetBrains Mono", ui-monospace, monospace;
+  --font-seg:"JetBrains Mono", ui-monospace, monospace;
+
+  --animate-scan: scan 2.4s linear infinite;
+  --animate-pulse-node: pulseNode 2s ease-in-out infinite;
+}
+
+/* LAYER 2 — semantics (role -> primitive).
+   NOT "@theme inline": inline bakes the primitive into every utility
+   (.bg-panel{background-color:var(--color-ink-800)}), so the light-theme overrides below could
+   never reach them — the chrome stayed dark while raw var(--color-fg) in the SVG figures did flip,
+   which left the figures drawn in near-black on a dark panel. Plain @theme emits
+   .bg-panel{background-color:var(--color-panel)}, so LAYER 3 actually switches the theme. */
+@theme {
+  --color-bg:var(--color-ink-950);
+  --color-surface:var(--color-ink-900);
+  --color-surface-2:var(--color-ink-850);
+  --color-panel:var(--color-ink-800);
+  --color-border:var(--color-ink-700);
+  --color-border-strong:var(--color-ink-600);
+  --color-fg:var(--color-ink-50);
+  --color-muted:var(--color-ink-300);
+  /* Not ink-400 (#5E7482): as 10–12px secondary text it measures 3.41:1 against the lightest dark
+     surface (#151F2A), under the 4.5:1 WCAG AA floor for small text. Lightened to clear it — the
+     ink-400 token itself is unchanged, since it still serves borders and strokes where it is fine.
+     Raised again from #768995, which cleared the page background (5.33:1) but not --color-panel,
+     rgb(24,33,43), where it measured 4.478:1 — just under the same floor. That is the background
+     every FIGURE sits on, and DIM there is the caption ink: measured on a live diagram, "două în
+     paralel · una în serie" renders at 9px with 4.48:1. A whole-page sweep missed it because SVG
+     <text> is not matched by the element selectors such a sweep uses. #7a8d99 is a 3% lift — four
+     values per channel, invisible — and lands at 4.72:1 on panel, 5.63:1 on the page background. */
+  --color-faint:#7a8d99;
+  --color-primary:var(--color-phosphor-500);
+  --color-primary-fg:var(--color-ink-950);
+  --color-accent:var(--color-cyan-500);
+  --color-xp:var(--color-volt-400);
+  --color-coin:var(--color-volt-400);
+  --color-rank:var(--color-ch1-500);
+  --color-success:var(--color-phosphor-500);
+  --color-danger:var(--color-fault-500);
+  --color-warn:var(--color-volt-400);
+  /* Ink for the labels QuestionVisual draws inside a figure. Distinct from volt-400/phosphor-500
+     because those two are ALSO the ink on the oscilloscope screen, which is a fixed #04120b in
+     both themes and needs them bright. Everywhere else a figure sits on Frame's bg-panel, so in
+     the light theme the same two colours landed on white: amber #FFB020 measured 1.83:1 and
+     phosphor #2BF5A0 measured 1.43:1, against a 4.5 floor. In dark they stay exactly as they were. */
+  --color-ink-amber:var(--color-volt-400);
+  --color-ink-phos:var(--color-phosphor-500);
+  /* The V/div and time/div readings sit in the band ABOVE the oscilloscope screen — the Scope
+     viewBox starts at y=-22 and the screen rect at y=0 — so they land on the panel, not on the
+     dark glass. #FF8A8A there measured 2.27:1 in light. */
+  --color-ink-rose:#FF8A8A;
+}
+
+@keyframes scan { 0%{transform:translateY(-120%)} 100%{transform:translateY(220%)} }
+@keyframes pulseNode { 0%,100%{box-shadow:0 0 0 0 var(--color-phosphor-glow)} 50%{box-shadow:0 0 0 7px transparent} }
+
+/* LAYER 3 — theme switch */
+/* Held for one frame while data-theme flips (see App.tsx). Without it, every element whose
+   transition includes background-color repaints in the OLD colour and stays there until reload. */
+:root.theme-switching *,
+:root.theme-switching *::before,
+:root.theme-switching *::after { transition: none !important; }
+:root { color-scheme: dark; }
+:root[data-theme="light"]{
+  --color-bg:#F4F7F5; --color-surface:#FFFFFF; --color-surface-2:#EEF3EF; --color-panel:#FFFFFF;
+  /* The three foreground hues below were each a few percent short of the 4.5:1 WCAG AA floor for
+     small text, measured against all three light surfaces (#FFFFFF, #F4F7F5, #EEF3EF): amber
+     #B4780A read 3.32, faint #6C7E75 read 3.83, accent #0E8A96 read 3.67. Darkened by the minimum
+     that clears 4.5 on the worst of the three, so the palette shifts as little as possible. */
+  --color-border:#D6E2DA; --color-border-strong:#C2D3C7; --color-fg:#10201A; --color-muted:#40534B; --color-faint:#617169;
+  --color-primary:#0F7651; --color-primary-fg:#FFFFFF; --color-accent:#0C7984; --color-xp:#956408; --color-coin:#956408;
+  --color-success:#0F7A54; --color-danger:#D2263A; --color-warn:#956408; --color-rank:#956408;
+  /* Figure ink, reusing the two hues this theme already vetted rather than inventing new ones.
+     Measured against all three light beds (#FFFFFF panel, #F4F7F5 bg, #EEF3EF surface-2):
+     amber #956408 reads 5.12 / 4.74 / 4.56, green #0F7651 reads 5.63 / 5.22 / 5.01. */
+  --color-ink-amber:#956408; --color-ink-phos:#0F7651; --color-ink-rose:#B23C49;
+  color-scheme: light;
+}
+
+html, body, #root { height:100%; }
+#root { position:relative; z-index:1; }
+body {
+  margin:0;
+  font-family:var(--font-body);
+  background:var(--color-bg);
+  color:var(--color-fg);
+  -webkit-font-smoothing:antialiased;
+}
+/* ambient graticule */
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 39px, var(--color-border) 39px 40px),
+    repeating-linear-gradient(90deg, transparent 0 39px, var(--color-border) 39px 40px);
+  opacity:.22;
+}
+:root[data-theme="light"] body::before{ opacity:.5; }
+
+/* signature 7-seg readout */
+.lcd{
+  background:#0b120e; color:var(--color-primary); font-family:var(--font-seg);
+  border-radius:var(--radius-lcd); padding:.06em .38em;
+  box-shadow: inset 0 0 0 1px var(--color-border-strong), inset 0 2px 6px rgba(0,0,0,.6);
+  font-variant-numeric: tabular-nums; letter-spacing:.04em;
+}
+:root[data-theme="light"] .lcd{ background:#0e2a20; }
+
+/* feel-layer animations */
+@keyframes pop { 0%{transform:scale(1)} 40%{transform:scale(1.07)} 100%{transform:scale(1)} }
+@keyframes shakeX { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+@keyframes comboUp { 0%{transform:translate(-50%,8px) scale(.8);opacity:0} 25%{opacity:1;transform:translate(-50%,0) scale(1.05)} 100%{transform:translate(-50%,-24px) scale(1);opacity:0} }
+@keyframes slideUp { 0%{transform:translateY(10px);opacity:0} 100%{transform:translateY(0);opacity:1} }
+@keyframes sheetIn { from{opacity:0; transform:translateY(10px) scale(.985)} to{opacity:1; transform:none} }
+.anim-pop{ animation:pop .32s ease }
+.anim-shake{ animation:shakeX .38s ease }
+.anim-combo{ animation:comboUp 1s ease forwards }
+.anim-slideup{ animation:slideUp .26s cubic-bezier(0.22,1,0.36,1) }
+.anim-sheet{ animation:sheetIn .24s cubic-bezier(0.22,1,0.36,1) }
+
+@media (prefers-reduced-motion:reduce){
+  *{ animation-duration:.001ms!important; animation-iteration-count:1!important; transition-duration:.001ms!important }
+}
+
+/* Print: show only the diploma certificate, forced to dark-on-white. */
+@media print{
+  .no-print{ display:none!important }
+  body *{ visibility:hidden }
+  .diploma-print, .diploma-print *{ visibility:visible }
+  .diploma-print{ position:absolute; inset:0; height:max-content; margin:auto; background:#fff!important; border-color:#333!important }
+  .diploma-print h1, .diploma-print p, .diploma-print span{ color:#111!important }
+}

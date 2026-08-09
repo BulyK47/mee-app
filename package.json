@@ -1,0 +1,63 @@
+{
+  "name": "mee-app",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "description": "Bilingual (RO/EN) Duolingo-style learning app for the Electrical and Electronic Measurements course — offline PWA with parametric instrument figures and native MathML formulas.",
+  "license": "Apache-2.0",
+  "author": "Iulian-Teodor Voicila <https://orcid.org/0000-0002-6033-2934>",
+  "homepage": "https://github.com/BulyK47/mee-app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BulyK47/mee-app.git"
+  },
+  "keywords": [
+    "education",
+    "engineering-education",
+    "gamification",
+    "electrical-measurements",
+    "pwa",
+    "spaced-repetition",
+    "mathml",
+    "svg",
+    "react",
+    "bilingual"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "node scripts/check-content.mjs && node scripts/check-code.mjs && node scripts/check-invariants.mjs",
+    "types": "tsc --noEmit",
+    "verify": "npm run types && npm run check && npm run build",
+    "prepush": "node scripts/check-not-staged.mjs",
+    "icons": "node scripts/make-icons.mjs",
+    "shots": "node scripts/screenshots.mjs"
+  },
+  "dependencies": {
+    "@fontsource/chakra-petch": "^5.2.7",
+    "@fontsource/inter": "^5.2.8",
+    "@fontsource/jetbrains-mono": "^5.2.8",
+    "canvas-confetti": "^1.9.4",
+    "motion": "^12.42.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/canvas-confetti": "^1.9.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "sharp": "^0.35.2",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.6.3",
+    "vite": "^6.0.7"
+  },
+  "contributors": [
+    "George-Calin Seritan <https://orcid.org/0000-0001-7009-2615>"
+  ]
+}

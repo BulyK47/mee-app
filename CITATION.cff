@@ -1,0 +1,34 @@
+cff-version: 1.2.0
+title: "MEE — a Duolingo-style bilingual learning app for Electrical and Electronic Measurements"
+message: "If you use this software or its instructional design in teaching or research, please cite it as below."
+type: software
+authors:
+  - given-names: Iulian-Teodor
+    family-names: Voicila
+    affiliation: "Universitatea Politehnică din București"
+    orcid: "https://orcid.org/0000-0002-6033-2934"
+  - given-names: George-Calin
+    family-names: Seritan
+    affiliation: "Universitatea Politehnică din București"
+    orcid: "https://orcid.org/0000-0001-7009-2615"
+repository-code: "https://github.com/BulyK47/mee-app"
+abstract: >-
+  A bilingual (Romanian/English) progressive web application that teaches the
+  university course "Măsurări Electrice și Electronice" through short,
+  gamified lessons. The design combines a Duolingo-style lesson ladder with a
+  domain-specific twist: every figure is a parametric SVG instrument rendered
+  from the exercise data (analog meters, oscilloscope screens, bridges,
+  wattmeter connections, operational-amplifier configurations), formulas are
+  typeset natively with MathML, and progress is rewarded with instruments for
+  a virtual laboratory bench. It also includes spaced repetition of mistakes
+  and an exam simulation mode. The question bank itself is not distributed.
+keywords:
+  - engineering education
+  - gamification
+  - electrical measurements
+  - progressive web app
+  - spaced repetition
+  - bilingual learning
+license: Apache-2.0
+version: 1.0.0
+date-released: "2026-08-07"

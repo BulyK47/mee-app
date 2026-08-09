@@ -1,0 +1,49 @@
+# ─── the real question bank ────────────────────────────────────────────────
+# Lives in a SEPARATE PRIVATE repository. It is deliberately not published:
+# the exercises are used for grading, so students must not be able to read the
+# answer keys. A small demo module ships in src/content/ so that a plain clone
+# of this repository still builds and runs.
+content-private/
+
+# The generator of the answer-key export (MEE-intrebari-raspunsuri.md/html). It holds no questions
+# itself, but it reads content-private/ and cannot run without it, so it is useless in a public
+# clone — and its name alone advertises that a full key export exists. Ignored rather than shipped;
+# check-not-staged.mjs flags it too, and a gate that blocks the real push helps nobody.
+scripts/make-review.mjs
+
+# ─── dependencies and build output ─────────────────────────────────────────
+node_modules/
+dist/
+dist-ssr/
+*.tsbuildinfo
+
+# ─── local tooling / scratch ───────────────────────────────────────────────
+_*.mjs
+*.cjs
+*.local
+.env
+.env.*
+
+# ─── editors and operating systems ─────────────────────────────────────────
+.claude/
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── mobile builds and SIGNING KEYS ────────────────────────────────────────
+# PUBLISHING.md tells you to run `npx cap add android` inside this directory.
+# A release signing key committed to a public repo is unrecoverable: anyone can
+# then publish a package that Play accepts as an update to this app. Added
+# BEFORE the android/ tree exists, so it can never be staged by a `git add .`.
+android/
+ios/
+*.keystore
+*.jks
+*.aab
+*.apk
+keystore.properties
+local.properties
+.gradle/
