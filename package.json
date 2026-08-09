@@ -35,7 +35,8 @@
     "verify": "npm run types && npm run check && npm run build",
     "prepush": "node scripts/check-not-staged.mjs",
     "icons": "node scripts/make-icons.mjs",
-    "shots": "node scripts/screenshots.mjs"
+    "shots": "node scripts/screenshots.mjs",
+    "shots:play": "node scripts/store-assets.mjs"
   },
   "dependencies": {
     "@fontsource/chakra-petch": "^5.2.7",
