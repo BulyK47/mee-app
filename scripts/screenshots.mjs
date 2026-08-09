@@ -109,26 +109,47 @@ window.__setInput = v => { const i = window.__card().querySelector('input'); if 
   i.dispatchEvent(new Event('input',{bubbles:true})); return true };
 true`
 
-// a profile that looks like a student a few lessons in, so the screens are not empty.
+// a profile that looks like a student halfway through the course, so the screens are not empty.
+//
 // The three dated records MUST use the LOCAL day: the app compares them against its own
 // localToday(), so a UTC stamp makes them read as yesterday's — and between local midnight and
 // 03:00 (Romania is UTC+2/+3) the streak, the daily goal and every quest would silently render at
 // zero. That is precisely the empty state this seed exists to avoid, in the store-listing images.
+//
+// The bench has NINE slots. Seeding three instruments left it 66% flat dark with 2% coloured
+// pixels — measured on the captured PNG — which is a poor second image in a store listing, the
+// slot that decides whether anyone keeps scrolling. The whole measurement bench is seeded instead,
+// plus the bronze lab template, which is what puts a frame and a warm accent into an otherwise
+// very dark room.
+//
+// The numbers are kept INTERNALLY COHERENT rather than merely flattering: 26 finished lessons at
+// roughly 44 Volți each, plus daily quests, funds the 985 Volți of instruments and the 250 of the
+// template with about a hundred left over. A store image should show a state a student can
+// actually reach, and this one is reachable by the arithmetic the app itself uses.
 const SEED = `
 const D = new Date();
 const TODAY = D.getFullYear() + '-' + String(D.getMonth()+1).padStart(2,'0') + '-' + String(D.getDate()).padStart(2,'0');
+const LECTII = ['m01-l1','m01-gl1','m01-gl2','m02-l1','m02-gl1','m02-gl2',
+  'm03-l1','m03-l2','m03-l3','m03-l4','m03-gl1','m03-gl2',
+  'm04-l1','m04-l2','m04-l3','m04-l4','m04-l5','m04-l6','m04-l7',
+  'm05-l1','m05-l2','m05-l3','m05-ex','m06-l1','m06-l2','m06-ex'];
+const NOTE = [100,86,100,92,78,100,94,100,88,100,90,100,100,82,96,100,74,100,90,100,88,100,92,100,84,100];
+const best = {}, plays = {};
+LECTII.forEach((id,i) => { best[id] = NOTE[i]; plays[id] = 1; });
 localStorage.clear();
 localStorage.setItem('meem_onboarded','true');
 localStorage.setItem('meem_lang','ro');
-localStorage.setItem('meem_xp','1240');
-localStorage.setItem('meem_coins','180');
-localStorage.setItem('meem_streak', JSON.stringify({count:6,last:TODAY}));
+localStorage.setItem('meem_xp','2600');
+localStorage.setItem('meem_coins','120');
+localStorage.setItem('meem_streak', JSON.stringify({count:12,last:TODAY}));
 localStorage.setItem('meem_daily', JSON.stringify({date:TODAY, xp:25}));
-localStorage.setItem('meem_completed', JSON.stringify(['m01-l1','m01-gl1','m01-gl2','m02-l1']));
-localStorage.setItem('meem_best', JSON.stringify({'m01-l1':100,'m01-gl1':86,'m01-gl2':100,'m02-l1':92}));
-localStorage.setItem('meem_plays', JSON.stringify({'m01-l1':1,'m01-gl1':1,'m01-gl2':1,'m02-l1':1}));
-localStorage.setItem('meem_inventory', JSON.stringify(['leads','dmm','scope']));
-localStorage.setItem('meem_quests', JSON.stringify({date:TODAY,lessons:1,xp:25,perfect:1,claimed:[]}));
+localStorage.setItem('meem_completed', JSON.stringify(LECTII));
+localStorage.setItem('meem_best', JSON.stringify(best));
+localStorage.setItem('meem_plays', JSON.stringify(plays));
+localStorage.setItem('meem_inventory', JSON.stringify(
+  ['analog-vm','dmm','scope','lcr','analog-am','clamp','emeter','current-transformer','voltage-transformer','lab-bronze']));
+localStorage.setItem('meem_skins', JSON.stringify({'__lab__':'lab-bronze'}));
+localStorage.setItem('meem_quests', JSON.stringify({date:TODAY,lessons:1,xp:25,perfect:1,reviews:0,exam:0,claimed:[]}));
 true`
 
 console.log('capturing at 412×915 @3× →', OUT)
