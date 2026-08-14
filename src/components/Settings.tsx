@@ -424,8 +424,8 @@ function QuizDialog({ open, level, modules, moduleTotal, exams, onClose }: {
         onClick={e => e.stopPropagation()} role="dialog" aria-modal="true"
         aria-label={ro ? 'Chestionar de final' : 'End-of-course survey'}>
         <p className="text-center text-sm text-muted">
-          {ro ? 'Chestionarul e anonim și durează 6–8 minute. Ți se vor cere și cifrele astea:'
-              : 'The survey is anonymous and takes 6–8 minutes. It will also ask for these:'}
+          {ro ? 'Chestionarul este anonim și durează 6–8 minute. Vei avea nevoie de următoarele informații pentru completare:'
+              : 'The survey is anonymous and takes 6–8 minutes. You will need the following information to complete it:'}
         </p>
         <dl className="mt-3 rounded-xl border border-border bg-panel/40 px-3 py-2">
           {rows.map(([k, v]) => (
