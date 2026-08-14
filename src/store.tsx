@@ -126,6 +126,7 @@ interface GameCtx {
   sound: boolean
   haptics: boolean
   freezes: number
+  exams: number
   onboarded: boolean
   finishLesson: (id: string, xp: number, coins: number, accuracy: number) => void
   buy: (itemId: string, cost: number) => boolean
@@ -248,6 +249,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [sound, setSound] = usePersisted('meem_sound', true)
   const [haptics, setHaptics] = usePersisted('meem_haptics', true)
   const [freezes, setFreezes] = usePersisted('meem_freezes', 0)
+  const [exams, setExams] = usePersisted('meem_exams', 0)
   const [onboarded, setOnboardedState] = usePersisted('meem_onboarded', false)
   const setOnboarded = () => setOnboardedState(true)
 
@@ -392,8 +394,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
   // An exam attempt records its best score for the day, which is what the post-course "≥ 70%"
   // quest reads. Best-of, not last: a student who scores 80 and then tries again for practice and
   // gets 50 has still done the thing the quest asks for.
+  //
+  // `exams` is a separate, lifetime count. The quest field above cannot serve as one: it holds a
+  // PERCENTAGE, and it resets with the day. The end-of-semester questionnaire asks how many exam
+  // simulations the student has done, and without this counter the app could not answer its own
+  // question — the student would guess from memory.
   const finishExam = (pct: number) => {
     const t = today()
+    setExams(n => n + 1)
     setQuestsState(q => (q.date === t
       ? { ...q, exam: Math.max(q.exam ?? 0, pct) }
       : { ...EMPTY_QUESTS, date: t, exam: pct }))
@@ -470,7 +478,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const reset = () => {
     setXp(0); setCoins(0); setCompleted([]); setBest({}); setInventory([])
     setStreak({ count: 0, last: '' }); setDaily({ date: '', xp: 0 }); setQuestsState(EMPTY_QUESTS)
-    setHearts(MAX_HEARTS); setMistakes([]); setSrs({}); setSkinsState({}); setFreezes(0); setPlays({})
+    setHearts(MAX_HEARTS); setMistakes([]); setSrs({}); setSkinsState({}); setFreezes(0); setPlays({}); setExams(0)
     // heartsDay belongs to the hearts mechanic, not to the student's preferences, so leaving it
     // behind made a reset half-done: hearts went back to five while the stamp still said "already
     // refilled today". PREFERENCES are deliberately kept — theme, sound, haptics, language, daily
@@ -491,7 +499,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   return (
     <Ctx.Provider value={{
       xp, coins, completed, best, plays, inventory, streak, streakLive: liveStreak(streak, freezes, today()), daily, quests, goal, studyMode, hearts, mistakes, liveMistakes, srs, bench, skins,
-      theme, sound, haptics, freezes, onboarded,
+      theme, sound, haptics, freezes, exams, onboarded,
       finishLesson, buy, addCoins, claimQuest, finishExam, gradeMistake, loseHeart, refillHearts, buyHearts, setStudyMode, setGoal, setBench, setSkin,
       setTheme, setSound, setHaptics, setFreezes, setOnboarded, reset,
     }}>

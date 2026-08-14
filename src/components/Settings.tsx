@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { useGame, localToday } from '../store'
 import { useT, L, counted } from '../i18n'
 import { ACHIEVEMENTS } from '../content/achievements'
+import { CURRICULUM, isModuleComplete } from '../content/modules'
 import { ALL_LESSONS } from '../content/course'
 import { levelInfo } from '../level'
 import { Icon } from './icons'
@@ -16,9 +17,14 @@ const FEEDBACK_URL = ''
 // A course address rather than a personal one: this string ships in the public repository AND in
 // the store build, both of which are scraped for addresses.
 const FEEDBACK_EMAIL = 'dmaecseb108@gmail.com'
+// End-of-course survey. Anonymous, restricted to the university's accounts, and entirely separate
+// from the feedback button above — see the comment where it is rendered. Empty hides the button,
+// which is what a public clone of this repository gets: the form belongs to one course at one
+// university, and an app installed elsewhere should not send anyone there.
+const QUESTIONNAIRE_URL = 'https://forms.cloud.microsoft/e/Xk9dLz5iTN'
 
 export default function Settings({ onClose, onDiploma }: { onClose: () => void; onDiploma: () => void }) {
-  const { xp, coins, streak, streakLive, completed, best, inventory, studyMode, goal, theme, sound, haptics, setStudyMode, setGoal, setTheme, setSound, setHaptics, addCoins, reset } = useGame()
+  const { xp, coins, streak, streakLive, completed, best, inventory, studyMode, goal, theme, sound, haptics, exams, setStudyMode, setGoal, setTheme, setSound, setHaptics, addCoins, reset } = useGame()
   const { t, lang, setLang } = useT()
   useDismiss(onClose)
   // native dialogs are unreliable (suppressed after repeated use, ignored by WebViews), so the
@@ -27,6 +33,7 @@ export default function Settings({ onClose, onDiploma }: { onClose: () => void; 
   const [pendingImport, setPendingImport] = useState<Record<string, unknown> | null>(null)
   const [notice, setNotice] = useState('')
   const [showFeedback, setShowFeedback] = useState(false)
+  const [showQuiz, setShowQuiz] = useState(false)
   const say = (m: string) => { setNotice(m); setTimeout(() => setNotice(''), 2600) }
   const total = ALL_LESSONS.length
   // Count only lessons that still exist. `completed` keeps every id ever finished, including ones
@@ -147,6 +154,16 @@ export default function Settings({ onClose, onDiploma }: { onClose: () => void; 
           <button onClick={onDiploma} className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-rank/40 py-2.5 text-sm font-semibold text-rank hover:bg-rank/10">
             <Icon name="certificate" size={16} /> {lang === 'ro' ? 'Diploma mea' : 'My diploma'}
           </button>
+          {/* Deliberately NOT chained to the feedback button above. Feedback opens a mail draft
+              from the student's own address, so it identifies them — which is right for "I found a
+              wrong answer", where a reply is the point. The questionnaire is anonymous. One tap
+              doing both would put a named message and an "anonymous" response in the same minute,
+              and the promise made at the top of the form would be fiction. */}
+          {QUESTIONNAIRE_URL && (
+            <button onClick={() => setShowQuiz(true)} className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-volt-400/40 py-2.5 text-sm font-semibold text-warn hover:bg-volt-400/10">
+              <Icon name="recap" size={16} /> {lang === 'ro' ? 'Chestionar de final' : 'End-of-course survey'}
+            </button>
+          )}
         </Section>
 
         <Section title={`${t('achievements')} · ${ACHIEVEMENTS.filter(a => a.done(achState)).length}/${ACHIEVEMENTS.length}`}>
@@ -265,6 +282,13 @@ export default function Settings({ onClose, onDiploma }: { onClose: () => void; 
 
       <FeedbackDialog open={showFeedback} stats={feedbackStats()} onCopied={say} onClose={() => setShowFeedback(false)} />
 
+      <QuizDialog open={showQuiz}
+        level={levelInfo(xp).level}
+        modules={CURRICULUM.filter(m => isModuleComplete(m.id, completed)).length}
+        moduleTotal={CURRICULUM.length}
+        exams={exams}
+        onClose={() => setShowQuiz(false)} />
+
       {/* These notices exist precisely so a button never looks dead (round 39). For someone using a
           screen reader the notice IS the whole confirmation, so it has to be announced — and the
           region must already exist when the text arrives, hence the always-present wrapper. */}
@@ -369,6 +393,58 @@ ${stats}`
           onClick={onClose}
           className="mt-2 block w-full rounded-xl border border-border py-3 text-sm font-semibold text-muted hover:text-fg">
           {lang === 'ro' ? 'Deschide aplicația de e-mail' : 'Open the mail app'}
+        </a>
+        <button onClick={onClose} className="mt-2 w-full rounded-xl py-2.5 text-sm font-medium text-faint hover:bg-surface-2">{t('close')}</button>
+      </div>
+    </div>,
+    document.body,
+  )
+}
+
+// The survey asks three things the app knows and the student would otherwise guess: level, modules
+// finished, exam simulations run. Rather than pre-filling them into the form — Microsoft Forms can
+// be pre-filled through a URL, but the feature is not officially supported and would break without
+// warning — this sheet simply puts the three numbers in front of the student, in the order the form
+// asks for them, right before it opens. Nothing is transmitted from here; the student types them.
+function QuizDialog({ open, level, modules, moduleTotal, exams, onClose }: {
+  open: boolean; level: number; modules: number; moduleTotal: number; exams: number; onClose: () => void
+}) {
+  const { t, lang } = useT()
+  useDismiss(onClose, { enabled: open, priority: 1 })
+  if (!open) return null
+  const ro = lang === 'ro'
+  const rows: [string, string][] = [
+    [ro ? 'Nivelul tău' : 'Your level', `Lv ${level}`],
+    [ro ? 'Module terminate' : 'Modules finished', `${modules} / ${moduleTotal}`],
+    [ro ? 'Simulări de examen' : 'Exam simulations', String(exams)],
+  ]
+  return createPortal(
+    <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 px-6" onClick={onClose}>
+      <div className="anim-sheet w-full max-w-xs rounded-2xl border border-border bg-surface p-5"
+        onClick={e => e.stopPropagation()} role="dialog" aria-modal="true"
+        aria-label={ro ? 'Chestionar de final' : 'End-of-course survey'}>
+        <p className="text-center text-sm text-muted">
+          {ro ? 'Chestionarul e anonim și durează 6–8 minute. Ți se vor cere și cifrele astea:'
+              : 'The survey is anonymous and takes 6–8 minutes. It will also ask for these:'}
+        </p>
+        <dl className="mt-3 rounded-xl border border-border bg-panel/40 px-3 py-2">
+          {rows.map(([k, v]) => (
+            <div key={k} className="flex items-center justify-between gap-3 py-1.5">
+              <dt className="text-xs text-muted">{k}</dt>
+              <dd className="font-mono text-sm font-semibold tabular-nums text-primary">{v}</dd>
+            </div>
+          ))}
+        </dl>
+        <p className="mt-2 text-center text-[0.6875rem] leading-relaxed text-faint">
+          {ro ? 'Notează-le sau lasă aplicația deschisă — te poți întoarce oricând.'
+              : 'Note them down, or leave the app open — you can come back any time.'}
+        </p>
+        {/* A real anchor, for the same reason the mail link above is one: inside an Android WebView
+            window.open is frequently a no-op, and a button that does nothing is worse than no
+            button. target=_blank with noopener so the form never gets a handle on this window. */}
+        <a href={QUESTIONNAIRE_URL} target="_blank" rel="noopener noreferrer" onClick={onClose}
+          className="mt-4 block w-full rounded-xl bg-primary py-3 text-center text-sm font-semibold text-primary-fg hover:brightness-110">
+          {ro ? 'Deschide chestionarul' : 'Open the survey'}
         </a>
         <button onClick={onClose} className="mt-2 w-full rounded-xl py-2.5 text-sm font-medium text-faint hover:bg-surface-2">{t('close')}</button>
       </div>
