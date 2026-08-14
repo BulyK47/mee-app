@@ -1,6 +1,6 @@
 # Privacy Policy — MEE (Măsurări Electrice și Electronice)
 
-_Last updated: 9 August 2026_
+_Last updated: 14 August 2026_
 
 ## 🇬🇧 English
 
@@ -14,14 +14,24 @@ local storage on mobile), under keys prefixed `meem_`. Two kinds of thing are ke
 
 - **Progress** — completed lessons, best score and number of plays per lesson, experience points,
   "Volți", purchased instruments and applied skins, streak and streak freezes, hearts and the day
-  they were last refilled, the daily-goal counter, the daily quests, the mistakes scheduled for
-  review and their spaced-repetition schedule, and the date the diploma was awarded.
+  they were last refilled, the daily-goal counter, the daily quests, how many exam simulations you
+  have run, the mistakes scheduled for review and their spaced-repetition schedule, and the date the
+  diploma was awarded.
 - **Preferences** — language, theme, sound, vibration, daily-goal target, selected bench, Study
   Mode, and whether the first-run introduction has been shown.
 
 The app never sends any of it anywhere. It leaves your device only if **you** deliberately send it:
 *Export* in Settings writes a backup file, and *Share my score* and *Share the diploma* hand a short
 text to whichever app you choose. Nothing is transmitted without that explicit action on your part.
+
+**The end-of-course questionnaire.** Settings may show a *Chestionar de final* button. It sends
+nothing. It opens an external questionnaire, hosted on Microsoft Forms, in your browser, and shows
+you beforehand the three numbers the form will ask for — your level, how many modules you finished
+and how many exam simulations you ran — so that you can copy them yourself. The app transmits no
+data to that form, and the form has no access to the app. Once the page opens you are on Microsoft's
+site and under Microsoft's privacy terms; answering is voluntary, and the questionnaire asks for
+nothing that identifies you. The button exists only in the build made for this course: a copy of the
+source code built by anyone else carries no such link and shows no such button.
 
 **Network access.** The app is designed to work offline. It downloads its own files the first time
 you open it and caches them so it can run without a connection. It makes no other network requests:
@@ -63,8 +73,8 @@ aplicației, pe telefon), sub chei cu prefixul `meem_`. Se păstrează două cat
 - **Progres** — lecțiile terminate, cel mai bun scor și de câte ori ai jucat fiecare lecție,
   punctele de experiență, „Volții", instrumentele cumpărate și aspectele aplicate, seria zilnică și
   înghețările de serie, inimile și ziua în care au fost completate ultima oară, contorul obiectivului
-  zilnic, misiunile zilnice, greșelile programate pentru repetare și programul lor de repetiție,
-  precum și data la care a fost acordată diploma.
+  zilnic, misiunile zilnice, câte simulări de examen ai dat, greșelile programate pentru repetare și
+  programul lor de repetiție, precum și data la care a fost acordată diploma.
 - **Preferințe** — limba, tema, sunetul, vibrațiile, ținta zilnică, banca selectată, Modul Studiu și
   dacă introducerea de la prima pornire a fost afișată.
 
@@ -72,6 +82,15 @@ Aplicația nu trimite nimic din toate astea nicăieri. Datele îți părăsesc d
 trimiți **tu**, în mod deliberat: butonul *Exportă* din Setări scrie un fișier de rezervă, iar
 *Distribuie scorul* și *Distribuie diploma* dau un text scurt aplicației pe care o alegi tu. Nimic nu
 se transmite fără această acțiune explicită.
+
+**Chestionarul de final.** În Setări poate apărea butonul *Chestionar de final*. El nu trimite nimic.
+Deschide în browser un chestionar extern, găzduit de Microsoft Forms, și îți arată dinainte cele trei
+cifre pe care ți le va cere formularul — nivelul tău, câte module ai terminat și câte simulări de
+examen ai dat — ca să le poți copia tu. Aplicația nu transmite niciun fel de date către acel
+formular, iar formularul nu are acces la aplicație. Odată deschisă pagina, ești pe site-ul Microsoft
+și sub condițiile lor de confidențialitate; completarea este voluntară, iar chestionarul nu cere
+nimic care să te identifice. Butonul există doar în versiunea construită pentru această disciplină:
+o copie a codului sursă compilată de altcineva nu conține acest link și nu afișează butonul.
 
 **Acces la rețea.** Aplicația este gândită să funcționeze offline. Își descarcă propriile fișiere la
 prima deschidere și le păstrează în memoria locală, ca să poată rula fără conexiune. Nu face nicio

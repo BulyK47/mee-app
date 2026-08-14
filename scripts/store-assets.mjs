@@ -36,6 +36,10 @@ for (const f of capturi) {
   const lat = Math.max(width, latMin)
   await sharp({ create: { width: lat, height, channels: 3, background: FUNDAL } })
     .composite([{ input: await sharp(src).flatten({ background: FUNDAL }).toBuffer(), left: Math.round((lat - width) / 2), top: 0 }])
+    // `channels: 3` pe pânză nu e de ajuns: compunerea reintroduce alfa, iar sharp scria PNG-uri
+    // RGBA cu alfa complet opac — invizibil la privire, dar tipul de culoare din fișier rămâne 6,
+    // nu 2, adică exact ce zice Play că nu acceptă. removeAlpha() taie canalul la ieșire.
+    .removeAlpha()
     .png({ compressionLevel: 9 })
     .toFile(join(OUT, f))
   const r = (height / lat).toFixed(2)
