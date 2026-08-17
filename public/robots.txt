@@ -1,0 +1,9 @@
+# Aplicația construită conține banca de întrebări — trebuie să poată nota offline.
+# Nu e un secret criptografic și nu pretinde să fie: cine deschide DevTools o vede.
+# Dar ruta pe care ar găsi-o cineva care nu o caută este căutarea Google, iar asta
+# se închide de aici. Fără indexare, fără fragmente în rezultate, fără cache.
+#
+# Se aplică deployment-ului public al aplicației (Cloudflare Pages). Depozitul de
+# cod nu conține banca și nu are nevoie de această restricție.
+User-agent: *
+Disallow: /
