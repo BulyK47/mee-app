@@ -166,8 +166,9 @@ GitHub renders [`CITATION.cff`](CITATION.cff) as a ready-made citation ("Cite th
 use:
 
 ```bibtex
-@software{voicila_seritan_mee_2026,
-  author  = {Voicila, Iulian-Teodor and Seritan, George-Calin},
+@software{voicila_seritan_enache_mee_2026,
+  author  = {Voicila, Iulian-Teodor and Seritan, George-Calin
+             and Enache, Bogdan-Adrian},
   title   = {{MEE — a Duolingo-style bilingual learning app for
              Electrical and Electronic Measurements}},
   year    = {2026},
@@ -178,19 +179,35 @@ use:
 
 ## License
 
-Licensed under the **Apache License 2.0** — see [LICENSE](LICENSE) and [NOTICE](NOTICE).
+| What | License |
+|---|---|
+| All source code, build scripts, figures, styles | **Apache-2.0** — see [LICENSE](LICENSE), [NOTICE](NOTICE) |
+| The three instructional content files listed below | **Apache-2.0 *or* CC BY 4.0**, at your option |
+| The graded question bank (`content-private/`) | **not distributed, no license granted** |
 
 You may use, modify and redistribute the code, including commercially, provided you keep the
 copyright and `NOTICE` attribution. The license does **not** grant rights to the project name
 "MEE — Laboratorul meu", the icon, or the visual identity (Apache-2.0 §6): publish a fork under its
 own name.
 
-The **graded question bank** — the exercises, keys, hints and recaps used to assess students — is
-not distributed here and no license is granted to it. It lives in a separate private repository, so
-that students cannot read the answers; everything under `content-private/` is withheld.
+### Content files, dual-licensed
 
-Everything this repository *does* ship is Apache-2.0, content included: the ten-exercise
-demonstration module (`src/content/worlds/M01.demo.json`), its recap
-(`src/content/recaps/M01.demo.json`) and the instrument reference
-(`src/content/equipmentInfo.ts`) were written for this project and may be redistributed like any
-other file here. The boundary is the directory, not the file type.
+Three files here are teaching material rather than code, and may also be used under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/):
+
+- `src/content/worlds/M01.demo.json` — the ten-exercise demonstration module
+- `src/content/recaps/M01.demo.json` — its theory recap
+- `src/content/equipmentInfo.ts` — instrument specifications, working principles and glossary (RO/EN)
+
+The second option exists so that a lecturer who wants to reuse one exercise, or the instrument
+glossary, in their own course does not have to carry a software license's patent clauses and NOTICE
+obligations to do it. Attribution is required either way — see [How to cite](#how-to-cite).
+
+### The question bank
+
+The **graded question bank** — the exercises, keys, hints and recaps used to assess students — is
+**not distributed as source and no license is granted to it**, here or anywhere else. It lives in a
+separate private repository; everything under `content-private/` is withheld.
+
+A compiled build of the app, which contains that bank so it can grade offline, is served to enrolled
+students. That deployment is a service to them; it grants no rights in the item content.

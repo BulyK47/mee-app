@@ -1,12 +1,14 @@
 MEE — Măsurări Electrice și Electronice
-Copyright 2026 Iulian-Teodor Voicila and George-Calin Seritan
+Copyright 2026 Iulian-Teodor Voicila, George-Calin Seritan
+              and Bogdan-Adrian Enache
 
   Iulian-Teodor Voicila   https://orcid.org/0000-0002-6033-2934
   George-Calin Seritan    https://orcid.org/0000-0001-7009-2615
+  Bogdan-Adrian Enache    https://orcid.org/0000-0001-9979-3837
 
 This product includes software developed for the course "Măsurări Electrice
-și Electronice" (Electrical and Electronic Measurements) at Universitatea
-Politehnică din București.
+și Electronice" (Electrical and Electronic Measurements) at the National
+University of Science and Technology POLITEHNICA Bucharest.
 
 Licensed under the Apache License, Version 2.0 (see LICENSE).
 
@@ -28,12 +30,21 @@ QUESTION BANK
 -------------
 The graded question bank — the exercises, answer keys, hints and theory
 summaries actually used to assess students — lives in a separate private
-repository. It is withheld deliberately: students must not be able to read the
-answers. Nothing under content-private/ is part of this repository, and no
-licence is granted to it here.
+repository. It is NOT DISTRIBUTED AS SOURCE and NO LICENCE IS GRANTED TO IT,
+here or anywhere else. Nothing under content-private/ is part of this
+repository.
 
-Everything this repository does ship is covered by the Apache-2.0 licence
-above, including the content files:
+A compiled build of the application, containing that bank, is served to
+enrolled students so that the app can grade offline. That deployment is a
+service to those students; it grants no rights in the item content, which
+remains fully reserved.
+
+CONTENT FILES — DUAL LICENCE
+----------------------------
+Three files in this repository are instructional CONTENT rather than code.
+They are original to this project, are not drawn from the graded bank, and may
+be used under EITHER the Apache License 2.0 (as above) OR the Creative Commons
+Attribution 4.0 International licence, at your option:
 
   src/content/worlds/M01.demo.json   a ten-exercise demonstration module,
                                      written for this purpose, with its own
@@ -42,10 +53,16 @@ above, including the content files:
   src/content/equipmentInfo.ts       instrument specifications, working
                                      principles and glossary (RO/EN)
 
-Those three are original to this project and are not drawn from the graded
-bank, so a fork may redistribute them under Apache-2.0 like any other file
-here. The boundary is the directory: content-private/ is withheld, the rest
-is licensed.
+  CC BY 4.0:  https://creativecommons.org/licenses/by/4.0/
+  Legal code: https://creativecommons.org/licenses/by/4.0/legalcode
+
+The second option exists because these three are teaching material. A lecturer
+who wants to reuse one exercise, or the instrument glossary, in their own
+course should not have to carry a software licence's patent clauses and NOTICE
+obligations to do it. Attribution is required either way: cite the work as
+described in CITATION.cff.
+
+Every other file in this repository is Apache-2.0 only.
 
 THIRD-PARTY COMPONENTS
 ----------------------

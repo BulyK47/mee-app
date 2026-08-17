@@ -5,12 +5,16 @@ type: software
 authors:
   - given-names: Iulian-Teodor
     family-names: Voicila
-    affiliation: "Universitatea Politehnică din București"
+    affiliation: "National University of Science and Technology POLITEHNICA Bucharest"
     orcid: "https://orcid.org/0000-0002-6033-2934"
   - given-names: George-Calin
     family-names: Seritan
-    affiliation: "Universitatea Politehnică din București"
+    affiliation: "National University of Science and Technology POLITEHNICA Bucharest"
     orcid: "https://orcid.org/0000-0001-7009-2615"
+  - given-names: Bogdan-Adrian
+    family-names: Enache
+    affiliation: "National University of Science and Technology POLITEHNICA Bucharest"
+    orcid: "https://orcid.org/0000-0001-9979-3837"
 repository-code: "https://github.com/BulyK47/mee-app"
 abstract: >-
   A bilingual (Romanian/English) progressive web application that teaches the
