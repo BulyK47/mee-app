@@ -316,8 +316,8 @@
      "type": "numeric",
      "points": 10,
      "prompt": {
-      "ro": "Exprimați rezistența de 2,2 kΩ în ohmi (Ω).",
-      "en": "Express a resistance of 2.2 kΩ in ohms (Ω)."
+      "ro": "Exprimați rezistența de 2,2 kΩ în ohmi (Ω). Fără separator de mii.",
+      "en": "Express a resistance of 2.2 kΩ in ohms (Ω). No thousands separator."
      },
      "answer": 2200,
      "unit": "Ω",

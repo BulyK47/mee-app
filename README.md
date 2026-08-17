@@ -51,6 +51,11 @@ un modul demonstrativ, ca aplicația să poată fi rulată de oricine.
 | **Virtual lab** | earn "Volți", buy and equip instruments on your bench |
 | **Offline PWA** | service worker + local storage; installable, no account, no server, no tracking |
 
+> **What a clone of this repository gives you:** the whole application, running on the demo module —
+> **1 module, 2 lessons, 10 exercises**, and a mock exam that falls back to 4 questions because that
+> is the size of the pool. Every feature in the table above is real and works; the numbers in the
+> first row describe the course, which is served by the private bank. See [Content](#content).
+
 ## Quick start
 
 ```bash
@@ -186,6 +191,9 @@ use:
 ```
 
 ## License
+
+The app collects nothing and sends nothing — [PRIVACY.md](PRIVACY.md) states exactly what is stored
+on the device, in Romanian and English. Contributing: [CONTRIBUTING.md](CONTRIBUTING.md).
 
 | What | License |
 |---|---|

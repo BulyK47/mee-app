@@ -1,0 +1,60 @@
+MEE — Măsurări Electrice și Electronice
+Third-party notices for the distributed application
+
+Copyright 2026 Iulian-Teodor Voicila, George-Calin Seritan
+              and Bogdan-Adrian Enache
+Licensed under the Apache License, Version 2.0.
+
+This file ships inside the built application because the built application is
+where the obligation lands. The repository carries LICENSE and NOTICE, but a
+minified bundle keeps no legal banners and the .woff2 files carry only a licence
+URL — so a user who installs the app from a store or a web address would have no
+way to reach any of it. The full text of each licence is at the URL given below.
+
+Source code and the full NOTICE:
+  https://github.com/BulyK47/mee-app
+
+
+─── BUNDLED SOFTWARE ────────────────────────────────────────────────────────
+
+  React, React DOM                MIT     https://github.com/facebook/react
+  Motion (framer-motion)          MIT     https://github.com/motiondivision/motion
+  canvas-confetti                 ISC     https://github.com/catdad/canvas-confetti
+
+  MIT   https://opensource.org/license/mit
+  ISC   https://opensource.org/license/isc-license-txt
+
+Vite, @vitejs/plugin-react, Tailwind CSS and TypeScript are build tools (MIT).
+They produce this application but no part of them is shipped inside it.
+
+
+─── BUNDLED FONTS ───────────────────────────────────────────────────────────
+
+All three are licensed under the SIL Open Font License, Version 1.1:
+  https://openfontlicense.org
+
+  Inter
+    Copyright 2016 The Inter Project Authors
+    https://github.com/rsms/inter
+
+  JetBrains Mono
+    Copyright 2020 The JetBrains Mono Project Authors
+    https://github.com/JetBrains/JetBrainsMono
+
+  Chakra Petch
+    Copyright 2018 The Chakra Petch Project Authors
+    https://github.com/m4rc1e/Chakra-Petch
+
+The fonts are subsetted and served from the application itself. Nothing is
+fetched from a font CDN at runtime — see PRIVACY.md.
+
+
+─── THE QUESTION BANK ───────────────────────────────────────────────────────
+
+The exercises, answer keys, hints and theory summaries contained in this build
+are NOT open source and no licence is granted to them. They are used to assess
+students. Distributing this compiled application grants no rights in them.
+
+The demonstration module that ships with the public source (a separate, smaller
+set of exercises written for that purpose) is available under Apache-2.0 or
+CC BY 4.0, at your option — see NOTICE in the repository.

@@ -107,6 +107,15 @@ window.__node = () => [...document.querySelectorAll('button')].find(b => !b.disa
 window.__setInput = v => { const i = window.__card().querySelector('input'); if (!i) return false;
   Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,'value').set.call(i, v);
   i.dispatchEvent(new Event('input',{bubbles:true})); return true };
+// Leaving a lesson or an exam raises the app's OWN confirmation sheet, not window.confirm — the
+// code gate forbids the native one precisely because a WebView may not show it. Overriding
+// window.confirm therefore did nothing: the sheet stayed up, and 6-memorator was captured as the
+// exam screen with a modal over it. Dismiss the real sheet by pressing its primary button.
+// role is "alertdialog", not "dialog" — Confirm.tsx. Matching only [role=dialog] silently found
+// nothing and the sheet stayed up, which is the whole bug this helper exists to fix.
+window.__yes = () => { const d = document.querySelector('[role=alertdialog]'); if (!d) return false;
+  const b = [...d.querySelectorAll('button')].find(x => /^(Ieși|Exit|Da|Yes)$/i.test(x.innerText.trim()));
+  if (!b) return false; window.__fire(b); return true };
 true`
 
 // a profile that looks like a student halfway through the course, so the screens are not empty.
@@ -170,8 +179,8 @@ await evaluate('window.__fire(window.__node()); true'); await sleep(1600)
 await shot('3-intrebare')
 
 // the theory recap
-await evaluate(`const c = window.__card(); if (c) { const x = [...c.querySelectorAll('button[aria-label]')].find(b => /Ieși|exit/i.test(b.getAttribute('aria-label')||'')); window.confirm = () => true; if (x) window.__fire(x) } true`)
-await sleep(1000)
+await evaluate(`const c = window.__card(); if (c) { const x = [...c.querySelectorAll('button[aria-label]')].find(b => /Ieși|exit/i.test(b.getAttribute('aria-label')||'')); if (x) window.__fire(x) } true`)
+await sleep(700); await evaluate('window.__yes(); true'); await sleep(1000)
 await evaluate('window.__fire([...document.querySelectorAll("button")].find(b => b.innerText.trim() === "Teorie")); true'); await sleep(1500)
 await shot('4-teorie')
 
@@ -181,8 +190,8 @@ await evaluate('window.__fire(window.__btn(/Simulare de examen/)); true'); await
 await shot('5-examen')
 
 // the formula sheet
-await evaluate('window.confirm = () => true; const x=[...document.querySelectorAll("button[aria-label]")].find(b=>/Ieși|exit/i.test(b.getAttribute("aria-label")||"")); if(x) window.__fire(x); true')
-await sleep(1000)
+await evaluate('const x=[...document.querySelectorAll("button[aria-label]")].find(b=>/Ieși|exit/i.test(b.getAttribute("aria-label")||"")); if(x) window.__fire(x); true')
+await sleep(700); await evaluate('window.__yes(); true'); await sleep(1200)
 await evaluate('window.__fire(window.__aria("Memorator")); true'); await sleep(1500)
 await shot('6-memorator')
 

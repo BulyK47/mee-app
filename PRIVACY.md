@@ -1,6 +1,6 @@
 # Privacy Policy — MEE (Măsurări Electrice și Electronice)
 
-_Last updated: 14 August 2026_
+_Last updated: 17 August 2026_
 
 ## 🇬🇧 English
 
@@ -37,6 +37,14 @@ form and is not recorded with your answers.
 **Network access.** The app is designed to work offline. It downloads its own files the first time
 you open it and caches them so it can run without a connection. It makes no other network requests:
 no analytics, no advertising, no content delivery network, no fonts or scripts from third parties.
+
+**How the app reaches your device.** The statements above are about the app itself. Getting it to
+you does involve two third parties, and it would be misleading not to say so. On Android it is
+distributed through **Google Play**, which records installs under its own terms. The web version is
+served from a **static hosting provider**, which — like every web server — sees your IP address and
+browser identifier in its own logs when the files are downloaded. Neither receives anything about
+your progress, your answers or your use of the app; after the first load the app runs from your
+device's cache and asks for nothing further.
 
 **Permissions.** The app requests no device permissions: no camera, no microphone, no location, no
 contacts, no files. On a phone it may use short vibrations as feedback; you can turn those off in
@@ -98,6 +106,15 @@ din afară. Adresa servește la deschiderea formularului și nu se înregistreaz
 prima deschidere și le păstrează în memoria locală, ca să poată rula fără conexiune. Nu face nicio
 altă cerere de rețea: fără analiză statistică, fără publicitate, fără rețea de distribuție de
 conținut, fără fonturi sau scripturi de la terți.
+
+**Cum ajunge aplicația pe dispozitivul tău.** Cele de mai sus sunt despre aplicația în sine. Ca să
+ajungă la tine intervin însă doi terți, și ar fi necinstit să nu o spunem. Pe Android se distribuie
+prin **Google Play**, care înregistrează instalările în condițiile lui. Varianta web se servește de
+la un **furnizor de găzduire statică**, care — ca orice server web — vede adresa ta IP și
+identificatorul browserului în jurnalele proprii, atunci când se descarcă fișierele. Niciunul nu
+primește nimic despre progresul tău, despre răspunsurile tale sau despre felul în care folosești
+aplicația; după prima încărcare, aplicația rulează din memoria locală a dispozitivului și nu mai
+cere nimic.
 
 **Permisiuni.** Aplicația nu cere nicio permisiune: fără cameră, microfon, locație, contacte sau
 fișiere. Pe telefon poate folosi vibrații scurte ca răspuns tactil; le poți opri din Setări.

@@ -12,17 +12,28 @@ import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
-const WORLDS = join(ROOT, 'content-private/worlds')
-const RECAPS = join(ROOT, 'content-private/recaps')
 const SRC = join(ROOT, 'src')
 
-if (!existsSync(WORLDS)) {
-  console.log('content-private/worlds absent — sar peste verificările de conținut (clonă fără bancă)')
+// BOTH content locations, exactly as src/content/course.ts globs them. This used to point only at
+// content-private/ and exit(0) when that folder was missing — so in a clone without the bank (which
+// is what a contributor, and any CI job, actually has) the whole file passed in silence, without
+// opening even the demo module that IS committed. A gate that reports green without reading
+// anything is worse than no gate: it is a badge that means nothing.
+const PRIV_WORLDS = join(ROOT, 'content-private/worlds')
+const PRIV_RECAPS = join(ROOT, 'content-private/recaps')
+const WORLD_DIRS = [PRIV_WORLDS, join(ROOT, 'src/content/worlds')].filter(existsSync)
+const RECAP_DIRS = [PRIV_RECAPS, join(ROOT, 'src/content/recaps')].filter(existsSync)
+
+const jsonIn = dirs => dirs.flatMap(d => readdirSync(d).filter(f => f.endsWith('.json')).map(f => join(d, f))).sort()
+
+const worlds = jsonIn(WORLD_DIRS)
+if (!worlds.length) {
+  console.log('niciun fișier de conținut găsit — nimic de verificat')
   process.exit(0)
 }
-
-const worlds = readdirSync(WORLDS).filter(f => f.endsWith('.json')).sort()
-const load = f => JSON.parse(readFileSync(join(WORLDS, f), 'utf8'))
+const load = p => JSON.parse(readFileSync(p, 'utf8'))
+// messages name the file, not the path: "M07.json:c1-10" stays findable and stays short
+const base = p => p.slice(p.replace(/\\/g, '/').lastIndexOf('/') + 1)
 const exercises = []
 const lessons = []
 for (const f of worlds) {
@@ -47,9 +58,9 @@ for (const l of lessons)
 // Any tool that rewrites a world file has to reproduce the on-disk formatting exactly, or every
 // later diff is noise. The format is JSON.stringify(obj, null, 1) + '\n'.
 for (const f of worlds) {
-  const raw = readFileSync(join(WORLDS, f), 'utf8')
+  const raw = readFileSync(f, 'utf8')
   if (JSON.stringify(JSON.parse(raw), null, 1) + '\n' !== raw)
-    add('format-json', f, 'nu se reproduce identic cu JSON.stringify(obj, null, 1) + newline')
+    add('format-json', base(f), 'nu se reproduce identic cu JSON.stringify(obj, null, 1) + newline')
 }
 
 // ── 2. answer options must be structurally answerable ────────────────────────
@@ -127,13 +138,18 @@ for (const e of exercises) {
 // mistaken file away — eight of the fifteen recaps used to be named W1…W8 while holding M01, M05,
 // M03…, so anyone looking for "the M04 recap", not finding M04.json, and creating it would have
 // shadowed W6.json and never known. Names match their worldId now; this keeps it that way.
-if (existsSync(RECAPS)) {
+{
   const byWorld = {}
-  for (const f of readdirSync(RECAPS).filter(x => x.endsWith('.json'))) {
-    const r = JSON.parse(readFileSync(join(RECAPS, f), 'utf8'))
+  for (const p of jsonIn(RECAP_DIRS)) {
+    const f = base(p)
+    const r = load(p)
     if (!r.worldId) { add('recap', f, 'fără worldId — nu va fi încărcată niciodată'); continue }
-    if (f.replace('.json', '') !== r.worldId) add('recap', f, `numele fișierului nu e ${r.worldId}.json`)
-    ;(byWorld[r.worldId] = byWorld[r.worldId] || []).push(f)
+    // `M01.demo.json` is the committed placeholder for `M01`; the suffix is how course.ts knows to
+    // drop it once the real module exists, so it is a legal name, not a mismatch.
+    if (f.replace(/(\.demo)?\.json$/, '') !== r.worldId) add('recap', f, `numele fișierului nu e ${r.worldId}.json`)
+    // Two files for one module only collide if they are BOTH real; a demo and its replacement is
+    // exactly the arrangement this project ships.
+    if (!/\.demo\.json$/.test(f)) (byWorld[r.worldId] = byWorld[r.worldId] || []).push(f)
   }
   for (const [world, fs_] of Object.entries(byWorld))
     if (fs_.length > 1) add('recap', world, `${fs_.length} fișiere pentru același modul (${fs_.join(', ')}) — unul îl ascunde pe celălalt`)
@@ -148,7 +164,9 @@ if (existsSync(RECAPS)) {
 // Comments are excluded, and deliberately: src/ui/FormulaMath.tsx cites "X_L = 2·π·f·L [Ω]" as an
 // example of what its parser must handle, and that is the inductive-reactance formula out of any
 // textbook. Rewriting a code comment to avoid resembling the bank would be theatre.
-if (existsSync(RECAPS)) {
+// The phrase set comes from the PRIVATE folders only — the point is to catch private text landing
+// in a publishable file. Gathering the demo's own sentences here would make the demo flag itself.
+if (existsSync(PRIV_RECAPS)) {
   const bankPhrases = new Set()
   const flat = s => String(s).toLowerCase().replace(/\s+/g, ' ').trim()
   const gather = node => {
@@ -156,7 +174,7 @@ if (existsSync(RECAPS)) {
     if (Array.isArray(node)) return node.forEach(gather)
     if (node && typeof node === 'object') Object.values(node).forEach(gather)
   }
-  for (const dir of [WORLDS, RECAPS])
+  for (const dir of [PRIV_WORLDS, PRIV_RECAPS])
     for (const f of readdirSync(dir).filter(x => x.endsWith('.json'))) gather(JSON.parse(readFileSync(join(dir, f), 'utf8')))
 
   const strip = src => src
@@ -202,8 +220,8 @@ const walkStrings = (node, where) => {
   if (node && typeof node === 'object') for (const v of Object.values(node)) walkStrings(v, where)
 }
 for (const e of exercises) walkStrings({ p: e.prompt, h: e.hint, x: e.explanation, c: e.choices }, e._id)
-if (existsSync(RECAPS)) for (const f of readdirSync(RECAPS).filter(x => x.endsWith('.json')))
-  walkStrings(JSON.parse(readFileSync(join(RECAPS, f), 'utf8')), 'recap:' + f.replace('.json', ''))
+for (const p of jsonIn(RECAP_DIRS))
+  walkStrings(load(p), 'recap:' + base(p).replace(/(\.demo)?\.json$/, ''))
 for (const { where, s } of visibleStrings) {
   for (const h of scanScripts(s)) if (!h.closed) add('formule', where, `"${h.ch}{" neînchis — înghite ${h.len} caractere din frază`)
   if ((s.match(/\{/g) || []).length !== (s.match(/\}/g) || []).length) add('formule', where, 'acolade dezechilibrate')
