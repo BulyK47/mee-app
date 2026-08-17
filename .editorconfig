@@ -1,0 +1,29 @@
+# Two of this repository's gates are about bytes, not taste, and an editor that tidies on save
+# trips both:
+#   · check-invariants.mjs #1 requires every content JSON to round-trip as
+#     JSON.stringify(obj, null, 1) + '\n' — ONE space. Every editor defaults to two, and a single
+#     reformat turns the next diff into the whole file.
+#   · vite.config.ts throws if public/sw.js no longer contains the exact markers
+#     /*__PRECACHE__*/[] and /*__BUILD__*/'dev'. One space inserted by a formatter is enough, and
+#     the build then ships without a precache list — that is, without the offline start.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+# One space, because a gate says so. Not a preference.
+[src/content/{worlds,recaps}/*.json]
+indent_size = 1
+
+# Two trailing spaces are a line break in Markdown.
+[*.md]
+trim_trailing_whitespace = false
+
+# Generated into by vite.config.ts. Keep formatters away from it.
+[public/sw.js]
+trim_trailing_whitespace = false

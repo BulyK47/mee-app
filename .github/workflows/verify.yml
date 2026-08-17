@@ -1,13 +1,24 @@
-# Runs on the tree GitHub actually has — which is the tree without the question bank.
+# What GitHub can verify, it verifies on the tree GitHub actually has: the one WITHOUT the question
+# bank. check-invariants.mjs scans src/content/ as well as content-private/, so the committed demo
+# module is genuinely checked here. Measured on a bank-less tree: 10 exercises, 2 lessons, 1 module,
+# every invariant applied — and exit 1 the moment one is broken. The badge is worth what it claims,
+# and the list below says exactly how much less that is.
 #
-# This workflow would have been dishonest until today: check-invariants.mjs pointed only at
-# content-private/ and exited 0 when that folder was missing, so on a clone it reported success
-# without opening a single content file. It now scans src/content/ too, which means the committed
-# demo module is genuinely checked here: 10 exercises, 2 lessons, 1 module, every invariant applied.
-# A green badge on this repository is therefore worth what it claims.
+# NOT COVERED HERE. No green tick may be read as covering any of it:
+#   · the graded bank — it is not on GitHub. `npm run verify` on the author's machine, with
+#     content-private/ present, is the only place all of it is checked.
+#   · the phrase route of check-not-staged.mjs, which builds its phrase set FROM the bank.
+#   · invariant 3e (no bank sentence in a publishable file) — same reason.
+#   · that what students receive is the FULL build. The demo build is ~290 kB of
+#     dist/assets/index-*.js, the real one ~870 kB. Only a person compares those two numbers.
+#   · anything needing a browser or a phone: figure rendering, offline start, the Android WebView.
+#   · the Play package. The signing key is not in this repository and must never be.
 #
-# What CI cannot check is the private bank. That runs on the author's machine, where `npm run verify`
-# sees all 315 exercises. Nothing here should be read as covering it.
+# DO NOT add a deploy job here. Anything CI builds is a DEMO build — 1 module, 10 exercises — and
+# publishing it would replace the students' course with a demo, silently, with no error anywhere.
+# For the same reason there is no dist/ artifact upload: an artifact is exactly what someone in a
+# hurry would download and deploy. The real deployment is uploaded by hand from a tree that has
+# content-private/ in it.
 name: verify
 
 on:
@@ -15,26 +26,110 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+  # This repository is touched about twice a year. A monthly run answers "does the toolchain still
+  # build?" BEFORE someone needs an urgent answer-key fix in the middle of a semester. GitHub
+  # disables a schedule after 60 days without repository activity and emails about it; re-enabling
+  # is one click, and the email is itself the reminder.
+  schedule:
+    - cron: '17 6 1 * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        # 22.18.0 is the floor package.json declares, and the floor is not arbitrary: the build alone
+        # needs less, but check-content.mjs imports src/content/*.ts directly and that is where
+        # running TypeScript without a flag begins. Pinning the exact floor keeps the declaration
+        # tested rather than aspirational; 24 is what the author runs. fail-fast is off because
+        # "fails on the floor, passes on current" is the most useful thing this matrix can say.
+        node: ['22.18.0', '24']
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      # 22.18 is the floor package.json declares, and it is not arbitrary: the build itself runs on
-      # 20, but check-content.mjs imports src/content/*.ts directly and that needs 22.18. Testing
-      # both the floor and current keeps the declaration honest instead of aspirational.
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node }}
           cache: npm
           cache-dependency-path: package-lock.json
 
-      - run: npm ci
-      - run: npm run verify
+      # npm ci, not npm install: package-lock.json is committed, so this installs the resolved tree
+      # and fails instead of quietly resolving something else.
+      - name: install
+        id: install
+        run: npm ci
 
-    strategy:
-      fail-fast: false
-      matrix:
-        node: ['22.18', '24']
+      # The gates run as separate steps rather than through `npm run check`, which chains them with
+      # && and stops at the first failure — three failures would then take three pushes to find.
+      # !cancelled() lets every gate report in the same run; the install guard keeps a failed npm ci
+      # from producing four identical "command not found" errors underneath it.
+      - name: types
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: npm run types
+
+      - name: gate - bilingual content
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: node scripts/check-content.mjs
+
+      - name: gate - platform assumptions
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: node scripts/check-code.mjs
+
+      - name: gate - invariants
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: node scripts/check-invariants.mjs
+
+      - name: build
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: npm run build
+
+      # Splitting the gates into steps buys readable failures and costs a way to drift: a fourth gate
+      # added to `npm run check` would never run here, and nothing would say so. This is that nothing.
+      - name: the steps above are still the whole gate
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: >
+          node -e 'const s=JSON.parse(require("fs").readFileSync("package.json","utf8")).scripts.check;const
+          want=["check-content","check-code","check-invariants"];const
+          got=[...s.matchAll(/scripts\/([\w-]+)\.mjs/g)].map(m=>m[1]);if(got.length!==want.length||want.some((w,i)=>got[i]!==w))throw
+          new Error("npm run check now runs ["+got+"] but verify.yml runs ["+want+"] — add the missing
+          gate as a step.");console.log("gate steps match npm run check:",got.join(", "))'
+
+  # The one mistake no later commit can undo has no guard on this side of the wire. `npm run prepush`
+  # is wired into .git/hooks by hand and a clone does not inherit it, so a pull request arrives with
+  # nothing checking it. This runs the very same script against the pull request's own changes, by
+  # putting them into the index the script reads.
+  #
+  # Verified on a clone of this repository: a pull request touching only README.md passes; one
+  # editing src/content/worlds/M01.demo.json passes, that being the one allowed path; one adding a
+  # second exercise-shaped world file exits 1 and names it.
+  #
+  # `pull_request`, never `pull_request_target`: a fork's code must not run with a writable token.
+  bank-guard:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0          # reset --soft needs the base branch to exist locally
+
+      # Moves HEAD to the base branch and leaves the index holding this pull request's tree — which
+      # is precisely what `git diff --cached` reads, and therefore what check-not-staged.mjs reads.
+      # The working tree is not touched.
+      - name: stage the pull request
+        run: git reset --soft "origin/${{ github.base_ref }}"
+
+      # No npm install: the script uses Node built-ins only. Without content-private/ the phrase
+      # route cannot run, so this is the structural route alone — exercise-shaped JSON, or an
+      # answer-key export, under any filename. That is the route that works on a clone, by design.
+      - name: nothing bank-shaped in this pull request
+        run: node scripts/check-not-staged.mjs

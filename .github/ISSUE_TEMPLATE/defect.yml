@@ -1,0 +1,67 @@
+name: "Defect · Bug"
+description: "Ceva din aplicație nu funcționează. · Something in the app does not work."
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Acesta nu e locul pentru greșeli de conținut.** Dacă e vorba de răspunsul unui exercițiu,
+        de un enunț sau de o explicație — scrie pe **dmaecseb108@gmail.com**. Un raport public
+        despre un item îl publică, împreună cu cheia lui.
+
+        *Not the place for content mistakes — e-mail those. Everything else, welcome.*
+
+  - type: checkboxes
+    id: no-bank-text
+    attributes:
+      label: "Confirmare · Confirmation"
+      options:
+        - label: "Raportul meu nu conține text copiat dintr-un exercițiu (enunț, variante, indiciu, explicație). · No text copied from an exercise."
+          required: true
+
+  - type: dropdown
+    id: where
+    attributes:
+      label: "Unde · Where"
+      options:
+        - "Android, instalată din Google Play"
+        - "Web, iPhone/iPad (Safari, adăugată pe ecranul de start)"
+        - "Web, telefon Android (Chrome)"
+        - "Web, calculator"
+        - "Clonă locală a depozitului (npm run dev)"
+    validations:
+      required: true
+
+  - type: input
+    id: build
+    attributes:
+      label: "Când ai instalat sau actualizat ultima dată · When did you last install or update"
+      description: "O dată aproximativă e suficientă. · An approximate date is enough."
+      placeholder: "ex. 3 septembrie, sau „azi”"
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: "Ce s-a întâmplat și ce te așteptai să se întâmple · What happened, and what you expected"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: "Cum se reproduce · How to reproduce"
+      description: "Numerotat, de la deschiderea aplicației. Dacă apare o singură dată din zece, spune și asta. · Numbered, starting from opening the app."
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: "Captură de ecran, dacă ajută · Screenshot, if it helps"
+      description: "Taie sau acoperă orice text de exercițiu din imagine. · Crop or cover any exercise text."

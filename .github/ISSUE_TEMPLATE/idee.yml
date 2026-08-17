@@ -1,0 +1,25 @@
+name: "Idee sau îmbunătățire · Idea or improvement"
+description: "O funcție, o figură nouă, accesibilitate, traduceri, unelte. · A feature, a new figure kind, accessibility, translations, tooling."
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Contribuțiile de **cod** sunt binevenite fără rezerve. Contribuțiile de **conținut** sunt
+        posibile doar pe modulul demonstrativ — vezi CONTRIBUTING.md; celelalte module nu există în
+        acest arbore, deci un PR pentru ele nu are cu ce să fuzioneze.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: "Ce problemă rezolvă · What problem does it solve"
+      description: "Ce nu merge azi, pentru cine. O idee descrisă ca soluție e greu de evaluat; una descrisă ca problemă, nu. · Describe the problem, not only the solution."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: "Propunerea · The proposal"
+    validations:
+      required: true

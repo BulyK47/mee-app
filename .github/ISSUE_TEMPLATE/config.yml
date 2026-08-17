@@ -1,0 +1,16 @@
+# The most likely issue on this repository is the one that must never be typed into it: "the answer
+# to question X is wrong". Filed publicly it publishes the item, its key, and the fact that it is
+# disputed — to the same students the item grades, and no deletion undoes that: issues are indexed
+# and mailed to watchers in full. So the blank issue is off, neither form below can be used to
+# describe an exercise, and these links come FIRST, before anyone starts writing.
+blank_issues_enabled: false
+contact_links:
+  - name: "Greșeală într-un exercițiu · Something wrong in an exercise"
+    url: mailto:dmaecseb108@gmail.com
+    about: "Pe e-mail, niciodată aici. Scrie modulul, lecția și ce anume nu se potrivește. · By e-mail, never as an issue."
+  - name: "Feedback despre aplicație (chestionar) · Feedback questionnaire"
+    url: https://forms.cloud.microsoft/e/Xk9dLz5iTN
+    about: "Anonim, 3 minute. Pentru „mi-a plăcut / nu mi-a plăcut / ce ar ajuta”. · Anonymous, 3 minutes."
+  - name: "Vulnerabilitate de securitate · Security vulnerability"
+    url: https://github.com/BulyK47/mee-app/security/advisories/new
+    about: "Raport privat, nu issue public. Vezi SECURITY.md. · Private report, see SECURITY.md."
