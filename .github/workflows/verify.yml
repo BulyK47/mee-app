@@ -1,0 +1,40 @@
+# Runs on the tree GitHub actually has — which is the tree without the question bank.
+#
+# This workflow would have been dishonest until today: check-invariants.mjs pointed only at
+# content-private/ and exited 0 when that folder was missing, so on a clone it reported success
+# without opening a single content file. It now scans src/content/ too, which means the committed
+# demo module is genuinely checked here: 10 exercises, 2 lessons, 1 module, every invariant applied.
+# A green badge on this repository is therefore worth what it claims.
+#
+# What CI cannot check is the private bank. That runs on the author's machine, where `npm run verify`
+# sees all 315 exercises. Nothing here should be read as covering it.
+name: verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # 22.18 is the floor package.json declares, and it is not arbitrary: the build itself runs on
+      # 20, but check-content.mjs imports src/content/*.ts directly and that needs 22.18. Testing
+      # both the floor and current keeps the declaration honest instead of aspirational.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - run: npm ci
+      - run: npm run verify
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['22.18', '24']
