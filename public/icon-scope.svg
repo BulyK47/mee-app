@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- alternative app icon: the app's own "Osciloscop OS" identity — dark bezel, phosphor trace.
+       The trace is one full sine period; the control points sit at 4/3 of the amplitude so the
+       cubic actually peaks at ±110 px. -->
+  <rect width="512" height="512" rx="112" fill="#0A0E12"/>
+  <rect x="26" y="26" width="460" height="460" rx="92" fill="none" stroke="#1E2A33" stroke-width="10"/>
+  <g stroke="#163A2A" stroke-width="4">
+    <path d="M160 104V408M256 104V408M352 104V408M104 160H408M104 256H408M104 352H408"/>
+  </g>
+  <path d="M96 256C149.3 109.3 202.7 109.3 256 256s106.7 146.7 160 0" fill="none"
+        stroke="#39D353" stroke-width="48" stroke-linecap="round" opacity="0.16"/>
+  <path d="M96 256C149.3 109.3 202.7 109.3 256 256s106.7 146.7 160 0" fill="none"
+        stroke="#39D353" stroke-width="24" stroke-linecap="round"/>
+</svg>
