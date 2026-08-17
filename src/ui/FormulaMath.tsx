@@ -271,7 +271,7 @@ export function FormulaMath({ children, center = false }: { children: string; ce
   })
 
   // Nothing typeset at all: hand back the ORIGINAL line untouched rather than the reassembled
-  // chunks, so a line that is really prose ("SAR: n comparații pentru n biți") keeps its own
+  // chunks, so a line that is really prose ("citirea se face pe scara de jos") keeps its own
   // spacing. Deliberately not display mode, unlike the per-chunk fallback above — `src` here is
   // unsplit, so a fraction bar could land on the "/" of "și/sau" or "10 ms/div".
   if (!typesetAny) return <Formula>{src}</Formula>

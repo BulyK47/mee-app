@@ -46,7 +46,14 @@ const blobOf = p => { try { return git('show', ':' + p) } catch { return '' } }
 const norm = s => String(s).toLowerCase().replace(/\s+/g, ' ').trim()
 const phrases = new Set()
 const collect = node => {
-  if (typeof node === 'string') { const s = node.trim(); if (s.split(/\s+/).length >= 8) phrases.add(norm(s)); return }
+  // Six words, not eight. Eight was a guess, and it had a hole: a scan of every blob in the git
+  // history found a six-word line from a recap sitting in a code comment in FormulaMath.tsx, as an
+  // example of "prose that must not be typeset" — quoted from the bank because it was at hand. The
+  // guard had run on that commit and passed it. Six is not a guess either: measured across all
+  // tracked files, six yields exactly that one hit and nothing else, while five starts matching
+  // bare formulas ("q = FSR / 2ⁿ" is both a recap line and a label drawn inside QuestionVisual),
+  // which would make this gate cry wolf — and a gate that cries wolf gets switched off.
+  if (typeof node === 'string') { const s = node.trim(); if (s.split(/\s+/).length >= 6) phrases.add(norm(s)); return }
   if (Array.isArray(node)) return node.forEach(collect)
   if (node && typeof node === 'object') Object.values(node).forEach(collect)
 }
