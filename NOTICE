@@ -34,10 +34,10 @@ repository. It is NOT DISTRIBUTED AS SOURCE and NO LICENCE IS GRANTED TO IT,
 here or anywhere else. Nothing under content-private/ is part of this
 repository.
 
-A compiled build of the application, containing that bank, is served to
-enrolled students so that the app can grade offline. That deployment is a
-service to those students; it grants no rights in the item content, which
-remains fully reserved.
+A compiled build of the application, which contains that bank because it has to
+grade offline, is published for the students of this course — through an app
+store and through a web address. Distributing the compiled form grants no
+rights in the item content, which remains fully reserved.
 
 CONTENT FILES — DUAL LICENCE
 ----------------------------

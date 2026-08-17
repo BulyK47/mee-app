@@ -49,7 +49,7 @@ export const ALL_LESSONS: Lesson[] = COURSE.worlds.flatMap(w => w.lessons)
 // The mock exam draws single/multiple-choice questions from the whole course, up to ten. Both the
 // picker and the card that advertises it read this, because they used to disagree: the card said
 // "10 grile" as a literal while the picker took `slice(0, 10)` of whatever existed. With the full
-// bank that is 177 questions and the two agree by luck; a plain clone of the public repository runs
+// bank that is 173 questions and the two agree by luck; a plain clone of the public repository runs
 // on the demo module alone, where the pool is FOUR — so the card promised ten and delivered four.
 export const EXAM_POOL: Exercise[] =
   ALL_LESSONS.flatMap(l => l.exercises).filter(e => e.type === 'mcq' || e.type === 'multi')

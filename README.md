@@ -31,7 +31,8 @@ Ce o deosebește de un simplu chestionar:
 - **Simulare de examen**: 10 grile cu limită de timp, cu revizuire la final.
 - **Funcționează offline**, se instalează pe telefon și nu trimite niciun fel de date nicăieri.
 
-Banca reală de întrebări **nu este publicată** (studenții ar putea citi baremul). Depozitul conține
+Banca reală de întrebări **nu este distribuită ca sursă** și nu se acordă nicio licență asupra ei.
+Depozitul conține
 un modul demonstrativ, ca aplicația să poată fi rulată de oricine.
 
 ---
@@ -42,7 +43,7 @@ un modul demonstrativ, ca aplicația să poată fi rulată de oricine.
 |---|---|
 | **15 modules · 49 lessons** | the full MI2025 course sequence, each module unlocking a lab instrument |
 | **4 exercise types** | single choice, multiple choice, true/false, numeric with tolerance |
-| **28 parametric figure types** | rendered as SVG from the exercise parameters — no bitmaps |
+| **25 parametric figure types** | rendered as SVG from the exercise parameters — no bitmaps |
 | **Native MathML** | real fractions, radicals, sub/superscripts; identical in both languages |
 | **Bilingual** | every prompt, choice, hint and explanation exists in Romanian and English |
 | **Spaced repetition** | wrong answers return on an expanding schedule |
@@ -99,7 +100,14 @@ Two more commands wrap these:
 
 ```bash
 npm run verify    # types + all three gates + production build
-npm run prepush   # refuses to let the question bank be committed — see PUBLISHING.md
+npm run prepush   # refuses to let the question bank be staged — see PUBLISHING.md
+```
+
+`prepush` inspects what is **staged**, so it only protects you if it runs. Wire it up once, locally
+— it is not versioned, so a clone does not inherit it:
+
+```bash
+printf '#!/bin/sh\nexec npm run --silent prepush\n' > .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
 ```
 
 ## Content
@@ -209,5 +217,6 @@ The **graded question bank** — the exercises, keys, hints and recaps used to a
 **not distributed as source and no license is granted to it**, here or anywhere else. It lives in a
 separate private repository; everything under `content-private/` is withheld.
 
-A compiled build of the app, which contains that bank so it can grade offline, is served to enrolled
-students. That deployment is a service to them; it grants no rights in the item content.
+A compiled build of the app, which contains that bank so it can grade offline, is published for the
+students of this course — through an app store and through a web address. Distributing the compiled
+form grants no rights in the item content.

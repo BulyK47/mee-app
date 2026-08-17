@@ -1,8 +1,9 @@
 # ─── the real question bank ────────────────────────────────────────────────
-# Lives in a SEPARATE PRIVATE repository. It is deliberately not published:
-# the exercises are used for grading, so students must not be able to read the
-# answer keys. A small demo module ships in src/content/ so that a plain clone
-# of this repository still builds and runs.
+# Lives in a SEPARATE PRIVATE repository. It is not distributed as source and no
+# licence is granted to it — the exercises are used for grading. The compiled app
+# does contain them, because it has to grade offline; withholding the source is
+# about what is licensed and searchable, not about a cryptographic secret.
+# A small demo module ships in src/content/ so that a plain clone still builds.
 content-private/
 
 # The generator of the answer-key export (MEE-intrebari-raspunsuri.md/html). It holds no questions

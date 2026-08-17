@@ -30,8 +30,9 @@ you beforehand the three numbers the form will ask for — your level, how many 
 and how many exam simulations you ran — so that you can copy them yourself. The app transmits no
 data to that form, and the form has no access to the app. Once the page opens you are on Microsoft's
 site and under Microsoft's privacy terms; answering is voluntary, and the questionnaire asks for
-nothing that identifies you. The button exists only in the build made for this course: a copy of the
-source code built by anyone else carries no such link and shows no such button.
+nothing that identifies you. Expect a university sign-in screen first: the form is restricted to
+university accounts, purely as a gate against outside replies. Your address is used to open the
+form and is not recorded with your answers.
 
 **Network access.** The app is designed to work offline. It downloads its own files the first time
 you open it and caches them so it can run without a connection. It makes no other network requests:
@@ -89,8 +90,9 @@ cifre pe care ți le va cere formularul — nivelul tău, câte module ai termin
 examen ai dat — ca să le poți copia tu. Aplicația nu transmite niciun fel de date către acel
 formular, iar formularul nu are acces la aplicație. Odată deschisă pagina, ești pe site-ul Microsoft
 și sub condițiile lor de confidențialitate; completarea este voluntară, iar chestionarul nu cere
-nimic care să te identifice. Butonul există doar în versiunea construită pentru această disciplină:
-o copie a codului sursă compilată de altcineva nu conține acest link și nu afișează butonul.
+nimic care să te identifice. Așteaptă-te mai întâi la un ecran de autentificare instituțională:
+formularul e restricționat la conturile universității, strict ca filtru împotriva răspunsurilor
+din afară. Adresa servește la deschiderea formularului și nu se înregistrează cu răspunsurile tale.
 
 **Acces la rețea.** Aplicația este gândită să funcționeze offline. Își descarcă propriile fișiere la
 prima deschidere și le păstrează în memoria locală, ca să poată rula fără conexiune. Nu face nicio

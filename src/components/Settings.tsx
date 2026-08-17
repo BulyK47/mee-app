@@ -12,15 +12,18 @@ import { ConfirmDialog } from '../ui/Confirm'
 import { keysLocal, readLocal, writeLocal, removeLocal } from '../storage'
 import { copyText, isAbort } from '../ui/clipboard'
 
-// Paste a Google Form URL here to collect structured feedback; empty = opens the student's email app.
+// Paste a web form URL here to collect structured feedback; empty = opens the student's email app.
 const FEEDBACK_URL = ''
 // A course address rather than a personal one: this string ships in the public repository AND in
 // the store build, both of which are scraped for addresses.
 const FEEDBACK_EMAIL = 'dmaecseb108@gmail.com'
 // End-of-course survey. Anonymous, restricted to the university's accounts, and entirely separate
-// from the feedback button above — see the comment where it is rendered. Empty hides the button,
-// which is what a public clone of this repository gets: the form belongs to one course at one
-// university, and an app installed elsewhere should not send anyone there.
+// from the feedback button above — see the comment where it is rendered. Empty hides the button.
+//
+// The URL is committed, so a fork inherits it: the form belongs to one course at one university,
+// and an app installed elsewhere should not send anyone there. If you fork this, blank the constant
+// — the button disappears and nothing else changes. (An earlier version of this comment, and of
+// PRIVACY.md, claimed a public clone got an empty string. It does not; that was wishful.)
 const QUESTIONNAIRE_URL = 'https://forms.cloud.microsoft/e/Xk9dLz5iTN'
 
 export default function Settings({ onClose, onDiploma }: { onClose: () => void; onDiploma: () => void }) {

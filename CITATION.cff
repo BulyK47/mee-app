@@ -33,6 +33,11 @@ keywords:
   - progressive web app
   - spaced repetition
   - bilingual learning
-license: Apache-2.0
+# Two entries because the three instructional content files are dual-licensed —
+# see NOTICE. Everything else is Apache-2.0 only. Zenodo reads this file, and a
+# DOI record cannot be corrected afterwards, so the pair belongs here.
+license:
+  - Apache-2.0
+  - CC-BY-4.0
 version: 1.0.0
 date-released: "2026-08-07"
