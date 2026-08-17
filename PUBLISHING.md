@@ -70,7 +70,7 @@ The repository URL is already set to `https://github.com/BulyK47/mee-app` in `RE
 Then:
 
 1. GitHub shows a **"Cite this repository"** button as soon as `CITATION.cff` is on the default
-   branch — both authors and their ORCIDs are already in it.
+   branch — all three authors and their ORCIDs are already in it.
 2. **Get a DOI** — this is what makes the work citable and time-stamps your authorship of the idea:
    connect the repository at <https://zenodo.org/account/settings/github/>, then publish a release
    (`git tag v1.0.0 && git push --tags`, then draft a release on GitHub). Zenodo archives it and
@@ -97,7 +97,7 @@ Because the bank must not sit on a public URL, use **Capacitor**.
 
 ```bash
 npm install @capacitor/core @capacitor/cli @capacitor/android
-npx cap init "MEE" "ro.upb.mee" --web-dir=dist
+npx cap init "MEE" "ro.mee.laborator" --web-dir=dist
 npm run build
 npx cap add android
 npx cap sync
@@ -127,7 +127,9 @@ Asset*, use `app-512.png` as the foreground and `#0A0E12` as the background).
    - app icon 512×512 (`public/icons/app-512.png`);
    - **at least 2 phone screenshots** (16:9 or 9:16, min 320 px) — take them on a real phone or in
      Chrome DevTools device mode;
-   - privacy policy **URL** — publish `PRIVACY.md` as a GitHub Pages page and use that link;
+   - privacy policy **URL** — link the file on github.com directly
+     (`https://github.com/<user>/<repo>/blob/main/PRIVACY.md`). Play accepts it, and it keeps the
+     store listing independent of wherever the web build happens to live;
    - content rating questionnaire, target audience, data-safety form (answer: *no data collected*).
 4. **Personal developer accounts must run a closed test with at least 12 testers for 14
    consecutive days before production access.** Plan this: a group of students works well. Check the
@@ -142,9 +144,10 @@ Asset*, use `app-512.png` as the foreground and `#0A0E12` as the background).
 No Apple account, no fee. The app is already configured for it (`apple-mobile-web-app-capable`,
 `apple-touch-icon`, standalone display).
 
-The catch: Safari installs it **from a URL**, so the app has to be hosted somewhere public — which
-puts the bundle, and the bank inside it, on the open web. Weigh that against convenience. If you
-accept it, any static host works:
+Safari installs it **from a URL**, so the app has to be hosted somewhere public — which puts the
+bundle, and the bank inside it, on the open web. That trade has been accepted deliberately: the app
+grades offline, so the keys are on the device whichever way it is installed, and `public/robots.txt`
+keeps the deployment out of search engines. Deploy it:
 
 ```bash
 npm run build
@@ -163,8 +166,13 @@ offline afterwards.
 > and the precache list would each need templating through `base` before offline mode worked again —
 > and the failure is quiet: the app installs, looks right, and has no offline support at all.
 >
-> A user-or-organisation GitHub Pages site (`username.github.io`, served at the root) works as-is,
-> as does Netlify, Vercel, Cloudflare Pages or any static host with its own domain.
+> Cloudflare Pages is the chosen host: `npx wrangler pages deploy dist` gives a root domain, so the
+> PWA works whole. Netlify, Vercel or any static host with its own domain would do as well.
+>
+> **GitHub Pages is ruled out**, even at the root of a `username.github.io` site, and not for a
+> technical reason: on the free plan Pages only publishes from a PUBLIC repository, and the build it
+> would serve contains the question bank. Hosting the compiled app is fine; hosting it out of a
+> public repository is not.
 
 ### Paid — App Store
 
@@ -227,7 +235,7 @@ Notes that matter:
 - **`versionCode` must increase** on every Play upload (`versionName` is the human label). Reusing a
   number is rejected.
 - **The signing key can never change.** Losing it means publishing a different app.
-- **The Android package id is permanent** — `ro.upb.mee` or whatever you choose at `cap init`
+- **The Android package id is permanent** — `ro.mee.laborator` or whatever you choose at `cap init`
   cannot be edited later. The visible name can.
 - **The cache name takes care of itself.** `public/sw.js` holds `const BUILD = /*__BUILD__*/'dev'`
   and the build replaces that marker with a fresh stamp, so every release gets its own cache and
@@ -242,9 +250,14 @@ Notes that matter:
 
 ## 6. Release checklist
 
+- [ ] **the build that ships to students was made with `content-private/` present locally.** This is
+      the difference between the real app and a ten-exercise demo, and nothing in the build output
+      says which one you got. In particular: **never wire Cloudflare Pages to the GitHub repository**
+      — its Git integration would build from the *public* tree, which has no bank, and hand students
+      the demo with no error anywhere. Deploy `dist/` from this machine, always.
 - [ ] `npm run build` passes; `npx tsc --noEmit` clean
-- [ ] the build printed `service worker: N assets precached` (that step is what makes the app start
-      offline — without it the main bundle is never cached)
+- [ ] the build printed `service worker: N assets + M icons precached` (that step is what makes the
+      app start offline — without it the main bundle is never cached)
 - [ ] `git status` shows no `content-private/` file staged
 - [ ] version bumped in `package.json` (the service-worker cache name is stamped by the build —
       nothing to edit by hand)
