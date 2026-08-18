@@ -47,13 +47,21 @@ if (Test-Path $storePath) {
 }
 
 # --- locate keytool --------------------------------------------------------
-# Android Studio bundles its own JRE in jbr\. Prefer it: it is the JDK Gradle
-# will use anyway, so the key is made by the same Java that will read it.
+# JAVA_HOME FIRST, and that ordering is the DadGlass lesson, not a preference.
+# Android Studio bundles its own runtime in jbr\ - Java 25 on this machine -
+# while Gradle 8.14 only understands class files up to Java 24 and dies with
+# "Unsupported class file major version 69" before it reads the build script.
+# The machine-level ~/.gradle/gradle.properties already points Gradle at the
+# Temurin 21 LTS JDK for exactly that reason. Making the key with the same JDK
+# that will later read it removes a whole category of question.
+#
+# The format is pinned below anyway (-storetype PKCS12, RSA 2048), so either
+# keytool would produce a usable key; this is about not having to wonder.
 $candidates = @(
+    "$env:JAVA_HOME\bin\keytool.exe",
     "$env:ProgramFiles\Android\Android Studio\jbr\bin\keytool.exe",
     "${env:ProgramFiles(x86)}\Android\Android Studio\jbr\bin\keytool.exe",
-    "$env:LOCALAPPDATA\Programs\Android Studio\jbr\bin\keytool.exe",
-    "$env:JAVA_HOME\bin\keytool.exe"
+    "$env:LOCALAPPDATA\Programs\Android Studio\jbr\bin\keytool.exe"
 )
 $keytool = $null
 foreach ($c in $candidates) {
