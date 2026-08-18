@@ -182,7 +182,10 @@ if (existsSync(PRIV_RECAPS)) {
   const publishable = []
   ;(function walk(d) {
     for (const name of readdirSync(d)) {
-      if (['node_modules', 'dist', 'content-private', '.git'].includes(name)) continue
+      // android/ and ios/ join this list the moment `cap add` creates them: a Gradle build
+      // leaves tens of thousands of files under android/app/build/, many of them .json, and
+      // this walk would then take minutes and report generated files as publishable.
+      if (['node_modules', 'dist', 'content-private', '.git', 'android', 'ios'].includes(name)) continue
       const p = join(d, name)
       if (statSync(p).isDirectory()) walk(p)
       else if (/\.(ts|tsx|json|md|html|css)$/.test(name)) publishable.push(p)

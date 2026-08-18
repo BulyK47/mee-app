@@ -15,3 +15,10 @@
 *.apk binary
 *.keystore binary
 *.jks binary
+
+# Capacitor/Gradle, odata ce android/ exista. gradle-wrapper.jar e binar si `text=auto` il
+# ghiceste de obicei corect — dar „de obicei" nu e o garantie pentru un fisier care, corupt,
+# face buildul sa cada cu o eroare despre clase lipsa. gradlew.bat trebuie sa ramana CRLF:
+# cmd.exe executa linie cu linie si un .bat cu LF se comporta imprevizibil.
+*.jar binary
+*.bat text eol=crlf
