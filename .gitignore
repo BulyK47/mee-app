@@ -35,16 +35,40 @@ Thumbs.db
 desktop.ini
 
 # ─── mobile builds and SIGNING KEYS ────────────────────────────────────────
-# PUBLISHING.md tells you to run `npx cap add android` inside this directory.
-# A release signing key committed to a public repo is unrecoverable: anyone can
-# then publish a package that Play accepts as an update to this app. Added
-# BEFORE the android/ tree exists, so it can never be staged by a `git add .`.
-android/
-ios/
+# The native project itself IS committed, once `npx cap add android` creates it.
+# Ignoring the whole android/ tree — which this file used to do — costs more than
+# it saves: the app label, the launcher icons and every gradle setting live in
+# there, so a fresh clone would rebuild a DIFFERENT app and the published package
+# would not be reproducible from this repository. What must never be committed is
+# the signing material, and that is named explicitly rather than covered by
+# accident. (Same arrangement as the DadGlass repository, which has been through
+# this once already.)
+#
+# Generated and derived output, rewritten by `cap sync` on every build:
+android/app/build/
+android/build/
+android/.gradle/
+android/app/src/main/assets/public/
+android/app/src/main/assets/capacitor.config.json
+android/app/src/main/assets/capacitor.plugins.json
+android/app/src/main/res/xml/config.xml
+android/capacitor-cordova-android-plugins/
+ios/App/build/
+ios/App/Pods/
+ios/App/App/public/
+ios/App/App/capacitor.config.json
+
+# SIGNING MATERIAL — never, under any name. A release key in a public repository
+# is unrecoverable: anyone can then publish a package Play accepts as an update
+# to this app. These lines exist BEFORE the tree does, so nothing can be staged
+# by a careless `git add .`.
 *.keystore
 *.jks
+*.p12
+*.mobileprovision
+key.properties
+keystore.properties
 *.aab
 *.apk
-keystore.properties
 local.properties
 .gradle/

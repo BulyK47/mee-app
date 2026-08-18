@@ -29,6 +29,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "cap:sync": "npm run build && npx cap sync android",
+    "cap:android": "npm run build && npx cap sync android && npx cap open android",
+    "keystore": "powershell -ExecutionPolicy Bypass -File scripts/make-keystore.ps1",
     "preview": "vite preview",
     "check": "node scripts/check-content.mjs && node scripts/check-code.mjs && node scripts/check-invariants.mjs",
     "types": "tsc --noEmit",
