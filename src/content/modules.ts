@@ -5,7 +5,7 @@ import { COURSE } from './course'
 // The 15 MI2025 lecture modules, in course order. This is the SEQUENCE
 // source-of-truth (identity + what you learn + the My-Lab reward), decoupled
 // from content availability: a module with no question file yet shows as
-// "în curând" (coming soon). Content lives in ./worlds/<id>.json.
+// "coming soon". Content lives in ./worlds/<id>.json.
 export interface ModuleDef {
   id: string
   order: number

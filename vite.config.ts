@@ -93,7 +93,7 @@ const precacheServiceWorker = () => ({
     const raw = readFileSync('public/sw.js', 'utf8')
     for (const marker of ['/*__PRECACHE__*/[]', "/*__BUILD__*/'dev'"])
       if (!raw.includes(marker))
-        throw new Error(`public/sw.js: marcajul ${marker} lipsește — precache-ul NU a fost injectat, iar aplicația nu ar porni offline. Nu formata public/sw.js.`)
+        throw new Error(`public/sw.js: marker ${marker} is missing — the precache was NOT injected, and the app would not start offline. Do not reformat public/sw.js.`)
     const sw = raw
       .replace('/*__PRECACHE__*/[]', JSON.stringify(all))
       .replace("/*__BUILD__*/'dev'", JSON.stringify(build))

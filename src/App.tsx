@@ -70,7 +70,7 @@ export default function App() {
   }
 
   function startExam() {
-    // A mock grilă exam: up to 10 random single/multiple-choice questions from any module.
+    // A mock multiple-choice exam: up to 10 random single/multiple-choice questions from any module.
     // EXAM_POOL / EXAM_QUESTIONS live in course.ts so the card that advertises the exam and the
     // picker that builds it cannot drift apart — see the note there.
     const pool: Exercise[] = EXAM_POOL

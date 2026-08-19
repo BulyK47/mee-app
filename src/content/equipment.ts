@@ -21,7 +21,7 @@ export interface Equip {
 }
 
 export const EQUIPMENT: Equip[] = [
-  // ——— Măsurare ———
+  // ——— Measurement ———
   { id: 'analog-vm', bench: 'measurement', cost: 30, icon: 'voltmeter', hex: '#10b981', name: { ro: 'Voltmetru analogic', en: 'Analog voltmeter' }, category: { ro: 'Instrument', en: 'Instrument' }, desc: { ro: 'Indică tensiunea cu ac indicator (pointer) pe cadran.', en: 'Shows voltage with a pointer on a dial.' } },
   { id: 'dmm', bench: 'measurement', cost: 60, icon: 'dmm', hex: '#6366f1', name: { ro: 'Multimetru digital', en: 'Digital multimeter' }, category: { ro: 'Instrument', en: 'Instrument' }, desc: { ro: 'Măsoară tensiune, curent și rezistență cu afișaj digital.', en: 'Measures voltage, current and resistance on a digital display.' } },
   { id: 'scope', bench: 'measurement', cost: 120, icon: 'scope', hex: '#f43f5e', name: { ro: 'Osciloscop', en: 'Oscilloscope' }, category: { ro: 'Instrument', en: 'Instrument' }, desc: { ro: 'Vizualizează forme de undă în timp — amplitudine, perioadă, fază.', en: 'Displays waveforms over time — amplitude, period, phase.' } },
@@ -32,7 +32,7 @@ export const EQUIPMENT: Equip[] = [
   { id: 'current-transformer', bench: 'measurement', cost: 160, icon: 'ct', hex: '#eab308', name: { ro: 'Transformator de curent', en: 'Current transformer' }, category: { ro: 'Transformator', en: 'Transformer' }, desc: { ro: 'Reduce curenți mari la valori măsurabile, izolat de circuit.', en: 'Scales large currents down to measurable values, isolated from the circuit.' } },
   { id: 'voltage-transformer', bench: 'measurement', cost: 160, icon: 'vt', hex: '#f472b6', name: { ro: 'Transformator de tensiune', en: 'Voltage transformer' }, category: { ro: 'Transformator', en: 'Transformer' }, desc: { ro: 'Reduce tensiuni înalte la valori sigure pentru aparate.', en: 'Scales high voltages down to safe values for the instruments.' } },
 
-  // ——— Experimentare ———
+  // ——— Experiment ———
   { id: 'leads', bench: 'experiment', cost: 10, icon: 'leads', hex: '#64748b', name: { ro: 'Set fire și sonde', en: 'Test leads & probes' }, category: { ro: 'Consumabil', en: 'Consumable' }, desc: { ro: 'Conectezi circuitul de măsurat la instrumente.', en: 'Wire the circuit under test to the instruments.' } },
   { id: 'breadboard', bench: 'experiment', cost: 20, icon: 'breadboard', hex: '#0ea5e9', name: { ro: 'Breadboard', en: 'Breadboard' }, category: { ro: 'Bază', en: 'Basics' }, desc: { ro: 'Montezi rapid circuite fără lipituri.', en: 'Quickly build circuits without soldering.' } },
   { id: 'dc-supply', bench: 'experiment', cost: 40, icon: 'dcsupply', hex: '#14b8a6', name: { ro: 'Sursă de tensiune DC', en: 'DC power supply' }, category: { ro: 'Sursă', en: 'Source' }, desc: { ro: 'Alimentează montajul cu tensiune reglabilă.', en: 'Powers the setup with adjustable voltage.' } },
@@ -43,7 +43,7 @@ export const EQUIPMENT: Equip[] = [
   { id: 'rlc-load', bench: 'experiment', cost: 120, icon: 'rlcload', hex: '#a3e635', name: { ro: 'Sarcină RLC', en: 'RLC load' }, category: { ro: 'Sarcină', en: 'Load' }, desc: { ro: 'Sarcină rezistiv-inductiv-capacitivă reglabilă pentru încercări.', en: 'An adjustable resistive–inductive–capacitive load for experiments.' } },
   { id: 'current-shunt', bench: 'experiment', cost: 45, icon: 'shunt', hex: '#94a3b8', name: { ro: 'Șunt de curent', en: 'Current shunt' }, category: { ro: 'Accesoriu', en: 'Accessory' }, desc: { ro: 'Rezistență calibrată pentru a măsura curentul ca o cădere de tensiune.', en: 'A calibrated resistor to measure current as a voltage drop.' } },
 
-  // ——— Cercetare ———
+  // ——— Research ———
   { id: 'daq', bench: 'research', cost: 160, icon: 'daq', hex: '#38D6E3', name: { ro: 'Sistem de achiziție (DAQ)', en: 'Data acquisition (DAQ)' }, category: { ro: 'Avansat', en: 'Advanced' }, desc: { ro: 'Achiziționează și digitizează semnale pentru analiză pe PC.', en: 'Acquires and digitizes signals for PC analysis.' } },
   { id: 'spectrum', bench: 'research', cost: 200, icon: 'spectrum', hex: '#A78BFA', name: { ro: 'Analizor de spectru', en: 'Spectrum analyzer' }, category: { ro: 'Avansat', en: 'Advanced' }, desc: { ro: 'Descompune semnalul în componente de frecvență.', en: 'Breaks the signal into its frequency components.' } },
   { id: 'reference', bench: 'research', cost: 180, icon: 'reference', hex: '#FFB020', name: { ro: 'Etalon de referință', en: 'Reference standard' }, category: { ro: 'Etalon', en: 'Standard' }, desc: { ro: 'Referință de precizie pentru etalonare și trasabilitate.', en: 'Precision reference for calibration and traceability.' } },

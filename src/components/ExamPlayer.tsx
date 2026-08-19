@@ -75,7 +75,7 @@ export default function ExamPlayer({ exercises, onClose, onRetry }: { exercises:
 
   // The exam is the only surface in the app that changes on its own: when the minute runs out the
   // whole question is swapped underneath the student. Measured: zero live regions here, so that was
-  // completely silent — while the lesson announces "Mai încearcă" and its hint, and Settings its
+  // completely silent — while the lesson announces its "Try again" verdict and hint, and Settings its
   // notices. The countdown is signalled only by `low ? 'text-danger'` and a pulsing icon, i.e. by
   // colour and motion, which is the same gap seen from the other side.
   const timedOutRef = useRef(false)
@@ -147,9 +147,9 @@ export default function ExamPlayer({ exercises, onClose, onRetry }: { exercises:
         </div>
         <footer className="border-t border-border px-5 py-3">
           <button onClick={onRetry} className="w-full rounded-xl bg-primary py-3 font-semibold text-primary-fg hover:brightness-110">{lang === 'ro' ? 'Simulare nouă' : 'New exam'}</button>
-          {/* Named for where it goes, not "Închide" — which is already the accessible name of the
+          {/* Named for where it goes, not "Close" — which is already the accessible name of the
               ✕ in the header above. Two distinct controls carrying one name is what a screen-reader
-              user hears as "Închide, button … Închide, button", with nothing to choose between
+              user hears as "Close, button … Close, button", with nothing to choose between
               them; they do the same thing here, so nothing breaks, but the list of controls on the
               one screen a student reads carefully becomes unreadable. Saying the destination also
               answers the question the button actually raises after a result: where do I land. */}
@@ -187,7 +187,7 @@ export default function ExamPlayer({ exercises, onClose, onRetry }: { exercises:
             answer, reworded. (The examples are not quoted here on purpose: a sentence copied out of
             content-private/ into a published source file is the leak check-not-staged.mjs exists to
             stop, and it does — this comment tripped it once already.) The simulation is advertised
-            as "punctate ca la examenul real", so a score inflated by hints is worse than a low one:
+            as "scored like the real exam", so a score inflated by hints is worse than a low one:
             it tells the student they are ready when they are not.
             Only this kind is withheld. Every other kind — scope, meter, bridge, table, charcurve,
             phasor, bode, opamp… — carries the DATA the question is asked about and must stay.

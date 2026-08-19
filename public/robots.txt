@@ -1,9 +1,10 @@
-# Aplicația construită conține banca de întrebări — trebuie să poată nota offline.
-# Nu e un secret criptografic și nu pretinde să fie: cine deschide DevTools o vede.
-# Dar ruta pe care ar găsi-o cineva care nu o caută este căutarea Google, iar asta
-# se închide de aici. Fără indexare, fără fragmente în rezultate, fără cache.
+# The built app contains the question bank — it has to be able to grade offline.
+# That is not a cryptographic secret and does not pretend to be: anyone who opens
+# DevTools sees it. But the route by which someone who is NOT looking for it would
+# find it is a Google search, and that is what gets closed here. No indexing, no
+# snippets in results, no cache.
 #
-# Se aplică deployment-ului public al aplicației (Cloudflare Pages). Depozitul de
-# cod nu conține banca și nu are nevoie de această restricție.
+# This applies to the public deployment of the app (Cloudflare Pages). The code
+# repository does not contain the bank and does not need this restriction.
 User-agent: *
 Disallow: /

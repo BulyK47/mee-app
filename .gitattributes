@@ -1,11 +1,11 @@
-# Depozitul e scris pe Windows, dar va fi clonat și pe Linux și pe macOS. Fără regula asta, git
-# stochează CRLF-urile locale, iar primul colaborator de pe alt sistem vede FIECARE fișier ca
-# modificat integral — un diff imposibil de citit, pe o schimbare care nu există.
+# This repository is written on Windows, but it will be cloned on Linux and macOS too. Without
+# this rule git stores the local CRLFs, and the first collaborator on another system sees EVERY
+# file as modified in full — a diff nobody can read, over a change that does not exist.
 #
-# `text=auto eol=lf` normalizează la LF în depozit și lasă checkout-ul local în pace.
+# `text=auto eol=lf` normalises to LF in the repository and leaves the local checkout alone.
 * text=auto eol=lf
 
-# Binare: niciodată atinse.
+# Binaries: never touched.
 *.png binary
 *.woff binary
 *.woff2 binary
@@ -16,9 +16,9 @@
 *.keystore binary
 *.jks binary
 
-# Capacitor/Gradle, odata ce android/ exista. gradle-wrapper.jar e binar si `text=auto` il
-# ghiceste de obicei corect — dar „de obicei" nu e o garantie pentru un fisier care, corupt,
-# face buildul sa cada cu o eroare despre clase lipsa. gradlew.bat trebuie sa ramana CRLF:
-# cmd.exe executa linie cu linie si un .bat cu LF se comporta imprevizibil.
+# Capacitor/Gradle, once android/ exists. gradle-wrapper.jar is binary and `text=auto` usually
+# guesses that right — but "usually" is not a guarantee for a file that, once corrupted, makes
+# the build fail with an error about missing classes. gradlew.bat has to stay CRLF: cmd.exe
+# runs it line by line and a .bat with LF behaves unpredictably.
 *.jar binary
 *.bat text eol=crlf

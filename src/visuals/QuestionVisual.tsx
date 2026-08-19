@@ -279,7 +279,7 @@ function CircuitAV({ p, lang = 'ro' }: { p: Params; lang?: string }) {
   )
 }
 
-function Shunt() {
+function Shunt({ lang = 'ro' }: { lang?: string }) {
   const y = 104, A = 88, B = 120 // ammeter terminals (left, right)
   return (
     <Frame>
@@ -289,7 +289,7 @@ function Shunt() {
       <path d={`M${B} ${y} H282`} />
       {/* shunt Rs in PARALLEL across the ammeter's two terminals */}
       <path d={`M${A} ${y} V58 H92`} /><rect x="92" y="49" width="24" height="18" rx="2" fill="var(--color-panel)" stroke={ACCENT} /><path d={`M116 58 H${B} V${y}`} />
-      <text x={104} y={43} fill={ACCENT} stroke="none" fontFamily="ui-monospace, monospace" fontSize={12} textAnchor="middle">R<tspan dy={3} fontSize={9}>s</tspan><tspan dy={-3}> (șunt)</tspan></text>
+      <text x={104} y={43} fill={ACCENT} stroke="none" fontFamily="ui-monospace, monospace" fontSize={12} textAnchor="middle">R<tspan dy={3} fontSize={9}>s</tspan><tspan dy={-3}> ({lang === 'en' ? 'shunt' : 'șunt'})</tspan></text>
       {T(50, y - 8, 'I', DIM, 12)}{Tsub(104, y + 32, 'I_A', DIM, 11)}{T(250, y - 8, 'I', DIM, 12)}
     </Frame>
   )
@@ -875,7 +875,7 @@ function Prefixes({ lang }: { lang: string }) {
 }
 
 // ——— operational amplifier configurations (M11) ———
-function OpAmp({ p }: { p: Params }) {
+function OpAmp({ p, lang = 'ro' }: { p: Params; lang?: string }) {
   const cfg = str(p.config, 'inverting')
   const minusTop = cfg !== 'noninverting'
   const NEG: [number, number] = minusTop ? [120, 66] : [120, 114] // − input
@@ -899,7 +899,7 @@ function OpAmp({ p }: { p: Params }) {
       <line x1={236} y1={out[1]} x2={236} y2={150} /><line x1={236} y1={150} x2={100} y2={150} />{box(118, 144, 34, 12, 'R₂')}<line x1={100} y1={150} x2={100} y2={NEG[1]} /><line x1={100} y1={NEG[1]} x2={NEG[0]} y2={NEG[1]} />
     </g>
   } else if (cfg === 'buffer') {
-    formula = 'A = 1  (repetor de tensiune)'
+    formula = lang === 'en' ? 'A = 1  (voltage follower)' : 'A = 1  (repetor de tensiune)'
     wires = <g stroke={WIRE} strokeWidth={1.6}>
       <line x1={34} y1={POS[1]} x2={POS[0]} y2={POS[1]} />{T(26, POS[1] + 4, 'Vᵢ', DIM, 12)}
       <line x1={236} y1={out[1]} x2={236} y2={30} /><line x1={236} y1={30} x2={108} y2={30} /><line x1={108} y1={30} x2={108} y2={NEG[1]} /><line x1={108} y1={NEG[1]} x2={NEG[0]} y2={NEG[1]} />
@@ -1118,9 +1118,10 @@ function WattConn({ p, lang = 'ro' }: { p: Params; lang?: string }) {
 // What each figure shows, for someone who cannot see it. An unlabelled <svg> is the worst of the
 // three options: a screen reader walks into it and reads the loose <text> glyphs inside — "R", "C",
 // "U₁" — in DOM order, which is noise dressed as information. Hiding the figures instead would be
-// wrong, because many prompts say "montajul din figură" and the drawing carries what the words do
-// not. So each one is announced by TYPE. That is a label, not a description: a full description of
-// every schematic is content only Iulian can write, and this at least turns noise into a landmark.
+// wrong, because many prompts say "montajul din figură" ("the circuit in the figure") and the
+// drawing carries what the words do not. So each one is announced by TYPE. That is a label, not a
+// description: a full description of every schematic is content only the course author can write,
+// and this at least turns noise into a landmark.
 const FIGURE_LABEL: Record<string, { ro: string; en: string }> = {
   scope: { ro: 'ecran de osciloscop', en: 'oscilloscope screen' },
   scopepanel: { ro: 'panoul frontal al unui osciloscop', en: 'oscilloscope front panel' },
@@ -1186,7 +1187,7 @@ function QuestionFigure({ visual, prompt, image, alt, lang = 'ro' }: { visual?: 
     )
   }
   if (kind === 'scope') return <Scope p={params} />
-  if (kind === 'shunt') return <Shunt />
+  if (kind === 'shunt') return <Shunt lang={lang} />
   if (kind === 'bridge') return <Bridge p={params} />
   if (kind === 'phasor') return <Phasor p={params} />
   if (kind === 'capnet') return <CapNet />
@@ -1199,7 +1200,7 @@ function QuestionFigure({ visual, prompt, image, alt, lang = 'ro' }: { visual?: 
   if (kind === 'damping') return <Damping p={params} />
   if (kind === 'siunits') return <SIUnits lang={lang} />
   if (kind === 'prefixes') return <Prefixes lang={lang} />
-  if (kind === 'opamp') return <OpAmp p={params} />
+  if (kind === 'opamp') return <OpAmp p={params} lang={lang} />
   if (kind === 'transformer') return <Transformer p={params} lang={lang} />
   if (kind === 'adcstair') return <AdcStair p={params} />
   if (kind === 'bode') return <Bode p={params} />

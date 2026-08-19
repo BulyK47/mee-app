@@ -30,8 +30,8 @@ const CANDIDATES = process.platform === 'darwin'
 
 const CHROME = process.env.CHROME_PATH || CANDIDATES.find(p => p && existsSync(p))
 if (!CHROME) {
-  console.error('Chrome nu a fost găsit. Caut în:\n  ' + CANDIDATES.filter(Boolean).join('\n  ') +
-    '\nSetează CHROME_PATH către binarul Chrome/Chromium și reia.')
+  console.error('Chrome not found. Looked in:\n  ' + CANDIDATES.filter(Boolean).join('\n  ') +
+    '\nSet CHROME_PATH to the Chrome/Chromium binary and run again.')
   process.exit(1)
 }
 const PROFILE = join(tmpdir(), 'mee-shots-profile')
@@ -46,7 +46,7 @@ const chrome = spawn(CHROME, [
 ], { stdio: 'ignore' })
 // a spawn that fails asynchronously (ENOENT, EACCES) otherwise leaves the script hanging on a
 // DevTools port that never opens, with nothing printed
-chrome.on('error', e => { console.error(`Nu am putut porni Chrome (${CHROME}): ${e.message}`); process.exit(1) })
+chrome.on('error', e => { console.error(`Could not start Chrome (${CHROME}): ${e.message}`); process.exit(1) })
 
 const sleep = ms => new Promise(r => setTimeout(r, ms))
 
@@ -132,7 +132,7 @@ true`
 // very dark room.
 //
 // The numbers are kept INTERNALLY COHERENT rather than merely flattering: 26 finished lessons at
-// roughly 44 Volți each, plus daily quests, funds the 985 Volți of instruments and the 250 of the
+// roughly 44 Volts each, plus daily quests, funds the 985 Volts of instruments and the 250 of the
 // template with about a hundred left over. A store image should show a state a student can
 // actually reach, and this one is reachable by the arithmetic the app itself uses.
 const SEED = `

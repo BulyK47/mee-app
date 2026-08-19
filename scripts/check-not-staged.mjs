@@ -34,10 +34,10 @@ let staged
 try {
   staged = git('diff', '--cached', '--name-only').split('\n').map(s => s.trim()).filter(Boolean)
 } catch {
-  console.log('nu e un repository git (sau nu există nimic pregătit) — nimic de verificat')
+  console.log('not a git repository (or nothing is staged) — nothing to check')
   process.exit(0)
 }
-if (!staged.length) { console.log('nimic pregătit pentru commit — nimic de verificat'); process.exit(0) }
+if (!staged.length) { console.log('nothing staged for commit — nothing to check'); process.exit(0) }
 
 // staged CONTENT, not the working copy: what git would actually push
 const blobOf = p => { try { return git('show', ':' + p) } catch { return '' } }
@@ -71,23 +71,23 @@ for (const p of staged) {
 
   // 1. structural: exercise-shaped, or an answer-key export
   const exerciseShaped = /"correct"\s*:/.test(body) && /"prompt"\s*:/.test(body) && /"choices"\s*:|"answer"\s*:/.test(body)
-  if (exerciseShaped) hits.push({ p, why: 'conține exerciții cu chei de răspuns (structură "prompt" + "correct")' })
+  if (exerciseShaped) hits.push({ p, why: 'contains exercises with answer keys (a "prompt" + "correct" structure)' })
   else if (!NAMES_ALLOWED.some(re => re.test(p))
     && (/MEE[- ]intrebari[- ]raspunsuri/i.test(body) || /r[ăa]spuns\s+corect\s*:/i.test(body) && /\n.*\n.*r[ăa]spuns\s+corect/i.test(body)))
-    hits.push({ p, why: 'seamănă cu un export de întrebări cu răspunsuri' })
+    hits.push({ p, why: 'looks like an export of questions with their answers' })
 
   // 2. phrase: any distinctive sentence from the local bank
   else if (phrases.size) {
     const flat = norm(body)
-    for (const ph of phrases) if (flat.includes(ph)) { hits.push({ p, why: `conține o frază din banca privată (${ph.split(' ').length} cuvinte)` }); break }
+    for (const ph of phrases) if (flat.includes(ph)) { hits.push({ p, why: `contains a sentence from the private bank (${ph.split(' ').length} words)` }); break }
   }
 }
 
-console.log(`fișiere pregătite: ${staged.length}${phrases.size ? ` · fraze de referință din bancă: ${phrases.size}` : ' · banca privată nu e prezentă local (doar verificare structurală)'}`)
-if (!hits.length) { console.log('\n✓ nimic din banca de întrebări nu este pregătit pentru commit'); process.exit(0) }
+console.log(`staged files: ${staged.length}${phrases.size ? ` · reference phrases from the bank: ${phrases.size}` : ' · the private bank is not present locally (structural check only)'}`)
+if (!hits.length) { console.log('\n✓ nothing from the question bank is staged for commit'); process.exit(0) }
 
-console.log(`\n✗ OPREȘTE-TE — ${hits.length} fișier(e) pregătite conțin banca:\n`)
+console.log(`\n✗ STOP — ${hits.length} staged file(s) contain the bank:\n`)
 for (const h of hits) console.log(`   ${h.p}\n      ${h.why}`)
-console.log(`\nScoate-le din staging (git restore --staged <fișier>) și adaugă-le în .gitignore.`)
-console.log(`Dacă ajung într-un commit împins, cheile de răspuns intră în istoricul public și nu mai pot fi retrase.`)
+console.log(`\nUnstage them (git restore --staged <file>) and add them to .gitignore.`)
+console.log(`If they reach a pushed commit, the answer keys enter public history and cannot be withdrawn.`)
 process.exit(1)

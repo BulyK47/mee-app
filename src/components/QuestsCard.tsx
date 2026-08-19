@@ -41,12 +41,12 @@ export default function QuestsCard() {
                 </div>
               </div>
               {claimed ? (
-                // was labelled t('questsAllDone') — "Toate revendicate" — on EACH tick, so one
+                // was labelled t('questsAllDone') — "All claimed" — on EACH tick, so one
                 // claimed quest announced itself as all of them being done
                 <span className="shrink-0 text-primary" role="img"
                   aria-label={`${L(d.title, lang)} — ${lang === 'ro' ? 'revendicat' : 'claimed'}`}><Icon name="check" size={18} /></span>
               ) : (
-                // Three of these sit in a list and the aria-label used to be the bare "Revendică"
+                // Three of these sit in a list and the aria-label used to be the bare "Claim"
                 // for all three — identical names, and the label OVERRODE the only thing that told
                 // them apart, the reward printed inside. Name says which quest and how much.
                 // The ::before grows the 50×29 box to a 50×45 target without moving anything;

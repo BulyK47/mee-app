@@ -36,10 +36,10 @@ function usePersisted<T>(key: string, initial: T, sanitise?: (v: T) => T) {
 
   // A second tab is a second copy of this state, and without this the two silently overwrite each
   // other. Every updater is `prev => next` over the state THIS tab read at mount, so the last tab
-  // to act wins with a value computed from a stale base. Measured, with two tabs both at 100 Volți:
+  // to act wins with a value computed from a stale base. Measured, with two tabs both at 100 Volts:
   // tab B bought the 30-Volt voltmeter (→ 70, inventory ["analog-vm"]); tab A then bought the
   // 35-Volt ammeter from its own stale 100 (→ 65, inventory ["analog-am"]). The student had paid
-  // for the voltmeter and was left with neither it nor the 30 Volți — no error, nothing on screen.
+  // for the voltmeter and was left with neither it nor the 30 Volts — no error, nothing on screen.
   // The same shape loses XP, finished lessons, streak days and review cards.
   //
   // `storage` fires only in the OTHER tabs, never the one that wrote, so this cannot loop. Re-read
@@ -62,7 +62,7 @@ function usePersisted<T>(key: string, initial: T, sanitise?: (v: T) => T) {
       // A non-finite number never reaches storage, and never reaches state either. JSON.stringify
       // writes NaN and Infinity as `null`, so the two halves of this hook disagree the moment one
       // appears: the screen shows "NaN XP" from the value in memory, localStorage holds `null`, and
-      // the read guard above then discards that null on the next load — a lifetime of XP and Volți
+      // the read guard above then discards that null on the next load — a lifetime of XP and Volts
       // gone, with no error anywhere. The arithmetic is all `x => x + delta`, so a single undefined
       // delta poisons the counter permanently: NaN + anything stays NaN. Falling back to `prev`
       // keeps the last good value instead, which is the only choice that cannot lose progress.
@@ -150,7 +150,7 @@ interface GameCtx {
 }
 const Ctx = createContext<GameCtx>(null!)
 const MAX_HEARTS = 5
-// One perfect lesson pays about 44 Volți, so a refill costs roughly one lesson of work.
+// One perfect lesson pays about 44 Volts, so a refill costs roughly one lesson of work.
 const HEART_REFILL_COST = 40
 
 export function GameProvider({ children }: { children: ReactNode }) {
@@ -162,7 +162,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   // dereferenced — they are RENDERED. LearnTab prints `best[lesson.id]` as the per-lesson score, so
   // a value that is an object throws React error #31 ("Objects are not valid as a React child")
   // during render, and the whole app drops to the ErrorBoundary on EVERY load — measured, not
-  // theorised. The only way out is "Resetează progresul", which destroys everything the student has.
+  // theorised. The only way out is "Reset progress", which destroys everything the student has.
   // Reachable the same way the others are: the backup file Settings imports is hand-editable JSON,
   // and JSON.stringify writes `null` for any value that ever became non-finite.
   // Repaired rather than dropped: a score is a plain number, so anything that reads as one is kept
@@ -272,7 +272,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   //
   // Checked again whenever the app comes back to the foreground, not only on mount. This is a PWA
   // that students leave open; sitting at zero hearts when midnight passes used to mean staying
-  // locked out until a manual reload, with the wall still saying "inimile revin mâine".
+  // locked out until a manual reload, with the wall still saying "Hearts come back tomorrow".
   //
   // The comparison is against a REF, not the state captured when the listener was registered —
   // that closure would keep seeing the day the app started on and hand out a fresh five on every
@@ -298,7 +298,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
     // Listeners alone only notice a new day when the app is BACKGROUNDED and comes back. A student
     // who runs out of hearts at 23:58 and keeps the app open in front of them fires neither
-    // visibilitychange nor focus, so at 00:10 the wall still reads "inimile revin mâine" while
+    // visibilitychange nor focus, so at 00:10 the wall still reads "Hearts come back tomorrow" while
     // tomorrow has already arrived — the exact complaint the foreground check was added for, in the
     // one case it does not cover. Re-armed on every run, so it follows the clock rather than
     // assuming 24 hours.
@@ -322,10 +322,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // The other way back: pay for a refill with the Volți earned in lessons.
+  // The other way back: pay for a refill with the Volts earned in lessons.
   // Every money action used to check state captured at RENDER time, then apply its change through a
   // functional setState. Three taps inside one tick therefore all saw the same "not yet bought / not
-  // yet claimed" and all three went through: measured 200 → 110 Volți for a 30-Volt instrument, with
+  // yet claimed" and all three went through: measured 200 → 110 Volts for a 30-Volt instrument, with
   // it landing in the inventory three times, and a 20-Volt quest reward paid out three times. On a
   // phone a repeated tap is not an edge case — it is what a student does when the first one seems
   // not to register. These mirrors are updated SYNCHRONOUSLY, before React can re-render, so the
@@ -419,7 +419,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   const buy = (itemId: string, cost: number) => {
     // Owning something means bought OR won by finishing its module — the same distinction that
-    // made the Colecționar badge stay locked on eight instruments. The shop UI already tests both,
+    // made the Collector badge stay locked on eight instruments. The shop UI already tests both,
     // so this is only reachable if a purchase races a module completion, but that is precisely the
     // case where a student would pay for gear they already have.
     if (invRef.current.includes(itemId) || earnedEquip(completedRef.current).has(itemId) || coinsRef.current < cost) return false
@@ -443,7 +443,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       const tracked = mistakes.some(x => sameRef(x, ref))
       if (!card && !tracked) return // fresh exercise answered right — was never a mistake
       // Only a success on or after the due date advances the schedule. Reviewing early is allowed
-      // and costs nothing, but it must not count: "Greșelile mele" falls back to the whole backlog
+      // and costs nothing, but it must not count: "My Mistakes" falls back to the whole backlog
       // when nothing is due, so four passes in one sitting would otherwise take a card from reps 0
       // to GRADUATE_REPS and drop it out of review the same day it was missed — spaced repetition
       // with the spacing removed. Getting it WRONG early still counts, because that is real
@@ -470,7 +470,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const loseHeart = () => setHearts(h => Math.max(0, h - 1))
   const refillHearts = () => setHearts(MAX_HEARTS)
   // Switching Study Mode must NOT hand out hearts: it would be a free, instant refill two taps
-  // away, making both the daily reset and the Volți price pointless. Hearts are simply unused
+  // away, making both the daily reset and the Volt price pointless. Hearts are simply unused
   // while Study Mode is on, and whatever is left is still there when it is turned off again.
   const setStudyMode = (b: boolean) => setStudyModeState(b)
   const setGoal = (n: number) => setGoalState(n)
@@ -483,7 +483,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     // behind made a reset half-done: hearts went back to five while the stamp still said "already
     // refilled today". PREFERENCES are deliberately kept — theme, sound, haptics, language, daily
     // goal, bench, study mode and the onboarding flag survive, because this button says "reset your
-    // PROGRESS", and nobody asking for that wants the app back in English with onboarding replayed.
+    // PROGRESS", and nobody asking for that wants the app back in Romanian with onboarding replayed.
     // PRIVACY.md documents exactly this split; a full wipe is uninstalling or clearing site data.
     setHeartsDay('')
     // The diploma's issue date is progress, not a preference, and it is the one progress key that

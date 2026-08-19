@@ -28,7 +28,7 @@ const jsonIn = dirs => dirs.flatMap(d => readdirSync(d).filter(f => f.endsWith('
 
 const worlds = jsonIn(WORLD_DIRS)
 if (!worlds.length) {
-  console.log('niciun fișier de conținut găsit — nimic de verificat')
+  console.log('no content files found — nothing to check')
   process.exit(0)
 }
 const load = p => JSON.parse(readFileSync(p, 'utf8'))
@@ -52,7 +52,7 @@ const add = (check, id, msg) => fail.push({ check, id, msg })
 // lesson mid-edit gets silence instead of a missing lesson they can explain. This is the telling.
 for (const l of lessons)
   if (!Array.isArray(l.exercises) || l.exercises.length === 0)
-    add('lectii', l._id, 'lecție fără exerciții — nu va fi oferită studentului')
+    add('lessons', l._id, 'lesson with no exercises — it will never be offered to a student')
 
 // ── 1. content JSON must round-trip byte-for-byte ────────────────────────────
 // Any tool that rewrites a world file has to reproduce the on-disk formatting exactly, or every
@@ -60,7 +60,7 @@ for (const l of lessons)
 for (const f of worlds) {
   const raw = readFileSync(f, 'utf8')
   if (JSON.stringify(JSON.parse(raw), null, 1) + '\n' !== raw)
-    add('format-json', base(f), 'nu se reproduce identic cu JSON.stringify(obj, null, 1) + newline')
+    add('format-json', base(f), 'does not reproduce byte-for-byte from JSON.stringify(obj, null, 1) + newline')
 }
 
 // ── 2. answer options must be structurally answerable ────────────────────────
@@ -72,18 +72,18 @@ for (const e of exercises) {
   if (!['mcq', 'multi'].includes(e.type)) continue
   const ids = (e.choices || []).map(c => String(c.id))
   const keys = (Array.isArray(e.correct) ? e.correct : [e.correct]).map(String)
-  for (const k of keys) if (!ids.includes(k)) add('variante', e._id, `cheia indică o variantă inexistentă`)
-  if (new Set(ids).size !== ids.length) add('variante', e._id, 'id de variantă duplicat')
-  if (ids.length < 2) add('variante', e._id, `are ${ids.length} variante`)
-  if (e.type === 'mcq' && keys.length !== 1) add('variante', e._id, `mcq cu ${keys.length} chei`)
-  if (e.type === 'multi' && keys.length < 2) add('variante', e._id, `multi cu ${keys.length} chei`)
-  if (e.type === 'multi' && keys.length === ids.length) add('variante', e._id, 'toate variantele sunt corecte')
+  for (const k of keys) if (!ids.includes(k)) add('choices', e._id, `the key points at an option that does not exist`)
+  if (new Set(ids).size !== ids.length) add('choices', e._id, 'duplicate option id')
+  if (ids.length < 2) add('choices', e._id, `has ${ids.length} option(s)`)
+  if (e.type === 'mcq' && keys.length !== 1) add('choices', e._id, `mcq with ${keys.length} keys`)
+  if (e.type === 'multi' && keys.length < 2) add('choices', e._id, `multi with ${keys.length} keys`)
+  if (e.type === 'multi' && keys.length === ids.length) add('choices', e._id, 'every option is correct')
   for (const lang of ['ro', 'en']) {
     const seen = new Set()
     for (const c of e.choices || []) {
       const lab = c.label?.[lang]
-      if (!lab || !String(lab).trim()) { add('variante', e._id, `varianta ${c.id} fără text [${lang}]`); continue }
-      if (seen.has(norm(lab))) add('variante', e._id, `două variante cu text identic [${lang}]`)
+      if (!lab || !String(lab).trim()) { add('choices', e._id, `option ${c.id} has no text [${lang}]`); continue }
+      if (seen.has(norm(lab))) add('choices', e._id, `two options with identical text [${lang}]`)
       seen.add(norm(lab))
     }
   }
@@ -104,7 +104,7 @@ for (const e of exercises) {
   for (const lang of ['ro', 'en']) {
     const txt = e.explanation[lang]
     if (txt && !numsIn(txt).some(v => near(e.answer, v)))
-      add('explicatie', e._id, `explicația [${lang}] nu ajunge la valoarea cheii`)
+      add('explanation', e._id, `the explanation [${lang}] never reaches the keyed value`)
   }
 }
 
@@ -118,7 +118,7 @@ for (const e of exercises) {
 for (const e of exercises) {
   if (e.type !== 'numeric' || e.answer == null || Math.abs(e.answer) < 1000) continue
   if (!/separator de mii/i.test(e.prompt?.ro || '') || !/thousands separator/i.test(e.prompt?.en || ''))
-    add('separator', e._id, `răspuns ${e.answer} ≥ 1000 dar enunțul nu spune "fără separator de mii" în ambele limbi`)
+    add('separator', e._id, `answer ${e.answer} ≥ 1000 but the prompt does not say "fără separator de mii" / "thousands separator" in both languages`)
 }
 
 // ── 3c. no answer may need three decimals ────────────────────────────────────
@@ -129,7 +129,7 @@ for (const e of exercises) {
 for (const e of exercises) {
   if (e.type !== 'numeric' || e.answer == null) continue
   const dec = (String(e.answer).split('.')[1] || '').length
-  if (dec >= 3) add('separator', e._id, `răspunsul ${e.answer} are ${dec} zecimale — vezi comentariul, două e maximul pe care îl suportă intrarea`)
+  if (dec >= 3) add('separator', e._id, `the answer ${e.answer} has ${dec} decimals — see the comment above, two is the most the input can carry`)
 }
 
 // ── 3d. a recap file is named after the module it holds, and holds it alone ──
@@ -143,16 +143,16 @@ for (const e of exercises) {
   for (const p of jsonIn(RECAP_DIRS)) {
     const f = base(p)
     const r = load(p)
-    if (!r.worldId) { add('recap', f, 'fără worldId — nu va fi încărcată niciodată'); continue }
+    if (!r.worldId) { add('recap', f, 'no worldId — it will never be loaded'); continue }
     // `M01.demo.json` is the committed placeholder for `M01`; the suffix is how course.ts knows to
     // drop it once the real module exists, so it is a legal name, not a mismatch.
-    if (f.replace(/(\.demo)?\.json$/, '') !== r.worldId) add('recap', f, `numele fișierului nu e ${r.worldId}.json`)
+    if (f.replace(/(\.demo)?\.json$/, '') !== r.worldId) add('recap', f, `the filename is not ${r.worldId}.json`)
     // Two files for one module only collide if they are BOTH real; a demo and its replacement is
     // exactly the arrangement this project ships.
     if (!/\.demo\.json$/.test(f)) (byWorld[r.worldId] = byWorld[r.worldId] || []).push(f)
   }
   for (const [world, fs_] of Object.entries(byWorld))
-    if (fs_.length > 1) add('recap', world, `${fs_.length} fișiere pentru același modul (${fs_.join(', ')}) — unul îl ascunde pe celălalt`)
+    if (fs_.length > 1) add('recap', world, `${fs_.length} files for the same module (${fs_.join(', ')}) — one silently hides the other`)
 }
 
 // ── 3e. no bank text may appear in a publishable file ────────────────────────
@@ -194,7 +194,7 @@ if (existsSync(PRIV_RECAPS)) {
   for (const p of publishable) {
     const body = flat(strip(readFileSync(p, 'utf8')))
     for (const ph of bankPhrases)
-      if (body.includes(ph)) { add('bank', p.slice(ROOT.length + 1).replace(/\\/g, '/'), `conține ${ph.split(' ').length} cuvinte identice cu banca privată`); break }
+      if (body.includes(ph)) { add('bank', p.slice(ROOT.length + 1).replace(/\\/g, '/'), `contains ${ph.split(' ').length} words identical to the private bank`); break }
   }
 }
 
@@ -226,8 +226,8 @@ for (const e of exercises) walkStrings({ p: e.prompt, h: e.hint, x: e.explanatio
 for (const p of jsonIn(RECAP_DIRS))
   walkStrings(load(p), 'recap:' + base(p).replace(/(\.demo)?\.json$/, ''))
 for (const { where, s } of visibleStrings) {
-  for (const h of scanScripts(s)) if (!h.closed) add('formule', where, `"${h.ch}{" neînchis — înghite ${h.len} caractere din frază`)
-  if ((s.match(/\{/g) || []).length !== (s.match(/\}/g) || []).length) add('formule', where, 'acolade dezechilibrate')
+  for (const h of scanScripts(s)) if (!h.closed) add('formulas', where, `"${h.ch}{" unclosed — it swallows ${h.len} characters of the sentence`)
+  if ((s.match(/\{/g) || []).length !== (s.match(/\}/g) || []).length) add('formulas', where, 'unbalanced braces')
 }
 
 // ── 5. every figure kind must have a renderer ────────────────────────────────
@@ -235,7 +235,7 @@ for (const { where, s } of visibleStrings) {
 const visualSrc = readFileSync(join(SRC, 'visuals/QuestionVisual.tsx'), 'utf8')
 const handled = new Set([...visualSrc.matchAll(/kind === '([a-z-]+)'/g)].map(m => m[1]))
 for (const e of exercises) if (e.visual?.kind && !handled.has(e.visual.kind))
-  add('figuri', e._id, `kind "${e.visual.kind}" nu are randor`)
+  add('figures', e._id, `kind "${e.visual.kind}" has no renderer`)
 
 // ── 6. oscilloscope scale constants stay in one form ─────────────────────────
 // These sit in the same spot on every scope figure; "2 V" without "/div" reads as a voltage rather
@@ -244,8 +244,8 @@ for (const e of exercises) {
   const p = e.visual?.params
   for (const k of ['vdiv', 'tdiv']) {
     const v = p?.[k]
-    if (typeof v === 'string' && !/\/div$/.test(v.trim())) add('figuri', e._id, `${k} = "${v}" nu se termină în "/div"`)
-    if (typeof v === 'string' && /\d\.\d/.test(v)) add('figuri', e._id, `${k} = "${v}" folosește punct zecimal (eticheta e comună ambelor limbi)`)
+    if (typeof v === 'string' && !/\/div$/.test(v.trim())) add('figures', e._id, `${k} = "${v}" does not end in "/div"`)
+    if (typeof v === 'string' && /\d\.\d/.test(v)) add('figures', e._id, `${k} = "${v}" uses a decimal point (the label is shared by both languages)`)
   }
 }
 
@@ -264,7 +264,7 @@ stripComments(visualSrc).split('\n').forEach((line, i) => {
   if (/lang === '(en|ro)'|\ben \?|\bro \?/.test(line)) return
   for (const m of line.matchAll(/'([^'\\]{2,120})'/g)) {
     const words = (m[1].match(/[a-zăâîșț]{3,}/g) || []).filter(w => !NEUTRAL.test(w))
-    if (words.length >= 2) add('limba', `QuestionVisual.tsx:${i + 1}`, `text desenat fără comutare de limbă: "${m[1].slice(0, 48)}"`)
+    if (words.length >= 2) add('language', `QuestionVisual.tsx:${i + 1}`, `drawn text with no language switch: "${m[1].slice(0, 48)}"`)
   }
 })
 
@@ -280,14 +280,14 @@ for (const m of storeSrc.matchAll(/const \[(\w+), (\w+)\] = usePersisted[^(]*\(\
   if (PREFS.has(key)) continue
   const names = [setter, setter.replace(/State$/, ''), 'set' + state[0].toUpperCase() + state.slice(1)]
   if (!names.some(n => new RegExp('\\b' + n + '\\s*\\(').test(resetBody)))
-    add('reset', key, 'cheie de progres pe care reset() nu o șterge')
+    add('reset', key, 'progress key that reset() never clears')
 }
 
 // ── report ───────────────────────────────────────────────────────────────────
 const byCheck = {}
 for (const f of fail) (byCheck[f.check] = byCheck[f.check] || []).push(f)
-const ORDER = ['lectii', 'format-json', 'variante', 'explicatie', 'separator', 'recap', 'bank', 'formule', 'figuri', 'limba', 'reset']
-console.log(`invariante: ${exercises.length} exerciții în ${lessons.length} lecții, ${visibleStrings.length} șiruri vizibile, ${worlds.length} module\n`)
+const ORDER = ['lessons', 'format-json', 'choices', 'explanation', 'separator', 'recap', 'bank', 'formulas', 'figures', 'language', 'reset']
+console.log(`invariants: ${exercises.length} exercises in ${lessons.length} lessons, ${visibleStrings.length} visible strings, ${worlds.length} modules\n`)
 for (const c of ORDER) {
   const items = byCheck[c] || []
   console.log(`== ${c}: ${items.length} ==`)

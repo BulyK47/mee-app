@@ -20,10 +20,11 @@ const STR = {
     dailyGoal: 'Țintă zilnică', resetProgress: 'Resetează progresul', resetConfirm: 'Sigur ștergi tot progresul?',
     stats: 'Statistici', lessonsDone: 'Lecții terminate', courseComplete: 'Curs parcurs',
     // `close` names the ✕ buttons. `cancel` is the SECOND button of a confirmation, and it needed
-    // its own word: the two exit confirmations ask "Închizi lecția?" / "Închizi simularea?", and
-    // labelling the button that keeps you IN with the same verb that takes you OUT reads as
-    // agreement. The affirmative is "Ieși", so a student who wants to stay and presses "Închide"
-    // loses the run — the one misclick in the app that destroys work.
+    // its own word: the two exit confirmations ask "Închizi lecția?" / "Închizi simularea?"
+    // ("Close the lesson?" / "Close the simulation?"), and labelling the button that keeps you IN
+    // with the same verb that takes you OUT reads as agreement. The affirmative is "Ieși" (Exit),
+    // so a student who wants to stay and presses "Închide" (Close) loses the run — the one misclick
+    // in the app that destroys work.
     shareScore: 'Distribuie scorul', close: 'Închide', cancel: 'Anulează', mistakes: 'Greșelile mele',
     practiceMistakes: 'Exersează greșelile',
     reviewDone: 'Recapitulare terminată!', level: 'nivel', streakDays: 'zile',
