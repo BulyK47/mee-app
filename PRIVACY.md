@@ -1,6 +1,6 @@
 # Privacy Policy — MEE (Măsurări Electrice și Electronice)
 
-_Last updated: 17 August 2026_
+_Last updated: 19 August 2026_
 
 ## 🇬🇧 English
 
