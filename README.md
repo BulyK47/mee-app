@@ -182,8 +182,8 @@ use:
 @software{voicila_seritan_enache_mee_2026,
   author  = {Voicila, Iulian-Teodor and Seritan, George-Calin
              and Enache, Bogdan-Adrian},
-  title   = {{MEE — a Duolingo-style bilingual learning app for
-             Electrical and Electronic Measurements}},
+  title   = {{MEE — a bilingual gamified learning application for Electrical
+             and Electronic Measurements, with app-generated instrument figures}},
   year    = {2026},
   url     = {https://github.com/BulyK47/mee-app},
   license = {Apache-2.0}

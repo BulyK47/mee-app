@@ -1,5 +1,6 @@
 cff-version: 1.2.0
-title: "MEE — a Duolingo-style bilingual learning app for Electrical and Electronic Measurements"
+title: "MEE — a bilingual gamified learning application for Electrical and Electronic
+  Measurements, with app-generated instrument figures"
 message: "If you use this software or its instructional design in teaching or research, please cite it as below."
 type: software
 authors:
