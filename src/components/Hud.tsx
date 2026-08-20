@@ -30,7 +30,7 @@ export default function Hud({ onSettings, onMemorator }: { onSettings: () => voi
           gap at 8 px, and an extreme one (Lv 31, ❄3, 12 480 XP, 3 250 Volți) takes two. Nothing is
           ever clipped at any width or any profile size — the header grows by a line rather than
           hiding a number, which is the failure mode you want on the bar that shows the hearts. */}
-      <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2 gap-y-1 font-mono text-sm font-medium tabular-nums">
+      <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-1.5 gap-y-1 font-mono text-sm font-medium tabular-nums">
         <span className="rounded-full border border-rank/60 bg-surface-2 px-2 py-0.5 text-xs text-rank"
           role="img" aria-label={ro ? `Nivelul ${lvl}` : `Level ${lvl}`}>Lv {lvl}</span>
         {/* Hearts are one icon and a number, not five icons. Five cost 73 px of a 193 px row and
