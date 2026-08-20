@@ -39,8 +39,13 @@ It inspects what is **staged**, so it only helps if it runs. Wire it up once —
 so a clone does not inherit it:
 
 ```bash
-printf '#!/bin/sh\nexec npm run --silent prepush\n' > .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+printf '#!/bin/sh\nexec node scripts/check-not-staged.mjs\n' > .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
 ```
+
+It calls `node` rather than `npm run prepush` on purpose. On Windows `npm` is a bash script,
+and the Git bundled with GitHub Desktop ships `sh` but no `bash` — an npm-based hook there aborts
+every commit with `/usr/bin/env: 'bash': No such file or directory`. `node` needs no shell, so the
+hook behaves the same from Git Bash, PowerShell and Desktop.
 
 Requires **Node 22.18+** — see the note in the README about why the floor is higher than the build
 itself needs.
