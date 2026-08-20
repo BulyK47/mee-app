@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 title: "MEE — a bilingual gamified learning application for Electrical and Electronic
   Measurements, with app-generated instrument figures"
-message: "If you use this software or its instructional design in teaching or research, please cite it as below."
+message: "If you use this software or its instructional design in teaching or research, please cite this record."
 type: software
 authors:
   - given-names: Iulian-Teodor
@@ -34,11 +34,16 @@ keywords:
   - progressive web app
   - spaced repetition
   - bilingual learning
-# Two entries because the three instructional content files are dual-licensed —
-# see NOTICE. Everything else is Apache-2.0 only. Zenodo reads this file, and a
-# DOI record cannot be corrected afterwards, so the pair belongs here.
-license:
-  - Apache-2.0
-  - CC-BY-4.0
+# ONE licence, deliberately, even though three instructional content files are
+# dual-licensed under CC BY 4.0 as well — that is documented in NOTICE and in
+# README, both of which travel inside the Zenodo archive.
+#
+# A list here is valid CFF 1.2.0 and passes every offline validator, but Zenodo
+# implements only a subset: its schema declares license as a single string, so
+# an array raises a validation error, the GitHub release is marked FAILED and
+# no DOI is issued at all. The error it shows is "Citation metadata load
+# failed", which names nothing. See zenodo/zenodo#2515 — open since 2023.
+# Recovery would mean deleting the release and the tag and starting again.
+license: Apache-2.0
 version: 1.0.0
 date-released: "2026-08-19"

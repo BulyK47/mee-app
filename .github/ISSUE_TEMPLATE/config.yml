@@ -10,7 +10,7 @@ contact_links:
     about: "Pe e-mail, niciodată aici. Scrie modulul, lecția și ce anume nu se potrivește. · By e-mail, never as an issue."
   - name: "Feedback despre aplicație (chestionar) · Feedback questionnaire"
     url: https://forms.cloud.microsoft/e/Xk9dLz5iTN
-    about: "Anonim, 3 minute. Pentru „mi-a plăcut / nu mi-a plăcut / ce ar ajuta”. · Anonymous, 3 minutes."
+    about: "Doar pentru studenții UNSTPB — cere autentificare instituțională. · UNSTPB students only; requires an institutional sign-in."
   - name: "Vulnerabilitate de securitate · Security vulnerability"
     url: https://github.com/BulyK47/mee-app/security/advisories/new
     about: "Raport privat, nu issue public. Vezi SECURITY.md. · Private report, see SECURITY.md."

@@ -41,8 +41,8 @@ desktop.ini
 # there, so a fresh clone would rebuild a DIFFERENT app and the published package
 # would not be reproducible from this repository. What must never be committed is
 # the signing material, and that is named explicitly rather than covered by
-# accident. (Same arrangement as the DadGlass repository, which has been through
-# this once already.)
+# accident. (The same arrangement as a sibling app that has already been
+# through a store submission.)
 #
 # Generated and derived output, rewritten by `cap sync` on every build:
 android/app/build/

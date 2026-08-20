@@ -62,8 +62,8 @@ for us to delete on your behalf.
 **Changes.** If this policy ever changes, the new version will be published at this address with a
 new date.
 
-**Contact.** Questions about this policy: open an issue in the project repository, or write to
-<dmaecseb108@gmail.com>. Settings has a *Send feedback* button offering the same address; if you
+**Contact.** Questions about this policy: write to <dmaecseb108@gmail.com>. Settings has a
+*Send feedback* button offering the same address; if you
 write from there, the draft includes your level, experience points, course progress and streak so
 that the report can be understood — you can delete that line before sending.
 
@@ -131,8 +131,7 @@ numele tău.
 **Modificări.** Dacă politica se schimbă, noua versiune va fi publicată la această adresă, cu o dată
 nouă.
 
-**Contact.** Întrebări despre această politică: deschide un „issue" în depozitul proiectului sau
-scrie la <dmaecseb108@gmail.com>. În Setări există butonul *Trimite feedback*, care oferă aceeași
+**Contact.** Întrebări despre această politică: scrie la <dmaecseb108@gmail.com>. În Setări există butonul *Trimite feedback*, care oferă aceeași
 adresă; dacă scrii de acolo, mesajul pregătit include nivelul tău, punctele de experiență, procentul
 din curs parcurs și seria zilnică, ca raportul să poată fi înțeles — poți șterge acea linie înainte
 de trimitere.

@@ -11,6 +11,15 @@ exercise's own data.
 > answer keys stay private. A demo module ships with the source so the app builds and runs after a
 > plain `git clone`. See [Content](#content).
 
+<p align="center">
+  <img src="docs/map.png" alt="The course map: modules unlock in sequence, each rewarding a lab instrument" width="270">
+  &nbsp;&nbsp;
+  <img src="docs/lab.png" alt="My Lab: instruments bought with points earned by finishing lessons" width="270">
+</p>
+
+<p align="center"><sub>The course map, and the virtual bench it fills as you progress.<br>
+Exercise screens are not shown here: they would put graded items in a public page.</sub></p>
+
 ---
 
 ## 🇷🇴 Pe scurt
@@ -43,7 +52,7 @@ un modul demonstrativ, ca aplicația să poată fi rulată de oricine.
 |---|---|
 | **15 modules · 49 lessons** | the full MI2025 course sequence, each module unlocking a lab instrument |
 | **4 exercise types** | single choice, multiple choice, true/false, numeric with tolerance |
-| **25 parametric figure types** | rendered as SVG from the exercise parameters — no bitmaps |
+| **33 figure renderers** | drawn as SVG from the exercise parameters — no bitmaps; 25 are exercised by the current course |
 | **Native MathML** | real fractions, radicals, sub/superscripts; identical in both languages |
 | **Bilingual** | every prompt, choice, hint and explanation exists in Romanian and English |
 | **Spaced repetition** | wrong answers return on an expanding schedule |
@@ -194,6 +203,7 @@ use:
 
 The app collects nothing and sends nothing — [PRIVACY.md](PRIVACY.md) states exactly what is stored
 on the device, in Romanian and English. Contributing: [CONTRIBUTING.md](CONTRIBUTING.md).
+Reporting a security problem: [SECURITY.md](SECURITY.md) — privately, never as an issue.
 
 | What | License |
 |---|---|

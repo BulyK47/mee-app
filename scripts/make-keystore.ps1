@@ -1,6 +1,6 @@
 # Creates the Google Play upload key for MEE - run this ONCE.
 #
-# Adapted from the DadGlass script, which has already been through a real Play
+# Adapted from a sibling project that has already been through a real Play
 # submission. Every warning in here is one that cost somebody an afternoon.
 #
 # KEEP THIS FILE PURE ASCII. Windows PowerShell 5.1 reads a .ps1 with no BOM
@@ -47,13 +47,13 @@ if (Test-Path $storePath) {
 }
 
 # --- locate keytool --------------------------------------------------------
-# JAVA_HOME FIRST, and that ordering is the DadGlass lesson, not a preference.
-# Android Studio bundles its own runtime in jbr\ - Java 25 on this machine -
-# while Gradle 8.14 only understands class files up to Java 24 and dies with
-# "Unsupported class file major version 69" before it reads the build script.
-# The machine-level ~/.gradle/gradle.properties already points Gradle at the
-# Temurin 21 LTS JDK for exactly that reason. Making the key with the same JDK
-# that will later read it removes a whole category of question.
+# JAVA_HOME FIRST, and that ordering is a lesson learned, not a preference.
+# Android Studio bundles its own runtime in jbr\ - Java 25 at the time of
+# writing - while Gradle 8.14 understands class files only up to Java 24, and dies
+# with "Unsupported class file major version 69" before reading the build script.
+# Point Gradle at a Temurin 21 LTS JDK in ~/.gradle/gradle.properties for that
+# reason. Making the key with the same JDK that will later read it removes a
+# whole category of question.
 #
 # The format is pinned below anyway (-storetype PKCS12, RSA 2048), so either
 # keytool would produce a usable key; this is about not having to wonder.

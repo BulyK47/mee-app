@@ -1,5 +1,9 @@
 # Publishing MEE
 
+> **Maintainer runbook.** These are the steps for publishing this particular app to the
+> stores and to a web address. Nothing here is needed to build, run or contribute to the
+> project — for that, see [README.md](README.md) and [CONTRIBUTING.md](CONTRIBUTING.md).
+
 Three destinations, three different jobs:
 
 | Destination | What goes there | Cost |
@@ -128,7 +132,7 @@ Asset*, use `app-512.png` as the foreground and `#0A0E12` as the background).
    - **at least 2 phone screenshots** (16:9 or 9:16, min 320 px) — take them on a real phone or in
      Chrome DevTools device mode;
    - privacy policy **URL** — link the file on github.com directly
-     (`https://github.com/<user>/<repo>/blob/main/PRIVACY.md`). Play accepts it, and it keeps the
+     (`https://github.com/BulyK47/mee-app/blob/main/PRIVACY.md`). Play accepts it, and it keeps the
      store listing independent of wherever the web build happens to live;
    - content rating questionnaire, target audience, data-safety form (answer: *no data collected*).
 4. **Personal developer accounts must run a closed test with at least 12 testers for 14
