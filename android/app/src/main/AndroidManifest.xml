@@ -32,4 +32,10 @@
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- The Settings screen has a Vibratii switch, on by default, and the lesson code calls
+         navigator.vibrate on a right answer, a wrong one and a purchase. Without this permission
+         the calls are silently ignored: the switch promises feedback the package cannot deliver.
+         VIBRATE is a normal permission - no runtime prompt, nothing shown at install. -->
+    <uses-permission android:name="android.permission.VIBRATE" />
 </manifest>
