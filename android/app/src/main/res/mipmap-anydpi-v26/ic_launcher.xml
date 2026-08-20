@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background>
+        <!-- No inset on the background: the flat colour must reach the edge of the 108dp layer.
+             An inset one stops exactly at the 72dp mask, and any launcher mask that anti-aliases
+             past that boundary shows a transparent fringe. The foreground keeps its inset, which
+             is what places the artwork inside the safe zone. -->
+        <color android:color="#0A0E12" />
+    </background>
+    <foreground>
+        <inset android:drawable="@mipmap/ic_launcher_foreground" android:inset="16.7%" />
+    </foreground>
+</adaptive-icon>

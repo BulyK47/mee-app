@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">MEE</string>
+    <string name="title_activity_main">MEE</string>
+    <string name="package_name">ro.mee.laborator</string>
+    <string name="custom_url_scheme">ro.mee.laborator</string>
+</resources>

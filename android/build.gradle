@@ -1,0 +1,39 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.13.0'
+        classpath 'com.google.gms:google-services:4.4.4'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+apply from: "variables.gradle"
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    // Build output must not live inside the OneDrive-synced project folder. OneDrive turns
+    // intermediates into cloud placeholders while Gradle is still writing them, and the build
+    // dies with "Cannot snapshot <file>: not a regular file". Marking the folder "always keep
+    // on this device" does not help — this tree is already pinned and it happened anyway.
+    // Set meeBuildDir in ~/.gradle/gradle.properties (machine-level, never committed). Without
+    // that property nothing changes, so a clone on Linux or CI builds normally.
+    if (project.hasProperty("meeBuildDir")) {
+        layout.buildDirectory = new File(meeBuildDir as String, project.name)
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
