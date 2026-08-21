@@ -16,7 +16,17 @@
     </style>
 
 
+    <!-- The launch screen is a flat colour, not an image.
+         `npx capacitor-assets generate` writes 26 splash PNGs - one per density and orientation,
+         day and night - which came to 4.7 MB on disk and 1.8 MB inside the bundle, a third of the
+         download, for something on screen for a fraction of a second. Worse, the day variant it
+         generates has a WHITE background, so a dark app flashed white on every cold start unless
+         the phone happened to be in system dark mode.
+         From Android 12 the system draws the launch screen itself, using the launcher icon over
+         `windowSplashScreenBackground` - the PNGs were never consulted there anyway. Older devices
+         fall back to `android:background`, and get the same flat colour without the icon. -->
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
-        <item name="android:background">@drawable/splash</item>
+        <item name="windowSplashScreenBackground">@color/splashBackground</item>
+        <item name="android:background">@color/splashBackground</item>
     </style>
 </resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Same value as `background_color` in the web manifest and as the padded strips in
+         MainActivity, so the launch screen, the system bars and the app itself are one colour. -->
+    <color name="splashBackground">#0A0E12</color>
+</resources>
