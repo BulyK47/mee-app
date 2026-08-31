@@ -89,10 +89,52 @@ await send('Page.enable'); await send('Runtime.enable')
 await send('Emulation.setDeviceMetricsOverride', { width: 412, height: 915, deviceScaleFactor: 3, mobile: true })
 
 const goto = async (url) => { await send('Page.navigate', { url }); await sleep(2200) }
+
+// Play has no caption field: a caption has to be part of the pixels. It is injected INTO the page
+// rather than composited afterwards, so it is set in the app's own faces and its own tokens - a
+// caption typeset in whatever font the image library happens to find looks like a sticker.
+//
+// Only the first three carry one, and only where the picture cannot speak for itself: that the
+// dial and the trace are DRAWN, from the exercise's own data, is the claim the whole listing rests
+// on and the one thing a screenshot of a dial cannot say by itself. The recap and the formula sheet
+// are self-evident and stay clean.
+const LEGENDE = {
+  '1-harta': '15 module, 49 de lecții, în ordinea de la curs',
+  '2-cadran': 'Cadranul e desenat din datele exercițiului, nu scanat',
+  '3-osciloscop': 'Ecran de osciloscop, desenat: 2 V/div, 500 µs/div',
+}
+const legendaOn = text => evaluate(`(() => {
+  const H = 78;
+  // The band is FIXED, and the overlays are pushed down with it. Shrinking #root alone was not
+  // enough and the first run proved it: a lesson is a "fixed inset-0" layer, positioned against the
+  // viewport rather than against #root, so it sailed straight over the caption - which is exactly
+  // the two screens the caption exists for.
+  const st = document.createElement('style');
+  st.id = '__capstyle';
+  st.textContent = '#__cap{position:fixed;top:0;left:0;right:0;height:' + H + 'px;z-index:2147483647;' +
+    'display:flex;align-items:center;justify-content:center;text-align:center;padding:0 26px;' +
+    'box-sizing:border-box;font-family:Chakra Petch,Inter,sans-serif;font-weight:600;font-size:16px;' +
+    'line-height:1.25;letter-spacing:-.01em;text-wrap:balance;color:var(--color-fg);' +
+    'background:var(--color-bg);border-bottom:1px solid var(--color-border)}' +
+    '#root{height:calc(100% - ' + H + 'px);margin-top:' + H + 'px}' +
+    '[role=dialog],[role=alertdialog]{top:' + H + 'px !important}';
+  document.head.appendChild(st);
+  const el = document.createElement('div');
+  el.id = '__cap';
+  el.textContent = ${JSON.stringify(text)};
+  document.body.insertAdjacentElement('afterbegin', el);
+  return true })()`)
+const legendaOff = () => evaluate(`(() => {
+  for (const id of ['__cap','__capstyle']) { const e=document.getElementById(id); if(e) e.remove() }
+  return true })()`)
+
 const shot = async (name) => {
+  const legenda = LEGENDE[name]
+  if (legenda) { await legendaOn(legenda); await sleep(500) }
   const { data } = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false })
   writeFileSync(`${OUT}/${name}.png`, Buffer.from(data, 'base64'))
-  console.log('  ▸', name + '.png')
+  if (legenda) await legendaOff()
+  console.log('  ▸', name + '.png' + (legenda ? '   legendă: ' + legenda : ''))
 }
 
 // helper injected into the page: real pointer events, because the lesson nodes ignore .click()
