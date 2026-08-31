@@ -11,6 +11,7 @@ import { useDismiss } from '../ui/useDismiss'
 import { ConfirmDialog } from '../ui/Confirm'
 import { keysLocal, readLocal, writeLocal, removeLocal } from '../storage'
 import { copyText, isAbort } from '../ui/clipboard'
+import { saveTextFile } from '../ui/saveFile'
 
 // Paste a web form URL here to collect structured feedback; empty = opens the student's email app.
 const FEEDBACK_URL = ''
@@ -65,16 +66,21 @@ export default function Settings({ onClose, onDiploma }: { onClose: () => void; 
   // shouldOverrideUrlLoading) and by any desktop without a registered mail client — the button
   // just looked broken. Open an in-app sheet instead: it shows the address, can copy it, and still
   // offers the mail link for the devices where that works.
-  const feedbackStats = () => `Lv ${levelInfo(xp).level} · ${xp} XP · ${pct}% · streak ${streakLive}`
+  // The build goes in the same line as the progress numbers, so a tester's e-mail says which
+  // version it is about without anybody having to ask. Over 14 days and two updates, a report
+  // that cannot be pinned to a build is a report that has to be reproduced from scratch.
+  const feedbackStats = () => `MEE ${__APP_BUILD__} · Lv ${levelInfo(xp).level} · ${xp} XP · ${pct}% · streak ${streakLive}`
   function feedback() {
     if (FEEDBACK_URL) { window.open(FEEDBACK_URL, '_blank', 'noopener'); return }
     setShowFeedback(true)
   }
 
-  // A phone is the main target, and <a download> is the weakest path there: an Android WebView
-  // drops blob downloads unless the host installs a DownloadListener, and iOS Safari largely
-  // ignores the download attribute. Offer the file to the system share sheet first — that lands
-  // in Files, Drive or a message — and keep the anchor as the desktop fallback.
+  // The whole point of this button is that there is no account to restore from: the file it
+  // produces is the student's only copy of the course. It used to end in `say('Fișier de backup
+  // generat.')` on EVERY path, including the one that does nothing - see the note in ui/saveFile.ts
+  // - which is what a phone test found: a green message and no file anywhere. The notice now says
+  // what actually happened, and names the file or the folder, because "generated" without a
+  // location is not something a student can act on.
   async function exportProgress() {
     const data: Record<string, string> = {}
     for (const k of keysLocal('meem_')) data[k] = readLocal(k) ?? ''
@@ -83,28 +89,24 @@ export default function Settings({ onClose, onDiploma }: { onClose: () => void; 
     // would be stamped with YESTERDAY's date and sort behind the one it replaces. The whole rest of
     // the app already dates by local day (streak, hearts refill, quests) — the file has to agree.
     const name = `mee-progres-${localToday()}.json`
-    const blob = new Blob([json], { type: 'application/json' })
+    const ro = lang === 'ro'
 
-    try {
-      const file = new File([blob], name, { type: 'application/json' })
-      if (navigator.canShare?.({ files: [file] })) {
-        await navigator.share({ files: [file], title: name })
-        return
-      }
-    } catch (e) { if (isAbort(e)) return /* the user closed the share sheet */ }
-
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = name
-    // The anchor must be in the document and the blob URL must outlive the click: a detached
-    // anchor is ignored by some WebViews, and revoking the URL in the same tick can truncate the
-    // download before it starts. This file is the student's only backup — it has to arrive.
-    a.style.display = 'none'
-    document.body.appendChild(a)
-    a.click()
-    setTimeout(() => { a.remove(); URL.revokeObjectURL(url) }, 5000)
-    say(lang === 'ro' ? 'Fișier de backup generat.' : 'Backup file created.')
+    const outcome = await saveTextFile(
+      name, json, 'application/json',
+      ro ? 'Salvează backup-ul progresului' : 'Save your progress backup',
+    )
+    switch (outcome.kind) {
+      case 'shared':
+        say(ro ? `Trimis: ${name}` : `Sent: ${name}`); break
+      case 'saved':
+        say(ro ? `Salvat în ${outcome.where}` : `Saved to ${outcome.where}`); break
+      case 'downloaded':
+        say(ro ? `Descărcat: ${name}` : `Downloaded: ${name}`); break
+      case 'cancelled':
+        break   // the user closed the sheet; the app has nothing to announce
+      case 'failed':
+        say(ro ? 'Nu am putut salva fișierul. Încearcă din nou.' : 'Could not save the file. Try again.'); break
+    }
   }
   function importProgress() {
     const input = document.createElement('input')
@@ -132,7 +134,7 @@ export default function Settings({ onClose, onDiploma }: { onClose: () => void; 
   }
 
   return (
-    <div className="anim-sheet fixed inset-0 z-50 mx-auto flex max-w-md flex-col bg-bg" role="dialog" aria-modal="true" aria-labelledby="dlg-settings">
+    <div className="safe-area anim-sheet fixed inset-0 z-50 mx-auto flex max-w-md flex-col bg-bg" role="dialog" aria-modal="true" aria-labelledby="dlg-settings">
       <header className="flex items-center justify-between border-b border-border px-5 py-3">
         <h2 id="dlg-settings" className="font-display text-base font-semibold text-fg">{t('settings')}</h2>
         <button onClick={onClose} className="relative grid h-10 w-10 place-items-center rounded-full text-faint hover:bg-surface-2 hover:text-fg before:absolute before:-inset-0.5 before:content-['']" aria-label={t('close')}><Icon name="close" size={20} /></button>
@@ -237,6 +239,25 @@ export default function Settings({ onClose, onDiploma }: { onClose: () => void; 
             <button onClick={importProgress} className="flex items-center justify-center gap-2 rounded-xl border border-border py-3 text-sm font-semibold text-muted hover:text-fg">
               <Icon name="loop" size={16} /> {lang === 'ro' ? 'Importă' : 'Import'}
             </button>
+          </div>
+        </Section>
+
+        {/* Two things a tester and a student each need once, at the bottom, out of the way.
+            The build number, because a bug report without one is a bug report that has to be
+            reproduced from scratch — and Android's own app-info screen is two levels deep in the
+            system settings, while a PWA install has no such screen at all.
+            The privacy line, because "nothing is collected" is the app's most reassuring property
+            and it was stated only in PRIVACY.md, at a URL, on GitHub — where a student will never
+            read it. It is also literally true: the only storage is this phone's localStorage under
+            the meem_ prefix, there is no account, no analytics and no network call in the app. */}
+        <Section title={lang === 'ro' ? 'Despre' : 'About'}>
+          <div className="rounded-xl border border-border bg-surface px-3 py-2.5">
+            <p className="font-mono text-xs tabular-nums text-muted">MEE {__APP_BUILD__}</p>
+            <p className="mt-1 text-[0.6875rem] leading-relaxed text-faint">
+              {lang === 'ro'
+                ? 'Totul rămâne pe telefon: fără cont, fără reclame, fără date trimise nicăieri. Progresul se salvează local — de aceea există butonul de backup de mai sus.'
+                : 'Everything stays on your phone: no account, no ads, no data sent anywhere. Progress is saved locally — which is what the backup button above is for.'}
+            </p>
           </div>
         </Section>
 
@@ -380,7 +401,7 @@ function FeedbackDialog({ open, stats, onCopied, onClose }: {
 ---
 ${stats}`
   return createPortal(
-    <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 px-6" onClick={onClose}>
+    <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 pt-[var(--sa-top)] pr-[calc(1.5rem+var(--sa-right))] pb-[var(--sa-bottom)] pl-[calc(1.5rem+var(--sa-left))]" onClick={onClose}>
       <div className="anim-sheet w-full max-w-xs rounded-2xl border border-border bg-surface p-5 text-center"
         onClick={e => e.stopPropagation()} role="dialog" aria-modal="true"
         aria-label={lang === 'ro' ? 'Trimite feedback' : 'Send feedback'}>
@@ -422,7 +443,7 @@ function QuizDialog({ open, level, modules, moduleTotal, exams, onClose }: {
     [ro ? 'Simulări de examen' : 'Exam simulations', String(exams)],
   ]
   return createPortal(
-    <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 px-6" onClick={onClose}>
+    <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 pt-[var(--sa-top)] pr-[calc(1.5rem+var(--sa-right))] pb-[var(--sa-bottom)] pl-[calc(1.5rem+var(--sa-left))]" onClick={onClose}>
       <div className="anim-sheet w-full max-w-xs rounded-2xl border border-border bg-surface p-5"
         onClick={e => e.stopPropagation()} role="dialog" aria-modal="true"
         aria-label={ro ? 'Chestionar de final' : 'End-of-course survey'}>
