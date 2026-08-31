@@ -102,6 +102,28 @@ const precacheServiceWorker = () => ({
   },
 })
 
+// The app has to be able to say which build it is. Over a 14-day closed test with a dozen testers,
+// "it did X" is only actionable if the report can be pinned to a version — and the only place a
+// tester could read one today is Android's app-info screen, two levels deep in the system settings,
+// which a PWA install does not have at all.
+//
+// One source of truth per half, and neither is retyped here: the marketing version comes from
+// package.json (which CITATION.cff already agrees with), and the build number comes
+// from the one place Play actually reads it, android/app/build.gradle. A label that can drift from
+// the package would be worse than no label, because it lies with authority.
+//
+// A tree with no native project — a public clone, and CI builds exactly that — degrades to just the
+// marketing version. Never to a stale number.
+function buildStamp() {
+  const { version } = JSON.parse(readFileSync('package.json', 'utf8')) as { version: string }
+  let code = ''
+  if (existsSync('android/app/build.gradle')) {
+    code = readFileSync('android/app/build.gradle', 'utf8').match(/versionCode\s+(\d+)/)?.[1] ?? ''
+  }
+  return code ? `${version} (${code})` : version
+}
+
 export default defineConfig({
+  define: { __APP_BUILD__: JSON.stringify(buildStamp()) },
   plugins: [react(), tailwindcss(), dropLegacyWoff(), precacheServiceWorker()],
 })
