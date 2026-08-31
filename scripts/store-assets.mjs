@@ -24,7 +24,12 @@ import { join } from 'node:path'
 
 const IN = process.argv[2] || '../poze/store'
 const OUT = process.argv[3] || '../poze/play'
-const FUNDAL = '#0A0E12'          // same colour as `background_color` in the manifest
+// The padding colour is SAMPLED from each capture, not fixed. It used to be the dark
+// `background_color` from the manifest, which is right for seven of the eight shots and wrong for
+// the eighth: the light-theme screenshot came back framed in two black bars. The sample is taken at
+// the middle of the left edge — the only row that is page background in both themes, since the top
+// is the HUD and the bottom is the tab bar.
+const FUNDAL_IMPLICIT = '#0A0E12'
 const RAPORT = 9 / 16             // exactly 9:16 — accepted AND eligible for placements
 
 if (!existsSync(IN)) { console.error(`No captures found in ${IN}. Run first: npm run shots`); process.exit(1) }
@@ -37,6 +42,9 @@ console.log(`preparing ${capturi.length} captures for Play → ${OUT}`)
 for (const f of capturi) {
   const src = join(IN, f)
   const { width, height } = await sharp(src).metadata()
+  const { data: px } = await sharp(src).extract({ left: 0, top: Math.round(height / 2), width: 1, height: 1 })
+    .removeAlpha().raw().toBuffer({ resolveWithObject: true })
+  const FUNDAL = px ? `#${[...px].map(v => v.toString(16).padStart(2, '0')).join('')}` : FUNDAL_IMPLICIT
   // the width that makes the ratio exactly 9:16, rounded to an even number; never narrower than
   // the capture, so the screen is padded and never cropped
   const latTinta = Math.round(height * RAPORT / 2) * 2
@@ -52,6 +60,6 @@ for (const f of capturi) {
     .toFile(join(OUT, f))
   const r = height / lat
   const ok = Math.abs(r - 16 / 9) < 0.01 && lat >= 1080 && height >= 1920
-  console.log(`  ▸ ${f.padEnd(18)} ${width}×${height} → ${lat}×${height}  (1:${r.toFixed(3)}${ok ? ' ✓ 9:16, ≥1080×1920' : ' ✗'})`)
+  console.log(`  ▸ ${f.padEnd(22)} ${width}×${height} → ${lat}×${height}  fundal ${FUNDAL}  (1:${r.toFixed(3)}${ok ? ' ✓ 9:16, ≥1080×1920' : ' ✗'})`)
 }
 console.log(`done · ${capturi.length} files, PNG with no alpha channel`)

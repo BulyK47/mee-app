@@ -104,6 +104,17 @@ window.__btn = re => [...document.querySelectorAll('button')].find(b => re.test(
 window.__aria = s => [...document.querySelectorAll('button[aria-label]')].find(b => b.getAttribute('aria-label') === s);
 window.__card = () => [...document.querySelectorAll('div')].filter(d => /Verifică|Continuă|Lecție terminată/.test(d.innerText||'') && d.querySelectorAll('button').length > 1).pop();
 window.__node = () => [...document.querySelectorAll('button')].find(b => !b.disabled && /h-14 w-14/.test(b.className) && /text-ink-950/.test(b.className));
+// Opening a lesson BY TITLE rather than by "the first unlocked node". The blind version is what put
+// a text card in the store listing: 32 of the 49 lessons open on a concept-card visual, so a click on
+// whatever came first had a 65% chance of showing the one thing this app is not - a quiz with a box
+// of text. The lesson row is the button that carries the title; the round node beside it is
+// aria-hidden and refuses .click() anyway.
+window.__lesson = t => [...document.querySelectorAll('button')].find(b => !b.disabled && (b.innerText||'').includes(t));
+// What is actually on screen, so the run can be checked from its own log instead of by opening
+// eight PNGs: the exercise prompt, and whether a figure was drawn for it.
+window.__what = () => { const d = document.querySelector('[role=dialog]'); if (!d) return 'NO DIALOG';
+  const h = d.querySelector('h2, .font-semibold'); const svg = d.querySelector('svg:not([aria-hidden=true])');
+  return (h ? h.innerText.slice(0,60) : '?') + ' | figura: ' + (svg ? 'DA' : 'nu') };
 window.__setInput = v => { const i = window.__card().querySelector('input'); if (!i) return false;
   Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,'value').set.call(i, v);
   i.dispatchEvent(new Event('input',{bubbles:true})); return true };
@@ -162,6 +173,35 @@ localStorage.setItem('meem_quests', JSON.stringify({date:TODAY,lessons:1,xp:25,p
 true`
 
 console.log('capturing at 412×915 @3× →', OUT)
+
+// Exit whatever lesson is open: the X in the player header, then the app's OWN confirmation sheet.
+async function exitLesson() {
+  // Wrapped in an IIFE, not a bare `const`: Runtime.evaluate shares one global scope across the
+  // whole run, so the second lesson would die with "Identifier 'x' has already been declared".
+  await evaluate('(() => { const x=[...document.querySelectorAll("button[aria-label]")].find(b=>/Ieși|exit/i.test(b.getAttribute("aria-label")||"")); if(x) window.__fire(x); return true })()')
+  await sleep(700)
+  await evaluate('window.__yes(); true')
+  await sleep(1000)
+}
+
+// Open a lesson by title, report what landed on screen, capture. The report is the point: a silent
+// miss here is what published a text card as "the app draws its own figures".
+async function lessonShot(title, name) {
+  await evaluate(`window.__fire(window.__lesson(${JSON.stringify(title)})); true`)
+  await sleep(1700)
+  const what = await evaluate('window.__what()')
+  console.log(`    ${title} → ${what}`)
+  if (String(what).endsWith('nu') || what === 'NO DIALOG') {
+    throw new Error(`"${title}" did not open on a drawn figure (${what}). The listing must not claim figures it cannot show.`)
+  }
+  await shot(name)
+  await exitLesson()
+}
+
+// The NUMBER in each file name is the position in the store listing, not the order of capture:
+// Play shows the first three or four prominently, so the two drawn figures come straight after the
+// map, and the lab - which used to be second - moves to fourth. The capture order below is simply
+// whatever costs the fewest screen transitions.
 await goto(URL_)
 await evaluate(SEED)
 await goto(URL_)
@@ -171,29 +211,30 @@ await shot('1-harta')
 
 // My Lab
 await evaluate('window.__fire(window.__btn(/Laboratorul meu/)); true'); await sleep(1400)
-await shot('2-laborator')
-
-// back to the map, then a question with a figure
+await shot('4-laborator')
 await evaluate('window.__fire(window.__btn(/^Învață$/)); true'); await sleep(900)
-await evaluate('window.__fire(window.__node()); true'); await sleep(1600)
-await shot('3-intrebare')
 
-// the theory recap
-await evaluate(`const c = window.__card(); if (c) { const x = [...c.querySelectorAll('button[aria-label]')].find(b => /Ieși|exit/i.test(b.getAttribute('aria-label')||'')); if (x) window.__fire(x) } true`)
-await sleep(700); await evaluate('window.__yes(); true'); await sleep(1000)
+// The three figures the description promises and no capture used to show. Each of these lessons
+// opens ON its drawn exercise — verified against the bank, not hoped for:
+//   analog dial (meter), oscilloscope screen (scope), measuring bridge (bridge).
+await lessonShot('Aparate analogice (1)', '2-cadran')
+await lessonShot('Semnale (2)', '3-osciloscop')
+await lessonShot('Punți de curent continuu', '5-punte')
+
+// The theory recap
 await evaluate('window.__fire([...document.querySelectorAll("button")].find(b => b.innerText.trim() === "Teorie")); true'); await sleep(1500)
-await shot('4-teorie')
+await shot('6-teorie')
 
-// exam simulation
-await evaluate('const b=window.__btn(/Închide/); if(b) window.__fire(b); true'); await sleep(800)
-await evaluate('window.__fire(window.__btn(/Simulare de examen/)); true'); await sleep(1800)
-await shot('5-examen')
-
-// the formula sheet
-await evaluate('const x=[...document.querySelectorAll("button[aria-label]")].find(b=>/Ieși|exit/i.test(b.getAttribute("aria-label")||"")); if(x) window.__fire(x); true')
-await sleep(700); await evaluate('window.__yes(); true'); await sleep(1200)
+// The formula sheet
+await evaluate('(() => { const b=window.__btn(/Închide/); if(b) window.__fire(b); return true })()'); await sleep(800)
 await evaluate('window.__fire(window.__aria("Memorator")); true'); await sleep(1500)
-await shot('6-memorator')
+await shot('7-memorator')
+
+// The light theme, on the course map: a whole second look at the app, and the only screen that can
+// show it. usePersisted stores JSON, so the value is a quoted string.
+await evaluate('localStorage.setItem("meem_theme", JSON.stringify("light")); true')
+await goto(URL_); await sleep(1400)
+await shot('8-tema-luminoasa')
 
 console.log('done')
 ws.close()
