@@ -22,9 +22,15 @@ export default function Onboarding({ onDone }: { onDone: () => void }) {
   useDismiss(() => {})
 
   const shell = (children: React.ReactNode) => (
-    <div className="anim-sheet fixed inset-0 z-[60] mx-auto flex max-w-md flex-col justify-center bg-bg px-6 py-8" role="dialog" aria-modal="true"
+    <div className="anim-sheet fixed inset-0 z-[60] mx-auto flex max-w-md flex-col overflow-y-auto bg-bg pt-[calc(2rem+var(--sa-top))] pr-[calc(1.5rem+var(--sa-right))] pb-[calc(2rem+var(--sa-bottom))] pl-[calc(1.5rem+var(--sa-left))]" role="dialog" aria-modal="true"
       aria-label={ro ? 'Configurare inițială' : 'Initial setup'}>
-      {children}
+      {/* The inner m-auto wrapper, rather than justify-center on the root, is what lets this
+          gate scroll. A justify-center flex column whose content overflows puts the top of that
+          content out of reach — the scroll origin clamps at the start edge — and this screen is
+          the one nobody can dismiss: useDismiss is given an empty close on purpose. With the
+          system-bar insets now taken out of the available height, the language step on a short
+          phone was the case that could hide its own buttons. */}
+      <div className="m-auto flex w-full flex-col">{children}</div>
     </div>
   )
 

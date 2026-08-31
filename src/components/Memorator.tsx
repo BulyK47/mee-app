@@ -33,7 +33,7 @@ export default function Memorator({ onClose }: { onClose: () => void }) {
   }).filter(Boolean) as typeof data
 
   return (
-    <div className="anim-sheet fixed inset-0 z-50 mx-auto flex max-w-md flex-col bg-bg" role="dialog" aria-modal="true" aria-labelledby="dlg-memorator">
+    <div className="safe-area anim-sheet fixed inset-0 z-50 mx-auto flex max-w-md flex-col bg-bg" role="dialog" aria-modal="true" aria-labelledby="dlg-memorator">
       <header className="flex items-center justify-between border-b border-border px-5 py-3">
         <h2 id="dlg-memorator" className="flex items-center gap-2 font-display text-base font-semibold text-fg"><Icon name="recap" size={18} /> {lang === 'ro' ? 'Memorator' : 'Formula sheet'}</h2>
         <button onClick={onClose} className="relative grid h-10 w-10 place-items-center rounded-full text-faint hover:bg-surface-2 hover:text-fg before:absolute before:-inset-0.5 before:content-['']" aria-label={t('close')}><Icon name="close" size={20} /></button>

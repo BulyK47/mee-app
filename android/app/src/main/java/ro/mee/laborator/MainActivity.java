@@ -1,52 +1,29 @@
 package ro.mee.laborator;
 
-import android.graphics.Color;
-import android.os.Bundle;
-import android.view.View;
-
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
 import com.getcapacitor.BridgeActivity;
 
 /**
- * Keeps the web view out from under the system bars.
+ * Nothing to do here: the system bars are handled on the web side.
  *
  * From Android 15 (API 35) on, an app that targets 35 or later is laid out edge to edge and cannot
- * opt out: the activity window spans the whole screen, status bar and navigation bar included. A
- * plain Capacitor web view therefore paints beneath both. On this app that put the HUD - level,
- * streak, hearts, the settings button - under the clock and the battery icon, and hid the bottom
- * tab bar and "Reseteaza progresul" behind the navigation buttons.
+ * opt out - the activity window spans the whole screen, status bar and navigation bar included - so
+ * something has to keep the app's own chrome out from under them, or the HUD sits under the clock
+ * and the tab bar under the navigation buttons.
  *
- * The web side cannot fix it on its own. index.html already asks for `viewport-fit=cover`, but
- * nothing in the CSS reads `env(safe-area-inset-*)`, and an Android web view does not reliably
- * report the system bars through those variables anyway - only the display cutout, and only in
- * some configurations. Padding the content view is measured rather than inferred: the values come
- * from the window itself.
+ * An earlier version of this file measured the window insets and padded `android.R.id.content`.
+ * That was written before reading what Capacitor 8 already does. Its built-in SystemBars plugin
+ * installs its own inset listener on the web view's parent, and its `insetsHandling` option
+ * defaults to "css": on a WebView 140 or newer, with `viewport-fit=cover` in the page - which
+ * index.html asks for - the plugin deliberately stops padding anything and instead passes the real
+ * insets into the page, where they surface both as `env(safe-area-inset-*)` and as
+ * `--safe-area-inset-*` inline variables it sets on <html>. On an older WebView it pads the parent
+ * itself and reports zeros through those variables.
  *
- * The listener returns the insets it received instead of WindowInsetsCompat.CONSUMED. Consuming
- * them would stop the propagation that the soft keyboard relies on, and this app has numeric-answer
- * exercises where the keyboard must not cover the field. Nothing below re-applies the padding, so
- * passing them on costs nothing.
+ * So the padding here was the second inset on a modern device and redundant on an old one. The
+ * shell and every full-screen overlay now read the variables in `src/index.css` (`--sa-*`, which
+ * prefer the plugin's values and fall back to `env()`), which is one mechanism for all three
+ * surfaces: this package, the installed PWA, and iOS when it is built. The plugin also drops the
+ * bottom inset while the soft keyboard is up and pads for the keyboard instead - the numeric-answer
+ * exercises need that, and the hand-written listener did not do it.
  */
-public class MainActivity extends BridgeActivity {
-
-    /** Same as `background_color` in the web manifest, so the padded strips read as part of the app. */
-    private static final int BACKGROUND = Color.parseColor("#0A0E12");
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        final View content = findViewById(android.R.id.content);
-        content.setBackgroundColor(BACKGROUND);
-
-        ViewCompat.setOnApplyWindowInsetsListener(content, (view, windowInsets) -> {
-            Insets bars = windowInsets.getInsets(
-                    WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
-            view.setPadding(bars.left, bars.top, bars.right, bars.bottom);
-            return windowInsets;
-        });
-    }
-}
+public class MainActivity extends BridgeActivity {}

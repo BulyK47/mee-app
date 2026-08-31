@@ -76,7 +76,7 @@ export default function Diploma({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <div className="anim-sheet fixed inset-0 z-50 mx-auto flex max-w-md flex-col bg-bg" role="dialog" aria-modal="true" aria-labelledby="dlg-diploma">
+    <div className="safe-area anim-sheet fixed inset-0 z-50 mx-auto flex max-w-md flex-col bg-bg" role="dialog" aria-modal="true" aria-labelledby="dlg-diploma">
       <header className="no-print flex items-center justify-between border-b border-border px-5 py-3">
         <h2 id="dlg-diploma" className="font-display text-base font-semibold text-fg">{ro ? 'Diploma mea' : 'My diploma'}</h2>
         <button onClick={onClose} className="relative grid h-10 w-10 place-items-center rounded-full text-faint hover:bg-surface-2 hover:text-fg before:absolute before:-inset-0.5 before:content-['']" aria-label={t('close')}><Icon name="close" size={20} /></button>

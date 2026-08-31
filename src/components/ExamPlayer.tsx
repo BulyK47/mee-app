@@ -110,7 +110,7 @@ export default function ExamPlayer({ exercises, onClose, onRetry }: { exercises:
     const pct = Math.round((score / total) * 100)
     const color = pct >= 70 ? 'text-primary' : pct >= 50 ? 'text-warn' : 'text-danger'
     return (
-      <div className="anim-sheet fixed inset-0 z-50 mx-auto flex max-w-md flex-col bg-bg" role="dialog" aria-modal="true" aria-labelledby="dlg-exam-result">
+      <div className="safe-area anim-sheet fixed inset-0 z-50 mx-auto flex max-w-md flex-col bg-bg" role="dialog" aria-modal="true" aria-labelledby="dlg-exam-result">
         <header className="flex items-center justify-between border-b border-border px-5 py-3">
           <h2 id="dlg-exam-result" className="font-display text-base font-semibold text-fg">{lang === 'ro' ? 'Rezultat' : 'Result'}</h2>
           <button onClick={onClose} className="relative grid h-10 w-10 place-items-center rounded-full text-faint hover:bg-surface-2 hover:text-fg before:absolute before:-inset-0.5 before:content-['']" aria-label={t('close')}><Icon name="close" size={20} /></button>
@@ -161,7 +161,7 @@ export default function ExamPlayer({ exercises, onClose, onRetry }: { exercises:
 
   const low = timeLeft <= 10
   return (
-    <div className="anim-sheet fixed inset-0 z-50 mx-auto flex max-w-md flex-col bg-bg" role="dialog" aria-modal="true"
+    <div className="safe-area anim-sheet fixed inset-0 z-50 mx-auto flex max-w-md flex-col bg-bg" role="dialog" aria-modal="true"
       aria-label={lang === 'ro' ? 'Simulare de examen' : 'Exam simulation'}>
       <header className="flex items-center justify-between gap-3 border-b border-border px-4 py-2.5">
         <button onClick={quit} className="relative grid h-9 w-9 place-items-center rounded-full text-faint hover:bg-surface-2 hover:text-fg before:absolute before:-inset-1 before:content-['']" aria-label={t('exit')}><Icon name="close" size={18} /></button>

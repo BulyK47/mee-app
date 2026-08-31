@@ -19,6 +19,18 @@ const ExamPlayer = lazy(() => import('./components/ExamPlayer'))
 const Onboarding = lazy(() => import('./components/Onboarding'))
 const Diploma = lazy(() => import('./components/Diploma'))
 
+// Capacitor's SystemBars plugin ships inside @capacitor/core, but calling it on the web throws
+// "not implemented" — so this is a no-op anywhere but the packaged app, and the import is dynamic
+// to keep the plugin out of the first paint.
+function setNativeBarStyle(light: boolean) {
+  import('@capacitor/core')
+    .then(({ Capacitor, SystemBars, SystemBarsStyle }) => {
+      if (!Capacitor.isNativePlatform()) return
+      return SystemBars.setStyle({ style: light ? SystemBarsStyle.Light : SystemBarsStyle.Dark })
+    })
+    .catch(() => { /* cosmetic: the bars keep the system's own contrast */ })
+}
+
 export default function App() {
   const { t } = useT()
   const game = useGame()
@@ -47,6 +59,13 @@ export default function App() {
     const t = setTimeout(() => root.classList.remove('theme-switching'), 60)
     const m = document.querySelector('meta[name="theme-color"]')
     if (m) m.setAttribute('content', theme === 'light' ? '#F4F7F5' : '#0A0E12')
+    // The meta tag above is what a browser reads; the packaged app ignores it. There, the app now
+    // paints under the transparent status bar itself (see the safe-area block in index.css), so the
+    // clock and the battery icon sit on the app's own background — and Capacitor picks their colour
+    // from the PHONE's light/dark setting, not from this app's theme. A dark app on a phone in light
+    // mode therefore got dark icons on a near-black strip: invisible. 'DARK' means "the bar is dark,
+    // draw light icons", so the value tracks our theme rather than the system's.
+    setNativeBarStyle(theme === 'light')
     return () => clearTimeout(t)
   }, [theme])
 
@@ -95,7 +114,7 @@ export default function App() {
   }
 
   return (
-    <div className="mx-auto flex h-full max-w-md flex-col">
+    <div className="safe-area mx-auto flex h-full max-w-md flex-col">
       <Hud onSettings={() => setSettings(true)} onMemorator={() => setMemorator(true)} />
       <main className="flex-1 overflow-y-auto">
         {tab === 'learn'

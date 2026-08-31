@@ -9,10 +9,26 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- `android:windowBackground` and not the launch theme's: Capacitor's BridgeActivity calls
+         setTheme(AppTheme_NoActionBar) before it inflates anything, so this is the theme in force
+         for the whole life of the activity, and AppTheme.NoActionBarLaunch governs only the
+         starting window.
+
+         It matters because of the OLDER-WebView path. On a WebView below 140 the SystemBars plugin
+         pads the web view's parent instead of passing the insets into the page, so the app does not
+         paint the strip behind the clock — the decor does, and the plugin repaints it from
+         `android:windowBackground` on every setStyle call. Left unset, that resolves through
+         Theme.AppCompat.DayNight to the platform's #FAFAFA / #303030, i.e. it follows the PHONE's
+         light/dark setting, while the icon colour follows the APP's theme. Two of the four
+         combinations are then unreadable: white icons on a white band, or dark icons on a
+         near-black one — which is precisely the failure the theme-colour code in App.tsx exists to
+         prevent. Pinning it to the app's own background also removes the cold-start flash and the
+         band that shows for a frame while the soft keyboard animates. -->
     <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:background">@null</item>
+        <item name="android:windowBackground">@color/splashBackground</item>
     </style>
 
 

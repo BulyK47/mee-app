@@ -98,6 +98,34 @@
   color-scheme: light;
 }
 
+/* Safe area - the status bar, the navigation bar, the notch and the home indicator.
+
+   The window spans the whole screen on every surface this app ships to, so the shell has to hold
+   itself clear of the bars: from Android 15 an app that targets 35 or later is laid out edge to
+   edge and cannot opt out, and an installed PWA gets the same treatment from `viewport-fit=cover`
+   in index.html. Nothing in this file read the insets before, which put the HUD under the clock and
+   the tab bar under the navigation buttons.
+
+   Two sources, in this order, and never both:
+   - `--safe-area-inset-*` is what Capacitor 8's built-in SystemBars plugin sets as an inline style
+     on <html> (its `insetsHandling` defaults to "css"). It already accounts for what the native
+     side did or did not pad: on a WebView 140+ it stops padding and reports the real values here,
+     on an older one it pads the web view's parent itself and reports zeros. Preferring the variable
+     is therefore what keeps the app from being inset twice.
+   - `env(safe-area-inset-*)` is the browser's own value, for every surface without that plugin:
+     Chrome and Safari, the installed PWA, and iOS once it is built.
+
+   Applied as padding, so a fixed backdrop still paints edge to edge behind its inset content. */
+:root{
+  --sa-top:    var(--safe-area-inset-top,    env(safe-area-inset-top,    0px));
+  --sa-right:  var(--safe-area-inset-right,  env(safe-area-inset-right,  0px));
+  --sa-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
+  --sa-left:   var(--safe-area-inset-left,   env(safe-area-inset-left,   0px));
+}
+/* Every full-screen layer wears this: the app shell and each `fixed inset-0` overlay, since a
+   fixed element is positioned against the viewport and inherits none of the shell's padding. */
+.safe-area{ padding:var(--sa-top) var(--sa-right) var(--sa-bottom) var(--sa-left); }
+
 html, body, #root { height:100%; }
 #root { position:relative; z-index:1; }
 body {

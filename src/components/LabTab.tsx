@@ -96,7 +96,7 @@ function Preview({ item, onClose }: { item: Equip; onClose: () => void }) {
   const info = infoFor(item.id)
   useDismiss(onClose)
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60" onClick={onClose}>
+    <div className="safe-area fixed inset-0 z-50 flex items-end justify-center bg-black/60" onClick={onClose}>
       <div className="anim-sheet mx-auto max-h-[90dvh] w-full max-w-md overflow-y-auto rounded-t-2xl border-t border-border bg-surface p-5" onClick={e => e.stopPropagation()} role="dialog" aria-modal="true"
         aria-label={L(item.name, lang)}>
         <div className="mb-3 flex justify-center">

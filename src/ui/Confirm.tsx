@@ -26,7 +26,7 @@ export function ConfirmDialog({ open, message, confirmLabel, danger = false, onC
   // fixed descendants — so "inset-0" would mean the sheet's box, not the screen: the backdrop stops
   // short and the dialog is dragged along by the animation instead of sitting still on top of it.
   return createPortal(
-    <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 px-6" onClick={onCancel}>
+    <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 pt-[var(--sa-top)] pr-[calc(1.5rem+var(--sa-right))] pb-[var(--sa-bottom)] pl-[calc(1.5rem+var(--sa-left))]" onClick={onCancel}>
       <div className="anim-sheet w-full max-w-xs rounded-2xl border border-border bg-surface p-5 text-center"
         onClick={e => e.stopPropagation()} role="alertdialog" aria-modal="true" aria-labelledby={msgId}>
         {/* The question IS the dialog's name. Without this the alertdialog had no accessible name

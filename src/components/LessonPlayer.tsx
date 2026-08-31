@@ -225,7 +225,7 @@ export default function LessonPlayer({ lesson, onExit, onGoLab, isReview = false
   }
 
   return (
-    <div className="anim-sheet fixed inset-0 z-50 mx-auto flex max-w-md flex-col bg-bg" role="dialog" aria-modal="true"
+    <div className="safe-area anim-sheet fixed inset-0 z-50 mx-auto flex max-w-md flex-col bg-bg" role="dialog" aria-modal="true"
       aria-label={isReview ? (lang === 'ro' ? 'Greșelile mele' : 'My mistakes') : L(lesson.title, lang)}>
       {comboBadge && (
         <div key={comboBadge.k} onAnimationEnd={() => setComboBadge(null)}
@@ -392,18 +392,28 @@ function OutOfHearts({ coins, onBuy, onStudyMode, onExit }: { coins: number; onB
   const panel = useEndPanel()
   return (
     <div ref={panel} tabIndex={-1} aria-labelledby="lp-hearts-title"
-      className="anim-sheet fixed inset-0 z-50 mx-auto flex max-w-md flex-col items-center justify-center gap-4 bg-bg px-7 text-center outline-none" role="dialog" aria-modal="true">
-      <div className="anim-pop grid h-20 w-20 place-items-center rounded-full bg-surface-2 text-danger"><Icon name="heart" size={40} /></div>
-      <h2 id="lp-hearts-title" className="font-display text-xl font-bold text-fg">{t('heartsOut')}</h2>
-      <p className="text-sm leading-relaxed text-muted">{t('heartsOutBody')}</p>
-      <div className="mt-2 flex w-full flex-col gap-2">
-        <button onClick={onBuy} disabled={!canBuy}
-          className="w-full rounded-xl bg-primary py-3 font-semibold text-primary-fg hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40">
-          {t('heartsBuy')} · {HEART_REFILL_COST} {t('coins')}
-        </button>
-        {!canBuy && <p className="-mt-1 text-xs text-faint">{t('notEnough')} — {coins}/{HEART_REFILL_COST}</p>}
-        <button onClick={onStudyMode} className="w-full rounded-xl border border-border py-3 text-sm font-semibold text-muted hover:text-fg">{t('heartsToStudy')}</button>
-        <button onClick={onExit} className="w-full rounded-xl py-2.5 text-sm font-medium text-faint hover:bg-surface-2">{t('exit')}</button>
+      className="anim-sheet fixed inset-0 z-50 mx-auto flex max-w-md flex-col overflow-y-auto bg-bg pt-[var(--sa-top)] pr-[calc(1.75rem+var(--sa-right))] pb-[var(--sa-bottom)] pl-[calc(1.75rem+var(--sa-left))] text-center outline-none" role="dialog" aria-modal="true">
+      {/* `overflow-y-auto` on the root plus `m-auto` here, rather than `justify-center` on the
+          root, and the distinction matters: when a justify-center flex column overflows, the top
+          of the content is UNREACHABLE — the scroll origin clamps at the start edge — so the panel
+          would scroll and still hide its own heading. `m-auto` centres while the content fits and
+          scrolls once it does not. This screen is the wall a student hits with zero hearts, and its
+          three buttons are the only way off it; on a 640 px-tall phone, with the status bar and the
+          navigation bar now subtracted from the height, they were what went off the bottom.
+          ResultsScreen below has the same shape for the same reason. */}
+      <div className="m-auto flex w-full flex-col items-center gap-4">
+        <div className="anim-pop grid h-20 w-20 place-items-center rounded-full bg-surface-2 text-danger"><Icon name="heart" size={40} /></div>
+        <h2 id="lp-hearts-title" className="font-display text-xl font-bold text-fg">{t('heartsOut')}</h2>
+        <p className="text-sm leading-relaxed text-muted">{t('heartsOutBody')}</p>
+        <div className="mt-2 flex w-full flex-col gap-2">
+          <button onClick={onBuy} disabled={!canBuy}
+            className="w-full rounded-xl bg-primary py-3 font-semibold text-primary-fg hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40">
+            {t('heartsBuy')} · {HEART_REFILL_COST} {t('coins')}
+          </button>
+          {!canBuy && <p className="-mt-1 text-xs text-faint">{t('notEnough')} — {coins}/{HEART_REFILL_COST}</p>}
+          <button onClick={onStudyMode} className="w-full rounded-xl border border-border py-3 text-sm font-semibold text-muted hover:text-fg">{t('heartsToStudy')}</button>
+          <button onClick={onExit} className="w-full rounded-xl py-2.5 text-sm font-medium text-faint hover:bg-surface-2">{t('exit')}</button>
+        </div>
       </div>
     </div>
   )
@@ -446,46 +456,48 @@ function ResultsScreen({ isReview, accuracy, xp, coins, perfect, leveled, level,
   }
   return (
     <div ref={panel} tabIndex={-1} aria-labelledby="lp-results-title"
-      className="anim-sheet fixed inset-0 z-50 mx-auto flex max-w-md flex-col items-center justify-center gap-5 bg-bg px-8 text-center outline-none" role="dialog" aria-modal="true">
-      <div className={`anim-pop grid h-20 w-20 place-items-center rounded-full bg-surface-2 ${isReview ? 'text-danger' : perfect ? 'text-warn' : 'text-primary'}`} style={{ boxShadow: '0 0 24px -6px var(--color-phosphor-glow)' }}>
-        <Icon name={isReview ? 'mistakes' : perfect ? 'trophy' : 'check'} size={40} />
-      </div>
-      <h2 id="lp-results-title" className="font-display text-xl font-semibold">{isReview ? t('reviewDone') : t('lessonDone')}</h2>
-      {leveled && (
-        <div className="anim-pop rounded-full border border-rank/50 bg-surface-2 px-4 py-1.5 text-sm font-bold text-rank" style={{ boxShadow: '0 0 18px -4px #F5D03399' }}>
-          ⚡ {lang === 'ro' ? 'Nivel' : 'Level'} {level}!
+      className="anim-sheet fixed inset-0 z-50 mx-auto flex max-w-md flex-col overflow-y-auto bg-bg pt-[var(--sa-top)] pr-[calc(2rem+var(--sa-right))] pb-[var(--sa-bottom)] pl-[calc(2rem+var(--sa-left))] text-center outline-none" role="dialog" aria-modal="true">
+      <div className="m-auto flex w-full flex-col items-center gap-5">
+        <div className={`anim-pop grid h-20 w-20 place-items-center rounded-full bg-surface-2 ${isReview ? 'text-danger' : perfect ? 'text-warn' : 'text-primary'}`} style={{ boxShadow: '0 0 24px -6px var(--color-phosphor-glow)' }}>
+          <Icon name={isReview ? 'mistakes' : perfect ? 'trophy' : 'check'} size={40} />
         </div>
-      )}
-      {!isReview && perfect && !replay && <p className="-mt-2 text-sm font-medium text-primary">{t('perfect')}</p>}
-      <div className="flex gap-3">
-        <Stat value={accV + '%'} label={t('accuracy')} color="text-fg" />
-        {!isReview && <Stat value={'+' + xpV} label={t('xp')} color="text-xp" />}
-        {!isReview && <Stat value={'+' + coinV} label={t('coins')} color="text-coin" />}
-      </div>
-      {replay && <p className="-mt-2 text-xs text-faint">{t('replayNote')}</p>}
-      {chest && (
-        <button onClick={() => !reward && openChest()} disabled={!!reward}
-          className="flex w-full flex-col items-center gap-1.5 rounded-xl border border-volt-400/50 bg-surface-2 py-3.5 transition hover:brightness-110">
-          <Icon name="reference" size={34} className="text-warn" />
-          {reward
-            ? <span className="font-mono text-sm font-bold text-warn">{reward}</span>
-            : <span className="text-sm font-semibold text-warn">{lang === 'ro' ? 'Deschide cufărul!' : 'Open the chest!'}</span>}
-        </button>
-      )}
-      {/* A free instrument just unlocked — say so, and point at where to equip it. */}
-      {unlocked && (
-        <div className="anim-pop w-full rounded-xl border border-primary/50 bg-primary/10 px-4 py-3 text-sm leading-relaxed">
-          <span className="font-semibold text-primary">{t('unlockedEquip')} {unlocked}!</span>{' '}
-          <span className="text-muted">{t('equipInLab')}</span>
-        </div>
-      )}
-      {/* Explain what the Volts are actually for, so My Lab makes sense. */}
-      {!isReview && (coins > 0 || !!reward) && <p className="-mt-1 px-1 text-xs leading-relaxed text-faint">{t('voltsHint')}</p>}
-      <div className="flex w-full flex-col gap-2">
-        {!isReview && (
-          <button onClick={onGoLab} className="w-full rounded-xl bg-primary py-3 font-semibold text-primary-fg hover:brightness-110">{t('goToLab')} →</button>
+        <h2 id="lp-results-title" className="font-display text-xl font-semibold">{isReview ? t('reviewDone') : t('lessonDone')}</h2>
+        {leveled && (
+          <div className="anim-pop rounded-full border border-rank/50 bg-surface-2 px-4 py-1.5 text-sm font-bold text-rank" style={{ boxShadow: '0 0 18px -4px #F5D03399' }}>
+            ⚡ {lang === 'ro' ? 'Nivel' : 'Level'} {level}!
+          </div>
         )}
-        <button onClick={onExit} className="w-full rounded-xl py-2.5 text-sm font-medium text-muted hover:bg-surface-2">{isReview ? t('cont') : t('exit')}</button>
+        {!isReview && perfect && !replay && <p className="-mt-2 text-sm font-medium text-primary">{t('perfect')}</p>}
+        <div className="flex gap-3">
+          <Stat value={accV + '%'} label={t('accuracy')} color="text-fg" />
+          {!isReview && <Stat value={'+' + xpV} label={t('xp')} color="text-xp" />}
+          {!isReview && <Stat value={'+' + coinV} label={t('coins')} color="text-coin" />}
+        </div>
+        {replay && <p className="-mt-2 text-xs text-faint">{t('replayNote')}</p>}
+        {chest && (
+          <button onClick={() => !reward && openChest()} disabled={!!reward}
+            className="flex w-full flex-col items-center gap-1.5 rounded-xl border border-volt-400/50 bg-surface-2 py-3.5 transition hover:brightness-110">
+            <Icon name="reference" size={34} className="text-warn" />
+            {reward
+              ? <span className="font-mono text-sm font-bold text-warn">{reward}</span>
+              : <span className="text-sm font-semibold text-warn">{lang === 'ro' ? 'Deschide cufărul!' : 'Open the chest!'}</span>}
+          </button>
+        )}
+        {/* A free instrument just unlocked — say so, and point at where to equip it. */}
+        {unlocked && (
+          <div className="anim-pop w-full rounded-xl border border-primary/50 bg-primary/10 px-4 py-3 text-sm leading-relaxed">
+            <span className="font-semibold text-primary">{t('unlockedEquip')} {unlocked}!</span>{' '}
+            <span className="text-muted">{t('equipInLab')}</span>
+          </div>
+        )}
+        {/* Explain what the Volts are actually for, so My Lab makes sense. */}
+        {!isReview && (coins > 0 || !!reward) && <p className="-mt-1 px-1 text-xs leading-relaxed text-faint">{t('voltsHint')}</p>}
+        <div className="flex w-full flex-col gap-2">
+          {!isReview && (
+            <button onClick={onGoLab} className="w-full rounded-xl bg-primary py-3 font-semibold text-primary-fg hover:brightness-110">{t('goToLab')} →</button>
+          )}
+          <button onClick={onExit} className="w-full rounded-xl py-2.5 text-sm font-medium text-muted hover:bg-surface-2">{isReview ? t('cont') : t('exit')}</button>
+        </div>
       </div>
     </div>
   )
