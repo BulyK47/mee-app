@@ -254,6 +254,18 @@ Notes that matter:
 
 ## 6. Release checklist
 
+**Run `npm run audit` first.** It answers most of this list mechanically, from the artefact rather
+than from memory: version identity across `package.json` / `build.gradle` / `CITATION.cff`, whether
+the staged `.aab` is signed and carries the version code it claims, whether its main chunk is the
+full course (~850 kB) or the bank-less demo (~290 kB), whether the build stamp is really inside the
+bundle, the permission set, that the signing material is gitignored, and — the one that nearly cost
+a rejected listing — every listing text measured against the limit in its own heading, in BOTH
+Unicode normalisations. It exits non-zero on a blocking problem, so it can gate a release. The
+checks that need the store material (`../FISA-LISTARE-PLAY.md`, `../poze/play/`) are SKIPPED, not
+failed, in a public clone.
+
+The list below is what a person still has to judge:
+
 - [ ] **the build that ships to students was made with `content-private/` present locally.** This is
       the difference between the real app and a ten-exercise demo, and nothing in the build output
       says which one you got. In particular: **never wire Cloudflare Pages to the GitHub repository**
