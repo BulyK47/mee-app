@@ -35,8 +35,12 @@ const RAPORT = 9 / 16             // exactly 9:16 — accepted AND eligible for 
 if (!existsSync(IN)) { console.error(`No captures found in ${IN}. Run first: npm run shots`); process.exit(1) }
 mkdirSync(OUT, { recursive: true })
 
-const capturi = readdirSync(IN).filter(f => /\.png$/i.test(f)).sort()
-if (!capturi.length) { console.error(`No PNG in ${IN}.`); process.exit(1) }
+// Only the numbered captures get the 9:16 treatment. The feature graphic lives in the same folder
+// and is 1024×500 by decree - padding it to 9:16 would produce a 281-pixel-wide sliver, and the run
+// printed a ✗ next to it as if something were wrong.
+const capturi = readdirSync(IN).filter(f => /^\d.*\.png$/i.test(f)).sort()
+const grafici = readdirSync(IN).filter(f => /^feature-graphic.*\.png$/i.test(f)).sort()
+if (!capturi.length) { console.error(`No numbered PNG capture in ${IN}.`); process.exit(1) }
 
 console.log(`preparing ${capturi.length} captures for Play → ${OUT}`)
 for (const f of capturi) {
@@ -62,4 +66,11 @@ for (const f of capturi) {
   const ok = Math.abs(r - 16 / 9) < 0.01 && lat >= 1080 && height >= 1920
   console.log(`  ▸ ${f.padEnd(22)} ${width}×${height} → ${lat}×${height}  fundal ${FUNDAL}  (1:${r.toFixed(3)}${ok ? ' ✓ 9:16, ≥1080×1920' : ' ✗'})`)
 }
-console.log(`done · ${capturi.length} files, PNG with no alpha channel`)
+// The graphic is copied through, flattened to 24-bit like everything else, and checked against the
+// one size Play accepts for it.
+for (const f of grafici) {
+  const { width, height } = await sharp(join(IN, f)).metadata()
+  await sharp(join(IN, f)).flatten({ background: FUNDAL_IMPLICIT }).removeAlpha().png({ compressionLevel: 9 }).toFile(join(OUT, f))
+  console.log(`  ▸ ${f.padEnd(22)} ${width}×${height}${width === 1024 && height === 500 ? '  ✓ exact 1024×500' : '  ✗ Play cere exact 1024×500'}`)
+}
+console.log(`done · ${capturi.length} captures + ${grafici.length} graphic(s), PNG with no alpha channel`)

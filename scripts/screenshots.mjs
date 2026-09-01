@@ -6,12 +6,19 @@
 // Also doubles as a verification channel: unlike the embedded preview pane, this browser really
 // composites, so animations settle and what is captured is what a student would see.
 import { spawn } from 'node:child_process'
-import { writeFileSync, mkdirSync, rmSync, existsSync } from 'node:fs'
+import { writeFileSync, readFileSync, mkdirSync, rmSync, existsSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
 const URL_ = process.argv[2] || 'http://localhost:5176'
 const OUT = process.argv[3] || '../poze/store'
+// Play holds screenshots PER LANGUAGE, and en-US is this listing's default language - the one the
+// rest of the world sees. A Romanian set uploaded there would be the listing's own screenshots
+// contradicting its own text. Everything the run has to click is therefore looked up by language.
+const LANG = (process.argv[4] || 'ro').toLowerCase()
+// DOAR_GRAFICA=1 renders only the 1024×500 feature graphic. The eight screenshots take a minute of
+// clicking through the app; the graphic is one paint, and it is the thing that gets iterated on.
+const DOAR_GRAFICA = process.env.DOAR_GRAFICA === '1'
 
 // This script is exposed as `npm run shots` in a public package.json, so it has to be findable on
 // something other than the machine it was written on. It used to hold one hard-coded Windows path
@@ -98,11 +105,29 @@ const goto = async (url) => { await send('Page.navigate', { url }); await sleep(
 // dial and the trace are DRAWN, from the exercise's own data, is the claim the whole listing rests
 // on and the one thing a screenshot of a dial cannot say by itself. The recap and the formula sheet
 // are self-evident and stay clean.
-const LEGENDE = {
-  '1-harta': '15 module, 49 de lecții, în ordinea de la curs',
-  '2-cadran': 'Cadranul e desenat din datele exercițiului, nu scanat',
-  '3-osciloscop': 'Ecran de osciloscop, desenat: 2 V/div, 500 µs/div',
+// Every string the run clicks or types, in both languages: lesson titles come from the bank, the
+// rest from src/i18n.tsx.
+const T = {
+  ro: { learn: '^Învață$', lab: 'Laboratorul meu', theory: 'Teorie', memorator: 'Memorator', close: 'Închide',
+        lectii: ['Aparate analogice (1)', 'Semnale (2)', 'Punți de curent continuu'] },
+  en: { learn: '^Learn$', lab: 'My Lab', theory: 'Theory', memorator: 'Formula sheet', close: 'Close',
+        lectii: ['Analog instruments (1)', 'Signals (2)', 'DC bridges'] },
+}[LANG]
+if (!T) { console.error(`Unknown language "${LANG}". Use ro or en.`); process.exit(1) }
+
+const LEGENDE_TOATE = {
+  ro: {
+    '1-harta': '15 module, 49 de lecții, în ordinea de la curs',
+    '2-cadran': 'Cadranul e desenat din datele exercițiului, nu scanat',
+    '3-osciloscop': 'Ecran de osciloscop, desenat: 2 V/div, 500 µs/div',
+  },
+  en: {
+    '1-harta': '15 modules, 49 lessons, in the order they are taught',
+    '2-cadran': 'The dial is drawn from the exercise data, not scanned',
+    '3-osciloscop': 'An oscilloscope screen, drawn: 2 V/div, 500 µs/div',
+  },
 }
+const LEGENDE = LEGENDE_TOATE[LANG]
 const legendaOn = text => evaluate(`(() => {
   const H = 78;
   // The band is FIXED, and the overlays are pushed down with it. Shrinking #root alone was not
@@ -200,7 +225,7 @@ const best = {}, plays = {};
 LECTII.forEach((id,i) => { best[id] = NOTE[i]; plays[id] = 1; });
 localStorage.clear();
 localStorage.setItem('meem_onboarded','true');
-localStorage.setItem('meem_lang','ro');
+localStorage.setItem('meem_lang','${LANG}');
 localStorage.setItem('meem_xp','2600');
 localStorage.setItem('meem_coins','120');
 localStorage.setItem('meem_streak', JSON.stringify({count:12,last:TODAY}));
@@ -214,7 +239,7 @@ localStorage.setItem('meem_skins', JSON.stringify({'__lab__':'lab-bronze'}));
 localStorage.setItem('meem_quests', JSON.stringify({date:TODAY,lessons:1,xp:25,perfect:1,reviews:0,exam:0,claimed:[]}));
 true`
 
-console.log('capturing at 412×915 @3× →', OUT)
+console.log(`capturing at 412×915 @3× · ${LANG} →`, OUT)
 
 // Exit whatever lesson is open: the X in the player header, then the app's OWN confirmation sheet.
 async function exitLesson() {
@@ -245,6 +270,7 @@ async function lessonShot(title, name) {
 // map, and the lab - which used to be second - moves to fourth. The capture order below is simply
 // whatever costs the fewest screen transitions.
 await goto(URL_)
+if (!DOAR_GRAFICA) {
 await evaluate(SEED)
 await goto(URL_)
 await evaluate(HELPERS)
@@ -252,24 +278,24 @@ await sleep(1200)
 await shot('1-harta')
 
 // My Lab
-await evaluate('window.__fire(window.__btn(/Laboratorul meu/)); true'); await sleep(1400)
+await evaluate(`window.__fire(window.__btn(new RegExp(${JSON.stringify(T.lab)}))); true`); await sleep(1400)
 await shot('4-laborator')
-await evaluate('window.__fire(window.__btn(/^Învață$/)); true'); await sleep(900)
+await evaluate(`window.__fire(window.__btn(new RegExp(${JSON.stringify(T.learn)}))); true`); await sleep(900)
 
 // The three figures the description promises and no capture used to show. Each of these lessons
 // opens ON its drawn exercise — verified against the bank, not hoped for:
 //   analog dial (meter), oscilloscope screen (scope), measuring bridge (bridge).
-await lessonShot('Aparate analogice (1)', '2-cadran')
-await lessonShot('Semnale (2)', '3-osciloscop')
-await lessonShot('Punți de curent continuu', '5-punte')
+await lessonShot(T.lectii[0], '2-cadran')
+await lessonShot(T.lectii[1], '3-osciloscop')
+await lessonShot(T.lectii[2], '5-punte')
 
 // The theory recap
-await evaluate('window.__fire([...document.querySelectorAll("button")].find(b => b.innerText.trim() === "Teorie")); true'); await sleep(1500)
+await evaluate(`window.__fire([...document.querySelectorAll("button")].find(b => b.innerText.trim() === ${JSON.stringify(T.theory)})); true`); await sleep(1500)
 await shot('6-teorie')
 
 // The formula sheet
-await evaluate('(() => { const b=window.__btn(/Închide/); if(b) window.__fire(b); return true })()'); await sleep(800)
-await evaluate('window.__fire(window.__aria("Memorator")); true'); await sleep(1500)
+await evaluate(`(() => { const b=window.__btn(new RegExp(${JSON.stringify(T.close)})); if(b) window.__fire(b); return true })()`); await sleep(800)
+await evaluate(`window.__fire(window.__aria(${JSON.stringify(T.memorator)})); true`); await sleep(1500)
 await shot('7-memorator')
 
 // The light theme, on the course map: a whole second look at the app, and the only screen that can
@@ -277,6 +303,65 @@ await shot('7-memorator')
 await evaluate('localStorage.setItem("meem_theme", JSON.stringify("light")); true')
 await goto(URL_); await sleep(1400)
 await shot('8-tema-luminoasa')
+}
+
+// ─── the 1024×500 feature graphic, in both languages ────────────────────────
+// It used to be a hand-made file: one language, and nothing to regenerate it from. Play shows the
+// graphic per language, so an en-US listing was going to carry Romanian marketing text. Rendering it
+// here, inside the running app, is what gets it the app's own faces and tokens - the page already
+// has Chakra Petch loaded and :root already carries the palette.
+const GRAFICA_TOATE = {
+  ro: { titlu: 'Măsurări Electrice și Electronice',
+        r1: '15 module · 305 exerciții · laborator virtual',
+        r2: 'funcționează offline · fără reclame · fără cont' },
+  en: { titlu: 'Electrical and Electronic Measurements',
+           r1: '15 modules · 305 exercises · virtual lab',
+           r2: 'works offline · no ads · no account' },
+}
+const ICON = 'data:image/png;base64,' + readFileSync('../poze/play/icon-512-play.png').toString('base64')
+
+await send('Emulation.setDeviceMetricsOverride', { width: 1024, height: 500, deviceScaleFactor: 1, mobile: false })
+await goto(URL_)
+const GRAFICA = { [LANG === 'ro' ? '' : '-' + LANG]: GRAFICA_TOATE[LANG] }
+for (const [sufix, t] of Object.entries(GRAFICA)) {
+  await evaluate(`(() => {
+    document.documentElement.dataset.theme = 'dark';
+    document.body.innerHTML = ${JSON.stringify(`
+      <div style="position:fixed;inset:0;background:#0A0E12;overflow:hidden;display:flex;align-items:center;gap:54px;padding:0 64px;box-sizing:border-box">
+        <div style="position:absolute;inset:0;opacity:.5;background:
+          repeating-linear-gradient(0deg,transparent 0 79px,#1E2A36 79px 80px),
+          repeating-linear-gradient(90deg,transparent 0 79px,#1E2A36 79px 80px)"></div>
+        <div style="position:absolute;left:-120px;top:-60px;width:560px;height:620px;border-radius:50%;
+          background:radial-gradient(circle,#12C77E33,transparent 65%)"></div>
+        <svg viewBox="0 0 1024 500" style="position:absolute;inset:0" preserveAspectRatio="none">
+          <!-- The curve has to MISS the text block (x 330-930, y 140-360): the first version ran
+               straight through "no ads". It crosses high where the icon covers it, dips under the
+               copy, and only climbs again to the right of the last line. -->
+          <!-- One continuous curve, kept out of the text by geometry rather than by luck: the block
+               sits from x=330 to x=930 between y=140 and y=360, so the descent is forced into the
+               gutter between the icon and the text, and the trough stays below y=420 for the whole
+               width of the block. The first render struck a line straight through "no ads"; the
+               second avoided it by breaking the wave in two, which read as a hook. -->
+          <path d="M-20 300 C 90 300, 150 150, 230 150 C 300 150, 300 380, 352 430 S 660 495, 840 440 S 980 260, 1044 150"
+            fill="none" stroke="#2BF5A0" stroke-width="5" stroke-linecap="round" opacity=".95"
+            style="filter:drop-shadow(0 0 18px #2BF5A088)"/>
+        </svg>
+        <img src="${ICON}" alt="" style="position:relative;width:212px;height:212px;border-radius:46px;flex:none">
+        <div style="position:relative">
+          <div style="font-family:Chakra Petch,Inter,sans-serif;font-weight:600;font-size:76px;line-height:1;
+            letter-spacing:.14em;color:#E8F0F4">MEE</div>
+          <div style="font-family:Chakra Petch,Inter,sans-serif;font-weight:600;font-size:31px;line-height:1.2;
+            margin-top:16px;color:#2BF5A0">${t.titlu}</div>
+          <div style="font-family:Inter,sans-serif;font-size:21px;line-height:1.55;margin-top:18px;color:#B6C6D2">${t.r1}</div>
+          <div style="font-family:Inter,sans-serif;font-size:21px;line-height:1.55;color:#9DB0BC">${t.r2}</div>
+        </div>
+      </div>`)};
+    return true })()`)
+  await sleep(700)
+  const { data } = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false })
+  writeFileSync(`${OUT}/feature-graphic-1024x500${sufix}.png`, Buffer.from(data, 'base64'))
+  console.log('  ▸ feature-graphic-1024x500' + sufix + '.png')
+}
 
 console.log('done')
 ws.close()
