@@ -1,6 +1,6 @@
 # Privacy Policy — MEE (Măsurări Electrice și Electronice)
 
-_Last updated: 19 August 2026_
+_Last updated: 1 September 2026_
 
 ## 🇬🇧 English
 
@@ -21,8 +21,11 @@ local storage on mobile), under keys prefixed `meem_`. Two kinds of thing are ke
   Mode, and whether the first-run introduction has been shown.
 
 The app never sends any of it anywhere. It leaves your device only if **you** deliberately send it:
-*Export* in Settings writes a backup file, and *Share my score* and *Share the diploma* hand a short
-text to whichever app you choose. Nothing is transmitted without that explicit action on your part.
+*Export* in Settings hands a backup file to the Android share sheet, where **you** choose what
+receives it — Files, Drive, a message; if the sheet cannot open, the file is written into the app's
+own folder on the device and the app tells you the path. *Share my score* and *Share the diploma*
+hand a short text to whichever app you choose. Nothing is transmitted without that explicit action
+on your part.
 
 **The end-of-course questionnaire.** Settings may show a *Chestionar de final* button. It sends
 nothing. It opens an external questionnaire, hosted on Microsoft Forms, in your browser, and shows
@@ -46,9 +49,12 @@ browser identifier in its own logs when the files are downloaded. Neither receiv
 your progress, your answers or your use of the app; after the first load the app runs from your
 device's cache and asks for nothing further.
 
-**Permissions.** The app requests no device permissions: no camera, no microphone, no location, no
-contacts, no files. On a phone it may use short vibrations as feedback; you can turn those off in
-Settings.
+**Permissions.** No camera, no microphone, no location, no contacts, and — deliberately — **no
+storage permission**: the export writes only where an app may write without asking, which is why its
+fallback destination is the app's own folder. The Android package declares exactly two permissions,
+both of the kind that never produce a prompt: `INTERNET`, which the Android runtime requires of any
+web-view app even though this one is designed to run offline, and `VIBRATE`, for the short haptic
+feedback you can turn off in Settings.
 
 **Children.** The app is aimed at university students, contains no user-generated content, no chat
 and no advertising, and collects nothing — so it poses no specific risk to minors.
@@ -88,7 +94,9 @@ aplicației, pe telefon), sub chei cu prefixul `meem_`. Se păstrează două cat
   dacă introducerea de la prima pornire a fost afișată.
 
 Aplicația nu trimite nimic din toate astea nicăieri. Datele îți părăsesc dispozitivul doar dacă le
-trimiți **tu**, în mod deliberat: butonul *Exportă* din Setări scrie un fișier de rezervă, iar
+trimiți **tu**, în mod deliberat: butonul *Exportă* din Setări dă fișierul de rezervă foii de
+partajare din Android, unde alegi **tu** ce îl primește — Fișiere, Drive, un mesaj; dacă foaia nu se
+poate deschide, fișierul e scris în folderul propriu al aplicației, iar aplicația îți spune calea.
 *Distribuie scorul* și *Distribuie diploma* dau un text scurt aplicației pe care o alegi tu. Nimic nu
 se transmite fără această acțiune explicită.
 
@@ -116,8 +124,12 @@ primește nimic despre progresul tău, despre răspunsurile tale sau despre felu
 aplicația; după prima încărcare, aplicația rulează din memoria locală a dispozitivului și nu mai
 cere nimic.
 
-**Permisiuni.** Aplicația nu cere nicio permisiune: fără cameră, microfon, locație, contacte sau
-fișiere. Pe telefon poate folosi vibrații scurte ca răspuns tactil; le poți opri din Setări.
+**Permisiuni.** Fără cameră, fără microfon, fără locație, fără contacte și — deliberat — **fără
+permisiune de stocare**: exportul scrie doar acolo unde o aplicație poate scrie fără să ceară voie,
+de aceea destinația lui de rezervă e folderul propriu al aplicației. Pachetul Android declară exact
+două permisiuni, amândouă din categoria care nu produce nicio cerere pe ecran: `INTERNET`, pe care
+sistemul o cere oricărei aplicații cu web view, chiar dacă asta e gândită să funcționeze offline, și
+`VIBRATE`, pentru răspunsul tactil scurt pe care îl poți opri din Setări.
 
 **Minori.** Aplicația se adresează studenților, nu conține conținut generat de utilizatori, nu are
 chat și nici publicitate, și nu colectează nimic — deci nu prezintă riscuri specifice pentru minori.
