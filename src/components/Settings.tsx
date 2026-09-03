@@ -27,8 +27,8 @@ const FEEDBACK_EMAIL = 'dmaecseb108@gmail.com'
 // PRIVACY.md, claimed a public clone got an empty string. It does not; that was wishful.)
 const QUESTIONNAIRE_URL = 'https://forms.cloud.microsoft/e/Xk9dLz5iTN'
 
-export default function Settings({ onClose, onDiploma }: { onClose: () => void; onDiploma: () => void }) {
-  const { xp, coins, streak, streakLive, completed, best, inventory, studyMode, goal, theme, sound, haptics, exams, setStudyMode, setGoal, setTheme, setSound, setHaptics, addCoins, reset } = useGame()
+export default function Settings({ onClose, onDiploma, onIntro }: { onClose: () => void; onDiploma: () => void; onIntro: () => void }) {
+  const { xp, coins, streak, streakLive, completed, best, inventory, studyMode, goal, theme, sound, haptics, exams, setStudyMode, setGoal, setTheme, setSound, setHaptics, addCoins, restoreHints, reset } = useGame()
   const { t, lang, setLang } = useT()
   useDismiss(onClose)
   // native dialogs are unreliable (suppressed after repeated use, ignored by WebViews), so the
@@ -210,6 +210,19 @@ export default function Settings({ onClose, onDiploma }: { onClose: () => void; 
             <Toggle label={t('studyMode')} hint={t('studyModeHint')} on={studyMode} onToggle={() => setStudyMode(!studyMode)} />
             <Toggle label={t('sound')} on={sound} onToggle={() => setSound(!sound)} />
             <Toggle label={t('haptics')} on={haptics} onToggle={() => setHaptics(!haptics)} />
+            {/* The walkthrough is shown once, on the launch where a student knows least about the
+                app and is least inclined to read — so there has to be a way back to it that is not
+                "reinstall". It restores the dismissed hint bands in the same press: they say the
+                same things in context, and somebody asking to see the introduction again is asking
+                for exactly that. Progress is untouched; this button explains, it does not reset. */}
+            <button onClick={() => { restoreHints(); onIntro() }}
+              className="flex items-center gap-3 rounded-xl border border-border px-3 py-2.5 text-left transition-colors hover:border-primary hover:bg-panel">
+              <Icon name="recap" size={16} className="shrink-0 text-accent" />
+              <span className="min-w-0">
+                <span className="block text-sm font-semibold text-fg">{t('replayIntro')}</span>
+                <span className="block text-[0.6875rem] leading-relaxed text-faint">{t('replayIntroHint')}</span>
+              </span>
+            </button>
           </div>
         </Section>
 

@@ -272,7 +272,10 @@ stripComments(visualSrc).split('\n').forEach((line, i) => {
 // A key usePersisted owns but reset() never touches is residue the student cannot see or clear.
 // Preferences are meant to survive "Resetează progresul"; progress is not.
 const storeSrc = readFileSync(join(SRC, 'store.tsx'), 'utf8')
-const PREFS = new Set(['meem_goal', 'meem_studymode', 'meem_bench', 'meem_theme', 'meem_sound', 'meem_haptics', 'meem_onboarded'])
+// meem_hints sits here beside meem_onboarded for the same reason: both record what the student has
+// been TOLD, not what they have DONE. Wiping progress and being walked through the app again are
+// two different requests, and only one of them is on the button.
+const PREFS = new Set(['meem_goal', 'meem_studymode', 'meem_bench', 'meem_theme', 'meem_sound', 'meem_haptics', 'meem_onboarded', 'meem_hints'])
 const resetAt = storeSrc.indexOf('const reset = ')
 const resetBody = resetAt < 0 ? '' : storeSrc.slice(resetAt, storeSrc.indexOf('\n  }', resetAt))
 for (const m of storeSrc.matchAll(/const \[(\w+), (\w+)\] = usePersisted[^(]*\(\s*'(meem_\w+)'/g)) {

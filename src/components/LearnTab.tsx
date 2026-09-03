@@ -10,6 +10,7 @@ import { EQUIPMENT } from '../content/equipment'
 import { hueFg } from '../ui/hue'
 import { Icon } from './icons'
 import QuestsCard from './QuestsCard'
+import HintBand from './HintBand'
 
 const ROWH = 92
 
@@ -38,6 +39,11 @@ export default function LearnTab({ course, onStart, onReview, onRecap, onExam }:
           <Icon name="bolt" size={14} className="mt-0.5 shrink-0" />{t('noStorage')}
         </p>
       )}
+      {/* The map's own rules, said on the map. Two of the three things the walkthrough covers are
+          only true here — that no module is locked, and that lessons inside one are — and the third
+          (XP is not currency) is the confusion the header creates every time it is looked at. */}
+      <HintBand id="learn" icon="learn" text={t('hintLearn')} />
+
       {/* Daily goal */}
       <div className="mb-4 rounded-2xl border border-border bg-surface p-3">
         <div className="mb-1 flex items-center justify-between text-xs">

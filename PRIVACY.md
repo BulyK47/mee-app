@@ -1,6 +1,6 @@
 # Privacy Policy — MEE (Măsurări Electrice și Electronice)
 
-_Last updated: 1 September 2026_
+_Last updated: 3 September 2026_
 
 ## 🇬🇧 English
 
@@ -18,7 +18,7 @@ local storage on mobile), under keys prefixed `meem_`. Two kinds of thing are ke
   have run, the mistakes scheduled for review and their spaced-repetition schedule, and the date the
   diploma was awarded.
 - **Preferences** — language, theme, sound, vibration, daily-goal target, selected bench, Study
-  Mode, and whether the first-run introduction has been shown.
+  Mode, whether the first-run introduction has been shown, and which in-app hints you have closed.
 
 The app never sends any of it anywhere. It leaves your device only if **you** deliberately send it:
 *Export* in Settings hands a backup file to the Android share sheet, where **you** choose what
@@ -91,7 +91,8 @@ aplicației, pe telefon), sub chei cu prefixul `meem_`. Se păstrează două cat
   zilnic, misiunile zilnice, câte simulări de examen ai dat, greșelile programate pentru repetare și
   programul lor de repetiție, precum și data la care a fost acordată diploma.
 - **Preferințe** — limba, tema, sunetul, vibrațiile, ținta zilnică, banca selectată, Modul Studiu și
-  dacă introducerea de la prima pornire a fost afișată.
+  dacă introducerea de la
+  prima pornire a fost afișată și ce indicii din aplicație ai închis.
 
 Aplicația nu trimite nimic din toate astea nicăieri. Datele îți părăsesc dispozitivul doar dacă le
 trimiți **tu**, în mod deliberat: butonul *Exportă* din Setări dă fișierul de rezervă foii de

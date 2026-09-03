@@ -128,6 +128,7 @@ interface GameCtx {
   freezes: number
   exams: number
   onboarded: boolean
+  hiddenHints: string[]
   finishLesson: (id: string, xp: number, coins: number, accuracy: number) => void
   buy: (itemId: string, cost: number) => boolean
   addCoins: (n: number) => void
@@ -146,6 +147,8 @@ interface GameCtx {
   setHaptics: (b: boolean) => void
   setFreezes: (n: number | ((p: number) => number)) => void
   setOnboarded: () => void
+  hideHint: (id: string) => void
+  restoreHints: () => void
   reset: () => void
 }
 const Ctx = createContext<GameCtx>(null!)
@@ -252,6 +255,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [exams, setExams] = usePersisted('meem_exams', 0)
   const [onboarded, setOnboardedState] = usePersisted('meem_onboarded', false)
   const setOnboarded = () => setOnboardedState(true)
+
+  // Which one-off hint bands the student has already read and closed. This belongs to the same
+  // family as `onboarded` — a record of what they have been TOLD, not of what they have DONE — so
+  // reset() leaves it alone for exactly the reason it leaves the onboarding flag alone: somebody
+  // asking to wipe their progress is not asking to be walked through the app again. The way back
+  // is deliberate and explicit: "Revezi prezentarea" in Settings restores both at once.
+  const [hiddenHints, setHiddenHints] = usePersisted<string[]>('meem_hints', [])
+  const hideHint = (id: string) => setHiddenHints(h => (h.includes(id) ? h : [...h, id]))
+  const restoreHints = () => setHiddenHints([])
 
   // Mistakes whose exercise the CURRENTLY LOADED course can resolve. The review queue and the
   // "due" badge read this, so a card that can never be reviewed cannot get them permanently stuck —
@@ -499,9 +511,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
   return (
     <Ctx.Provider value={{
       xp, coins, completed, best, plays, inventory, streak, streakLive: liveStreak(streak, freezes, today()), daily, quests, goal, studyMode, hearts, mistakes, liveMistakes, srs, bench, skins,
-      theme, sound, haptics, freezes, exams, onboarded,
+      theme, sound, haptics, freezes, exams, onboarded, hiddenHints,
       finishLesson, buy, addCoins, claimQuest, finishExam, gradeMistake, loseHeart, refillHearts, buyHearts, setStudyMode, setGoal, setBench, setSkin,
-      setTheme, setSound, setHaptics, setFreezes, setOnboarded, reset,
+      setTheme, setSound, setHaptics, setFreezes, setOnboarded, hideHint, restoreHints, reset,
     }}>
       {children}
     </Ctx.Provider>

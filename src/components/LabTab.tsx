@@ -7,6 +7,7 @@ import { useGame, HEART_REFILL_COST, MAX_HEARTS } from '../store'
 import { useT, L } from '../i18n'
 import { Icon } from './icons'
 import LabBench, { BENCHES, type BenchTheme } from './LabBench'
+import HintBand from './HintBand'
 import { playBuy } from '../ui/audio'
 import { vibrate } from '../ui/haptics'
 import { useDismiss } from '../ui/useDismiss'
@@ -43,6 +44,12 @@ export default function LabTab() {
           </button>
         ))}
       </div>
+      {/* Placed under the tabs rather than at the top of the screen, because it is about the tabs:
+          each one carries its own shop (`items` is filtered by bench), so a student who never
+          switches never sees two thirds of the catalogue. Sits above the bench so the sentence and
+          the thing it describes are in view together. */}
+      <HintBand id="lab" icon="lab" text={t('hintLab')} />
+
       <LabBench theme={benchId} />
       {owned.length === 0 && <p className="mb-1 mt-2 text-center text-xs text-faint">{t('emptyLab')}</p>}
 

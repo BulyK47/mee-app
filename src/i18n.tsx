@@ -48,6 +48,9 @@ const STR = {
     labPurpose: 'Cumpără și echipează instrumente cu Volții câștigați la lecții.',
     voltsHint: 'Volții se strâng în Laboratorul meu — de acolo cumperi și echipezi instrumente.',
     unlockedEquip: 'Ai deblocat', equipInLab: 'Îl poți echipa în Laboratorul meu.',
+    hintLearn: 'Toate modulele sunt deschise — doar lecțiile din interiorul unui modul se deblochează pe rând. XP ridică nivelul; Volții se cheltuie în Laboratorul meu.',
+    hintLab: 'Cele trei file de mai sus sunt trei bancuri diferite, fiecare cu magazinul lui. Un instrument cumpărat apare direct pe bancul lui.',
+    replayIntro: 'Revezi prezentarea', replayIntroHint: 'Redeschide pașii de la prima pornire și readuce indiciile pe care le-ai închis.',
   },
   en: {
     learn: 'Learn', lab: 'My Lab', check: 'Check', cont: 'Continue', hint: 'Hint',
@@ -84,6 +87,9 @@ const STR = {
     labPurpose: 'Buy and equip instruments with the Volts you earn in lessons.',
     voltsHint: 'Volts collect in My Lab — spend them there to buy and equip instruments.',
     unlockedEquip: 'You unlocked', equipInLab: 'You can equip it in My Lab.',
+    hintLearn: 'Every module is open — only the lessons inside a module unlock one after another. XP raises your level; Volts are spent in My Lab.',
+    hintLab: 'The three tabs above are three different workbenches, each with its own shop. An instrument you buy appears straight on its bench.',
+    replayIntro: 'Replay the walkthrough', replayIntroHint: 'Reopens the first-launch walkthrough and brings back any hints you closed.',
   },
 } as const
 

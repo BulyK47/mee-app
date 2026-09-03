@@ -43,6 +43,11 @@ export default function App() {
   const [exam, setExam] = useState<Exercise[] | null>(null)
   const [examRun, setExamRun] = useState(0) // bumped on each new exam so ExamPlayer remounts fresh
   const [diploma, setDiploma] = useState(false)
+  // The walkthrough replayed on demand from Settings. It is a separate flag rather than a reset of
+  // the persisted `onboarded` one: clearing that would put the app back into the first-launch gate,
+  // which asks for the language again and cannot be dismissed — wrong on both counts for somebody
+  // who only wanted to re-read the tour.
+  const [tour, setTour] = useState(false)
   const theme = game?.theme ?? 'dark'
 
   useEffect(() => {
@@ -128,12 +133,12 @@ export default function App() {
       <Suspense fallback={null}>
         {active && <LessonPlayer lesson={active} onExit={() => setActive(null)} onGoLab={() => { setActive(null); setTab('lab') }} />}
         {review && <LessonPlayer lesson={review} isReview onExit={() => setReview(null)} onGoLab={() => setReview(null)} />}
-        {settings && <Settings onClose={() => setSettings(false)} onDiploma={() => { setSettings(false); setDiploma(true) }} />}
+        {settings && <Settings onClose={() => setSettings(false)} onDiploma={() => { setSettings(false); setDiploma(true) }} onIntro={() => { setSettings(false); setTour(true) }} />}
         {recap && <RecapCard recap={recap} onClose={() => setRecap(null)} />}
         {memorator && <Memorator onClose={() => setMemorator(false)} />}
         {exam && <ExamPlayer key={examRun} exercises={exam} onClose={() => setExam(null)} onRetry={startExam} />}
         {diploma && <Diploma onClose={() => setDiploma(false)} />}
-        {!onboarded && <Onboarding onDone={setOnboarded} />}
+        {(!onboarded || tour) && <Onboarding tourOnly={onboarded} onDone={() => { setOnboarded(); setTour(false) }} />}
       </Suspense>
     </div>
   )
