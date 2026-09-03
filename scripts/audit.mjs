@@ -165,10 +165,20 @@ if (!aabs.length) {
 
     // The demo trap, measured rather than assumed: a full build's main chunk is ~870 kB, the
     // bank-less demo's ~290 kB. Anything in between deserves a look before it reaches students.
-    const main = [...entries.entries()].find(([k]) => /^base\/assets\/public\/assets\/index-.*\.js$/.test(k))
+    //
+    // `index-*.js` matches FOUR entries, not one: Vite gives that name to the entry chunk and to
+    // three small modules beside it (354 B, 1.5 kB, 8.4 kB). Taking the first match made the verdict
+    // depend on where the content hash happened to sort — vc8 passed and vc9 failed with "0 kB",
+    // on two bundles built from the same tree by the same command. The biggest one is the entry
+    // chunk by definition, so pick that and say how many were weighed, or the next hash collision
+    // in alphabetical order silently re-arms the same false alarm.
+    const mains = [...entries.entries()]
+      .filter(([k]) => /^base\/assets\/public\/assets\/index-.*\.js$/.test(k))
+      .sort((a, b) => b[1].size - a[1].size)
+    const main = mains[0]
     if (!main) WARN('could not find the main JS chunk inside the bundle')
     else if (main[1].size < 500_000) FAIL(`the bundle's main chunk is ${(main[1].size / 1024).toFixed(0)} kB — that is the DEMO build (10 exercises), not the course. It was built without content-private/`)
-    else OK(`main chunk ${(main[1].size / 1024).toFixed(0)} kB — the full course, not the demo`)
+    else OK(`main chunk ${(main[1].size / 1024).toFixed(0)} kB — the full course, not the demo (largest of ${mains.length} index-*.js entries)`)
 
     // The build stamp has to be inside the artefact, not merely in the source: it is what a tester
     // reads back to you, and the only thing that makes a report attributable to a build.
