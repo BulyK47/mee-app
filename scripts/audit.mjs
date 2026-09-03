@@ -130,6 +130,9 @@ P('\n════ 2. THE PACKAGE — is the .aab the one you think it is ══�
 // expensive one — a bundle built from a tree WITHOUT content-private/, which ships the 10-exercise
 // demo module to students with no error anywhere. Each is checked from the artefact itself.
 // Only this project's own packages: a public clone's parent directory is somebody else's disk.
+// Filled from the SHIPPED manifest below, so section 3 can check what actually merged rather than
+// what the source file asks for. Stays null when there is no bundle to read.
+let bundlePerms = null
 const aabs = exists(UP) ? fs.readdirSync(UP).filter(f => /^mee-.*\.aab$/.test(f)) : []
 if (!aabs.length) {
   SKIP('no .aab staged next to the project — nothing to inspect')
@@ -156,6 +159,18 @@ if (!aabs.length) {
         if (i < 0 || m[i + label.length] !== 0x1a) return null
         return m.toString('latin1', i + label.length + 2, i + label.length + 2 + m[i + label.length + 1])
       }
+      // Permissions as they exist AFTER manifest merging — the only list that matches what Play
+      // reads. In the protobuf each <uses-permission> element name is followed by its android:name
+      // value a few bytes later, so take the first permission-shaped string after each one. Doing
+      // it this way rather than scanning the whole blob matters: android:permission="…DUMP" also
+      // appears, as the guard on an exported Play Core component, and that is a component being
+      // PROTECTED, not a permission being requested.
+      bundlePerms = [...m.toString('latin1').matchAll(/uses-permission/g)]
+        // anchored at a LETTER: the protobuf writes a length byte immediately before the string,
+        // and a digit-leading character class swallows it into the name ("9ro.mee.laborator…")
+        .map(u => (m.toString('latin1', u.index, u.index + 176).match(/[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z0-9_]+)*\.(?:permission\.[A-Z_]+|[A-Z][A-Z_]{3,})/) || [])[0])
+        .filter(Boolean)
+
       const inCode = strAfter('versionCode'), inName = strAfter('versionName')
       if (versionCode && inCode !== versionCode) FAIL(`the bundle says versionCode ${inCode}, build.gradle says ${versionCode} — it was built before the bump`)
       else if (inCode) OK(`bundle versionCode ${inCode}, versionName ${inName}`)
@@ -223,9 +238,26 @@ if (!gradle) {
   const expected = ['INTERNET', 'VIBRATE']
   const extra = perms.filter(p => !expected.includes(p))
   const missing = expected.filter(p => !perms.includes(p))
-  if (!extra.length && !missing.length) OK(`permissions are exactly ${perms.join(' + ')}`)
+  if (!extra.length && !missing.length) OK(`permissions are exactly ${perms.join(' + ')} in the source manifest`)
   if (extra.length) FAIL(`unexpected permission(s): ${extra.join(', ')} — the data-safety form and the listing bullet "nu cere acces la cameră, microfon, locație sau contacte" both have to be revisited`)
   if (missing.length) WARN(`expected permission(s) missing: ${missing.join(', ')} (VIBRATE is what makes the Vibrații switch honest)`)
+
+  // …and the same question asked of the artefact, which is the one that answers it. The source file
+  // above cannot see what a library merged in, and the comment on that check has always claimed it
+  // could. Adding the in-app-review plugin is exactly the case: it pulls in Play Core, whose
+  // components arrive with their own manifest. It turned out to add no permission at all — the
+  // androidx one below was already in vc8 — but that was a fact to establish, not to assume.
+  if (!bundlePerms) SKIP('no bundle manifest read — merged permissions not checked')
+  else {
+    // A signature-level permission androidx defines for its own runtime receivers, named after the
+    // application id. It is granted only to this app, is invisible on the store listing, and has
+    // been present since vc8.
+    const androidxOwn = `${appId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`
+    const allowed = ['android.permission.INTERNET', 'android.permission.VIBRATE', androidxOwn]
+    const surprises = bundlePerms.filter(p => !allowed.includes(p))
+    if (!surprises.length) OK(`merged manifest requests only ${bundlePerms.length} known permission(s) — nothing a library added behind the source file`)
+    else FAIL(`the SHIPPED manifest requests ${surprises.join(', ')}, which the source manifest does not — a library merged it in, and the data-safety form is now wrong`)
+  }
 
   // The window background is what paints the strip behind the clock on the older-WebView path,
   // where Capacitor pads the web view instead of passing insets into the page. Unset, it resolves
@@ -314,6 +346,7 @@ P('\n════ 6. WHAT THE APP PROMISES ABOUT PRIVACY, vs what the code does 
   // here has to be disclosed before it ships.
   const disclosed = {
     'forms.cloud.microsoft': 'the end-of-course questionnaire, opened in the system browser',
+    'play.google.com': 'the store listing, opened by Setări → Evaluează aplicația',
     'github.com': 'the public repository and the privacy policy',
     'www.w3.org': 'the SVG/MathML namespace, not a request',
     'orcid.org': 'the author identifier in metadata',
