@@ -8,7 +8,7 @@
 // Nothing printed here may quote an answer key. Failures name the exercise and describe the shape
 // of the problem — enough to find it, not enough to leak the bank into a log or a CI transcript.
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs'
-import { join, dirname } from 'node:path'
+import { join, dirname, basename } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
@@ -284,6 +284,44 @@ for (const m of storeSrc.matchAll(/const \[(\w+), (\w+)\] = usePersisted[^(]*\(\
   const names = [setter, setter.replace(/State$/, ''), 'set' + state[0].toUpperCase() + state.slice(1)]
   if (!names.some(n => new RegExp('\\b' + n + '\\s*\\(').test(resetBody)))
     add('reset', key, 'progress key that reset() never clears')
+}
+
+// ── 8b. every meem_ key written OUTSIDE usePersisted must be classified ──────
+// Check 8 only sees the keys store.tsx declares through usePersisted. Three keys are written
+// directly — the language, the diploma's issue date, and the flag saying Play has already been
+// asked for a review — and none of them was ever within reach of that scan. meem_diploma_date is
+// the proof it matters: reset() leaving it behind produced a certificate dated to a student's FIRST
+// attempt, and that was found by hand rather than by this file.
+//
+// A key held in a `const` (review.ts) is invisible to a scan for writeLocal('meem_…'), so the sweep
+// is over every meem_ STRING LITERAL in src/ instead, whatever is done with it. Each one must be
+// listed below with the reason it behaves as it does. The point is not the list; it is that a new
+// key cannot be added without someone deciding, in writing, whether wiping progress should clear it.
+const DIRECT_KEYS = {
+  meem_lang: 'preference — survives reset, like every other preference',
+  meem_diploma_date: 'progress — reset() removes it explicitly (a certificate must not keep the date of an abandoned first attempt)',
+  meem_review_asked: 'deliberate residue — kept ACROSS reset on purpose, so wiping progress cannot become a way to re-trigger the Play rating dialog',
+}
+const srcFiles = []
+;(function walk(dir) {
+  for (const e of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, e.name)
+    if (e.isDirectory()) walk(full)
+    else if (/\.(ts|tsx)$/.test(e.name)) srcFiles.push(full)
+  }
+})(SRC)
+const declared = new Set([...storeSrc.matchAll(/usePersisted[^(]*\(\s*'(meem_\w+)'/g)].map(m => m[1]))
+const seen = new Map()
+for (const f of srcFiles) {
+  for (const m of readFileSync(f, 'utf8').matchAll(/'(meem_\w+)'/g)) {
+    if (!declared.has(m[1]) && !seen.has(m[1])) seen.set(m[1], basename(f))
+  }
+}
+for (const [key, where] of seen) {
+  if (!DIRECT_KEYS[key]) add('reset', key, `storage key written outside usePersisted (${where}) with no recorded decision about reset()`)
+}
+for (const key of Object.keys(DIRECT_KEYS)) {
+  if (!seen.has(key) && !declared.has(key)) add('reset', key, 'classified here but no longer used anywhere in src/ — the note is stale')
 }
 
 // ── report ───────────────────────────────────────────────────────────────────
