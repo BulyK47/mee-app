@@ -37,6 +37,13 @@ nothing that identifies you. Expect a university sign-in screen first: the form 
 university accounts, purely as a gate against outside replies. Your address is used to open the
 form and is not recorded with your answers.
 
+**Rating the app.** Settings has a *Rate this app* row, which opens the Google Play listing — in the
+Play app if it is installed, otherwise in your browser. Separately, after you finish a whole module,
+the app asks Google Play once per install to show **its own** rating dialog. That request carries
+nothing about you or about your progress, the app never learns whether the dialog was shown or what
+you answered, and it is asked at most once whatever you do. Nothing about ratings is stored beyond a
+single local flag recording that the request was made.
+
 **Network access.** The app is designed to work offline. It downloads its own files the first time
 you open it and caches them so it can run without a connection. It makes no other network requests:
 no analytics, no advertising, no content delivery network, no fonts or scripts from third parties.
@@ -110,6 +117,13 @@ formular, iar formularul nu are acces la aplicație. Odată deschisă pagina, e�
 nimic care să te identifice. Așteaptă-te mai întâi la un ecran de autentificare instituțională:
 formularul e restricționat la conturile universității, strict ca filtru împotriva răspunsurilor
 din afară. Adresa servește la deschiderea formularului și nu se înregistrează cu răspunsurile tale.
+
+**Evaluarea aplicației.** În Setări există rândul *Evaluează aplicația*, care deschide pagina din
+Google Play — în aplicația Play, dacă e instalată, altfel în browser. Separat, după ce termini un
+modul întreg, aplicația cere o singură dată pe instalare ca Google Play să afișeze dialogul **lui**
+de evaluare. Cererea nu duce cu ea nimic despre tine sau despre progresul tău, aplicația nu află
+niciodată dacă dialogul a fost afișat sau ce ai răspuns, iar cererea se face cel mult o dată, orice
+ai face. Despre evaluări nu se păstrează nimic în afara unui semn local că cererea a fost făcută.
 
 **Acces la rețea.** Aplicația este gândită să funcționeze offline. Își descarcă propriile fișiere la
 prima deschidere și le păstrează în memoria locală, ca să poată rula fără conexiune. Nu face nicio

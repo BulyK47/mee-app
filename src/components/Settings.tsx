@@ -12,6 +12,7 @@ import { ConfirmDialog } from '../ui/Confirm'
 import { keysLocal, readLocal, writeLocal, removeLocal } from '../storage'
 import { copyText, isAbort } from '../ui/clipboard'
 import { saveTextFile } from '../ui/saveFile'
+import { openStoreListing } from '../ui/review'
 
 // Paste a web form URL here to collect structured feedback; empty = opens the student's email app.
 const FEEDBACK_URL = ''
@@ -221,6 +222,18 @@ export default function Settings({ onClose, onDiploma, onIntro }: { onClose: () 
               <span className="min-w-0">
                 <span className="block text-sm font-semibold text-fg">{t('replayIntro')}</span>
                 <span className="block text-[0.6875rem] leading-relaxed text-faint">{t('replayIntroHint')}</span>
+              </span>
+            </button>
+            {/* This opens the store PAGE. It does not, and must not, trigger Play's in-app review
+                dialog: Google's guidance forbids a control that does that ("you should not have a
+                call-to-action option (such as a button) to trigger the review flow"). The dialog is
+                asked for silently elsewhere — src/ui/review.ts holds both halves and the reasoning. */}
+            <button onClick={() => void openStoreListing()}
+              className="flex items-center gap-3 rounded-xl border border-border px-3 py-2.5 text-left transition-colors hover:border-primary hover:bg-panel">
+              <Icon name="star" size={16} className="shrink-0 text-warn" />
+              <span className="min-w-0">
+                <span className="block text-sm font-semibold text-fg">{t('rateApp')}</span>
+                <span className="block text-[0.6875rem] leading-relaxed text-faint">{t('rateAppHint')}</span>
               </span>
             </button>
           </div>

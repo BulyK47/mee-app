@@ -6,6 +6,7 @@ import { isCorrect, parseNum } from '../grader'
 import { Icon } from './icons'
 import { Formula } from '../ui/Formula'
 import { playCorrect, playWrong, playLevelUp, playChest } from '../ui/audio'
+import { requestInAppReview } from '../ui/review'
 import { vibrate } from '../ui/haptics'
 import { useCountUp } from '../ui/motion'
 import { useDismiss } from '../ui/useDismiss'
@@ -454,6 +455,9 @@ function ResultsScreen({ isReview, accuracy, xp, coins, perfect, leveled, level,
     if (sound) playChest()
     if (haptics) vibrate([12, 30, 12])
   }
+  // `void`, never awaited: the screen must close at once whether or not Play decides to show
+  // anything, and requestInAppReview resolving tells us nothing about whether it did.
+  const leave = (go: () => void) => () => { if (unlocked) void requestInAppReview(); go() }
   return (
     <div ref={panel} tabIndex={-1} aria-labelledby="lp-results-title"
       className="anim-sheet fixed inset-0 z-50 mx-auto flex max-w-md flex-col overflow-y-auto bg-bg pt-[var(--sa-top)] pr-[calc(2rem+var(--sa-right))] pb-[var(--sa-bottom)] pl-[calc(2rem+var(--sa-left))] text-center outline-none" role="dialog" aria-modal="true">
@@ -492,11 +496,17 @@ function ResultsScreen({ isReview, accuracy, xp, coins, perfect, leveled, level,
         )}
         {/* Explain what the Volts are actually for, so My Lab makes sense. */}
         {!isReview && (coins > 0 || !!reward) && <p className="-mt-1 px-1 text-xs leading-relaxed text-faint">{t('voltsHint')}</p>}
+        {/* Leaving this screen after finishing a whole module is the one moment in the app where a
+            student has demonstrably got something out of it — the module is done and its instrument
+            has just been handed over. That is where Play is asked to ask them, once per install.
+            It fires on the way OUT rather than on arrival so it cannot cover the unlock card or
+            collide with the chest opening itself 750 ms in; and it is deliberately not a rating
+            button, which Google forbids outright. See src/ui/review.ts for both rules. */}
         <div className="flex w-full flex-col gap-2">
           {!isReview && (
-            <button onClick={onGoLab} className="w-full rounded-xl bg-primary py-3 font-semibold text-primary-fg hover:brightness-110">{t('goToLab')} →</button>
+            <button onClick={leave(onGoLab)} className="w-full rounded-xl bg-primary py-3 font-semibold text-primary-fg hover:brightness-110">{t('goToLab')} →</button>
           )}
-          <button onClick={onExit} className="w-full rounded-xl py-2.5 text-sm font-medium text-muted hover:bg-surface-2">{isReview ? t('cont') : t('exit')}</button>
+          <button onClick={leave(onExit)} className="w-full rounded-xl py-2.5 text-sm font-medium text-muted hover:bg-surface-2">{isReview ? t('cont') : t('exit')}</button>
         </div>
       </div>
     </div>

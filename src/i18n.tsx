@@ -51,6 +51,7 @@ const STR = {
     hintLearn: 'Toate modulele sunt deschise — doar lecțiile din interiorul unui modul se deblochează pe rând. XP ridică nivelul; Volții se cheltuie în Laboratorul meu.',
     hintLab: 'Cele trei file de mai sus sunt trei bancuri diferite, fiecare cu magazinul lui. Un instrument cumpărat apare direct pe bancul lui.',
     replayIntro: 'Revezi prezentarea', replayIntroHint: 'Redeschide pașii de la prima pornire și readuce indiciile pe care le-ai închis.',
+    rateApp: 'Evaluează aplicația', rateAppHint: 'Deschide pagina din Google Play. O notă ajută alți studenți să o găsească.',
   },
   en: {
     learn: 'Learn', lab: 'My Lab', check: 'Check', cont: 'Continue', hint: 'Hint',
@@ -90,6 +91,7 @@ const STR = {
     hintLearn: 'Every module is open — only the lessons inside a module unlock one after another. XP raises your level; Volts are spent in My Lab.',
     hintLab: 'The three tabs above are three different workbenches, each with its own shop. An instrument you buy appears straight on its bench.',
     replayIntro: 'Replay the walkthrough', replayIntroHint: 'Reopens the first-launch walkthrough and brings back any hints you closed.',
+    rateApp: 'Rate this app', rateAppHint: 'Opens the Google Play page. A rating helps other students find it.',
   },
 } as const
 
