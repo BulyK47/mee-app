@@ -237,6 +237,13 @@ localStorage.setItem('meem_inventory', JSON.stringify(
   ['analog-vm','dmm','scope','lcr','analog-am','clamp','emeter','current-transformer','voltage-transformer','lab-bronze']));
 localStorage.setItem('meem_skins', JSON.stringify({'__lab__':'lab-bronze'}));
 localStorage.setItem('meem_quests', JSON.stringify({date:TODAY,lessons:1,xp:25,perfect:1,reviews:0,exam:0,claimed:[]}));
+// The two one-off hint bands, seeded as already read. Everything else about this profile says a
+// student twelve days and twenty-six lessons in — leaving the beginners' bands on top of that is
+// incoherent, and on the map capture the band would sit directly under the burned-in caption, two
+// stacked strips of small text competing for the same corner of a store screenshot. This is the
+// same kind of decision as seeding the streak and the finished lessons: the captures show the app
+// in steady use, not on its first launch.
+localStorage.setItem('meem_hints', JSON.stringify(['learn','lab']));
 true`
 
 console.log(`capturing at 412×915 @3× · ${LANG} →`, OUT)
