@@ -310,10 +310,13 @@ const srcFiles = []
     else if (/\.(ts|tsx)$/.test(e.name)) srcFiles.push(full)
   }
 })(SRC)
-const declared = new Set([...storeSrc.matchAll(/usePersisted[^(]*\(\s*'(meem_\w+)'/g)].map(m => m[1]))
+const declared = new Set([...storeSrc.matchAll(/usePersisted[^(]*\(\s*['"`](meem_\w+)['"`]/g)].map(m => m[1]))
 const seen = new Map()
 for (const f of srcFiles) {
-  for (const m of readFileSync(f, 'utf8').matchAll(/'(meem_\w+)'/g)) {
+  // All three quotings, not just the single quote this project happens to use: a key copied from
+  // anywhere else arrives double-quoted or in a template literal, and a gate that claims to be
+  // exhaustive over meem_ keys must not be defeated by which quote character was typed.
+  for (const m of readFileSync(f, 'utf8').matchAll(/['"`](meem_\w+)['"`]/g)) {
     if (!declared.has(m[1]) && !seen.has(m[1])) seen.set(m[1], basename(f))
   }
 }
@@ -341,6 +344,10 @@ priv.forEach((raw, i) => {
   if (line.startsWith('>')) add('privacy', at, 'blockquote — not rendered')
   if (/^\d+\.\s/.test(line)) add('privacy', at, 'numbered list — would render as a plain paragraph, losing the numbering')
   if (/!?\[[^\]]*\]\([^)]*\)/.test(line)) add('privacy', at, 'link or image — the renderer emits text only, so the target would be lost')
+  // <name@host> and <https://…> are Markdown autolinks: GitHub turns them into links, the in-app
+  // renderer has no case for them and prints the angle brackets. The contact address shipped that
+  // way once — the one line on the privacy screen a reader is most likely to copy.
+  if (/<[^>\s]+@[^>\s]+>|<https?:\/\/[^>\s]+>/.test(line)) add('privacy', at, 'Markdown autolink — the renderer would print the angle brackets; write the address or URL bare')
 })
 // Emphasis is checked per PARAGRAPH, not per line, because the source is hard-wrapped at about a
 // hundred columns and a bold span may legitimately straddle the wrap — "**no\nstorage permission**"

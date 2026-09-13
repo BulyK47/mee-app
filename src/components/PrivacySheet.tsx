@@ -44,6 +44,13 @@ function parse(md: string): Block[] {
     if (line.startsWith('## ')) { flush(); out.push({ k: 'h2', text: line.slice(3) }); continue }
     if (line.startsWith('# ')) { flush(); out.push({ k: 'h1', text: line.slice(2) }); continue }
     if (line.startsWith('- ')) { flushPara(); list.push(line.slice(2)); continue }
+    // A wrapped CONTINUATION of the bullet above, not a new paragraph. Paragraphs were rejoined
+    // from the start (see the note above) but list items were not, so every one of the document's
+    // four bullets ended at the wrap and its remainder was emitted as an unbulleted paragraph,
+    // misaligned to the left of the list it belonged to — in the clause that enumerates what the
+    // app stores about you, which is the substantive part of the whole notice. A list therefore
+    // ends only at a blank line, a heading or a rule, which is also Markdown's own rule.
+    if (list.length) { list[list.length - 1] += ' ' + line; continue }
     flushList()
     if (/^_.+_$/.test(line)) { flushPara(); out.push({ k: 'em', text: line.slice(1, -1) }); continue }
     para.push(line)
