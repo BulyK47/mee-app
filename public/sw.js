@@ -81,22 +81,43 @@ const cacheable = (req, res) => {
   return isNavigation || !ct.includes('text/html')
 }
 
+// Navigations go to the network FIRST. Everything else stays cache-first.
+//
+// This is the difference between an update landing and an update appearing not to exist. '/' and
+// '/index.html' are precached, so cache-first served the PREVIOUS build's shell on the first launch
+// after a Play update: the old shell names the old content-hashed chunks, those are in the old
+// cache too, and the whole app booted one generation behind. The new worker did install and claim
+// during that launch, so the update showed up on the SECOND start — by which time a tester has
+// already looked at Setări → Despre, read the old build number they were asked to quote, and
+// reported that the update did nothing.
+//
+// The cost is nil where it matters. This app ships inside an Android package, so a navigation's
+// "network" is the local asset server reading the APK: always reachable, no round trip, no data.
+// On the web build it is one conditional request, and the catch below still serves the shell when
+// there is no connection, so offline start is unaffected — verified by the offline check.
+//
+// Assets stay cache-first on purpose: they are content-hashed, so a cached hit can never be stale,
+// and serving them from the cache is what makes the app start offline at all.
 self.addEventListener('fetch', e => {
   const req = e.request
   if (req.method !== 'GET' || new URL(req.url).origin !== location.origin) return
+  const store = res => {
+    if (cacheable(req, res)) {
+      const copy = res.clone()
+      caches.open(CACHE).then(c => c.put(req, copy))
+    }
+    return res
+  }
+  if (req.mode === 'navigate' || req.destination === 'document') {
+    e.respondWith(
+      fetch(req)
+        .then(store)
+        // offline: this build's shell, then any generation's, in that order
+        .catch(() => fromCache(req).then(hit => hit || caches.match('/index.html', MATCH))),
+    )
+    return
+  }
   e.respondWith(
-    fromCache(req).then(cached =>
-      cached ||
-      fetch(req).then(res => {
-        if (cacheable(req, res)) {
-          const copy = res.clone()
-          caches.open(CACHE).then(c => c.put(req, copy))
-        }
-        return res
-      }).catch(() =>
-        // offline and not in the cache: a navigation still gets the app shell
-        req.mode === 'navigate' ? caches.match('/index.html', MATCH) : undefined,
-      ),
-    ),
+    fromCache(req).then(cached => cached || fetch(req).then(store).catch(() => undefined)),
   )
 })
