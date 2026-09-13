@@ -30,7 +30,7 @@ const FEEDBACK_EMAIL = 'dmaecseb108@gmail.com'
 const QUESTIONNAIRE_URL = 'https://forms.cloud.microsoft/e/Xk9dLz5iTN'
 
 export default function Settings({ onClose, onDiploma, onIntro }: { onClose: () => void; onDiploma: () => void; onIntro: () => void }) {
-  const { xp, coins, streak, streakLive, completed, best, inventory, studyMode, goal, theme, sound, haptics, exams, setStudyMode, setGoal, setTheme, setSound, setHaptics, addCoins, restoreHints, reset } = useGame()
+  const { xp, coins, streak, streakLive, completed, best, inventory, studyMode, goal, themePref, sound, haptics, exams, setStudyMode, setGoal, setTheme, setSound, setHaptics, addCoins, restoreHints, reset } = useGame()
   const { t, lang, setLang } = useT()
   useDismiss(onClose)
   // native dialogs are unreliable (suppressed after repeated use, ignored by WebViews), so the
@@ -208,7 +208,7 @@ export default function Settings({ onClose, onDiploma, onIntro }: { onClose: () 
                 at sunset — and is resolved in App.tsx plus the boot script in index.html, so a
                 light phone does not get a dark frame before React starts. The stored value is the
                 PREFERENCE; the palette is derived from it. */}
-            <Seg options={[['dark', t('darkL')], ['light', t('lightL')], ['system', t('systemL')]]} value={theme} onChange={setTheme} />
+            <Seg options={[['dark', t('darkL')], ['light', t('lightL')], ['system', t('systemL')]]} value={themePref} onChange={setTheme} />
           </div>
         </Section>
 

@@ -122,7 +122,8 @@ interface GameCtx {
   srs: Record<string, SrsCard>
   bench: string
   skins: Record<string, string>
-  theme: string
+  theme: string        // the palette actually painted: 'dark' | 'light'
+  themePref: string    // what the student chose: 'dark' | 'light' | 'system'
   sound: boolean
   haptics: boolean
   freezes: number
@@ -248,7 +249,36 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [bench, setBench] = usePersisted('meem_bench', 'measurement')
   const [skins, setSkinsState] = usePersisted<Record<string, string>>('meem_skins', {})
   const setSkin = (equipId: string, skinId: string) => setSkinsState(s => ({ ...s, [equipId]: skinId }))
-  const [theme, setTheme] = usePersisted('meem_theme', 'dark')
+  // Two values, not one, and the distinction is the whole point. `themePref` is what the student
+  // chose — 'dark', 'light' or 'system'. `theme` is the palette that ends up on screen, which for
+  // 'system' is an answer the app does not hold and has to ask the phone for.
+  //
+  // This lives in the store rather than in App.tsx because 'system' is not only a CSS question.
+  // Five render sites hand the theme to hueFg(), which darkens the fifteen module hues and the
+  // thirty-odd instrument hues for light surfaces — and hueFg tests `theme === 'light'`. Resolved
+  // only in App.tsx, those sites received the literal 'system', kept the dark-tuned hues, and
+  // painted module titles and progress bars at 1.4-2.7:1 on the light theme's white panels. The
+  // filled length of that bar IS the progress reading, with no other cue; the same class of defect
+  // was already found and fixed once for the plain light theme (see the note in LearnTab).
+  //
+  // The subscription matters as much as the first reading: Android flips its dark theme on a
+  // schedule and at sunset, and an app that only looks once sits in yesterday's palette until it is
+  // restarted. addListener is kept beside addEventListener because that is the spelling an older
+  // WebView has, and a listener that silently fails to attach is invisible.
+  const [themePref, setTheme] = usePersisted('meem_theme', 'dark')
+  const [sysLight, setSysLight] = useState(() => {
+    try { return !!window.matchMedia?.('(prefers-color-scheme: light)').matches } catch { return false }
+  })
+  useEffect(() => {
+    if (themePref !== 'system') return
+    let mq: MediaQueryList
+    try { mq = window.matchMedia('(prefers-color-scheme: light)') } catch { return }
+    const read = () => setSysLight(mq.matches)
+    read()
+    if (mq.addEventListener) { mq.addEventListener('change', read); return () => mq.removeEventListener('change', read) }
+    mq.addListener(read); return () => mq.removeListener(read)
+  }, [themePref])
+  const theme = themePref === 'system' ? (sysLight ? 'light' : 'dark') : themePref
   const [sound, setSound] = usePersisted('meem_sound', true)
   const [haptics, setHaptics] = usePersisted('meem_haptics', true)
   const [freezes, setFreezes] = usePersisted('meem_freezes', 0)
@@ -511,7 +541,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   return (
     <Ctx.Provider value={{
       xp, coins, completed, best, plays, inventory, streak, streakLive: liveStreak(streak, freezes, today()), daily, quests, goal, studyMode, hearts, mistakes, liveMistakes, srs, bench, skins,
-      theme, sound, haptics, freezes, exams, onboarded, hiddenHints,
+      theme, themePref, sound, haptics, freezes, exams, onboarded, hiddenHints,
       finishLesson, buy, addCoins, claimQuest, finishExam, gradeMistake, loseHeart, refillHearts, buyHearts, setStudyMode, setGoal, setBench, setSkin,
       setTheme, setSound, setHaptics, setFreezes, setOnboarded, hideHint, restoreHints, reset,
     }}>
