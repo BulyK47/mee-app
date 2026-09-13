@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-const prefersReduced = () => typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+export const prefersReduced = () => typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
 // rAF ease-out count-up; jumps instantly under reduced-motion.
 export function useCountUp(target: number, duration = 650, initial?: number): number {

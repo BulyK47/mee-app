@@ -324,10 +324,54 @@ for (const key of Object.keys(DIRECT_KEYS)) {
   if (!seen.has(key) && !declared.has(key)) add('reset', key, 'classified here but no longer used anywhere in src/ — the note is stale')
 }
 
+// ── 9. PRIVACY.md must stay inside the subset the in-app renderer understands ─
+// The policy screen (src/components/PrivacySheet.tsx) compiles the document in with ?raw and walks
+// it with a ~40-line parser, deliberately: one policy, not a copy in the app and another in the
+// repository saying something slightly different. The cost of that choice is that anything the
+// parser does not know is dropped SILENTLY — a table, a link, a third-level heading would simply
+// not appear on screen, and a privacy notice missing a paragraph is worse than no screen at all.
+// So the document is held to the subset instead, and this fails the build if it drifts out.
+const priv = readFileSync(join(ROOT, 'PRIVACY.md'), 'utf8').replace(/\r\n/g, '\n').split('\n')
+let fences = 0
+priv.forEach((raw, i) => {
+  const line = raw.trim(), at = `PRIVACY.md:${i + 1}`
+  if (line.startsWith('```')) { fences++; add('privacy', at, 'fenced code block — the renderer has no block-code case') }
+  if (/^#{3,}\s/.test(line)) add('privacy', at, 'heading deeper than ## — only # and ## are rendered')
+  if (line.startsWith('|')) add('privacy', at, 'table — not rendered')
+  if (line.startsWith('>')) add('privacy', at, 'blockquote — not rendered')
+  if (/^\d+\.\s/.test(line)) add('privacy', at, 'numbered list — would render as a plain paragraph, losing the numbering')
+  if (/!?\[[^\]]*\]\([^)]*\)/.test(line)) add('privacy', at, 'link or image — the renderer emits text only, so the target would be lost')
+})
+// Emphasis is checked per PARAGRAPH, not per line, because the source is hard-wrapped at about a
+// hundred columns and a bold span may legitimately straddle the wrap — "**no\nstorage permission**"
+// appears twice in the document today. The renderer joins wrapped lines before looking for markers,
+// so this has to join them too; checking line by line reported four faults that do not exist.
+let block = [], blockAt = 0
+const checkBlock = () => {
+  if (!block.length) return
+  const text = block.join(' ')
+  const at = `PRIVACY.md:${blockAt}`
+  if ((text.match(/\*\*/g) || []).length % 2) add('privacy', at, 'unbalanced ** in this paragraph — the rest would render as literal asterisks')
+  if ((text.match(/`/g) || []).length % 2) add('privacy', at, 'unbalanced backtick in this paragraph')
+  block = []
+}
+priv.forEach((raw, i) => {
+  const line = raw.trim()
+  if (!line || line === '---' || line.startsWith('#')) { checkBlock(); return }
+  if (!block.length) blockAt = i + 1
+  block.push(line)
+})
+checkBlock()
+if (fences % 2) add('privacy', 'PRIVACY.md', 'odd number of code fences')
+// The screen offers exactly two jump buttons, English and Română, bound to the first and second
+// ## heading. A third language section, or one removed, silently breaks that mapping.
+const sections = priv.filter(l => l.trim().startsWith('## ')).length
+if (sections !== 2) add('privacy', 'PRIVACY.md', `${sections} language sections, expected 2 — PrivacySheet's two jump buttons are bound to the first and second`)
+
 // ── report ───────────────────────────────────────────────────────────────────
 const byCheck = {}
 for (const f of fail) (byCheck[f.check] = byCheck[f.check] || []).push(f)
-const ORDER = ['lessons', 'format-json', 'choices', 'explanation', 'separator', 'recap', 'bank', 'formulas', 'figures', 'language', 'reset']
+const ORDER = ['lessons', 'format-json', 'choices', 'explanation', 'separator', 'recap', 'bank', 'formulas', 'figures', 'language', 'reset', 'privacy']
 console.log(`invariants: ${exercises.length} exercises in ${lessons.length} lessons, ${visibleStrings.length} visible strings, ${worlds.length} modules\n`)
 for (const c of ORDER) {
   const items = byCheck[c] || []
