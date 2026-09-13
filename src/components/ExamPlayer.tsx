@@ -40,7 +40,15 @@ export default function ExamPlayer({ exercises, onClose, onRetry }: { exercises:
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [done])
 
+  // One advance per question, whoever asks for it. The button and the per-question countdown both
+  // call this, and a second tap that lands between React committing the next question and the screen
+  // painting it would move on again — past a question the student never saw, recorded as unanswered
+  // and marked wrong on the results list. The lesson player guards the same class of double-tap in
+  // two places already (gradingRef, finishedRef); this is the third.
+  const advancedAt = useRef(-1)
   function advance() {
+    if (advancedAt.current === idx) return
+    advancedAt.current = idx
     setAnswers(a => ({ ...a, [idx]: selRef.current }))
     setSel([])
     if (idx + 1 < total) setIdx(idx + 1)
@@ -193,7 +201,13 @@ export default function ExamPlayer({ exercises, onClose, onRetry }: { exercises:
             phasor, bode, opamp… — carries the DATA the question is asked about and must stay.
             Checked before withholding it: no exam-pool concept question refers to a figure in its
             prompt, and none has an attached image, so nothing here is left unanswerable. */}
-        <QuestionVisual visual={ex.visual?.kind === 'concept' ? undefined : ex.visual} prompt={L(ex.prompt, lang)} image={ex.media?.image} alt={ex.media?.alt ? L(ex.media.alt, lang) : ''} lang={lang} />
+        {/* guess={false} is not decoration. Passing `undefined` above to withhold a concept figure
+            also switches on QuestionVisual's keyword guesser, because "no declared visual" and "show
+            no figure" were the same value — so a withheld figure was replaced by a guessed one.
+            Measured on the bank: 44 of 185 concept questions were given a guessed figure here, 17 of
+            them a current-shunt schematic because their prompt contains the word "sunt". An exam
+            advertised as scored like the real one must show the author's figures or none. */}
+        <QuestionVisual visual={ex.visual?.kind === 'concept' ? undefined : ex.visual} guess={false} prompt={L(ex.prompt, lang)} image={ex.media?.image} alt={ex.media?.alt ? L(ex.media.alt, lang) : ''} lang={lang} />
         <p className="mb-3 text-xs font-medium text-faint">{ex.type === 'multi' ? t('selectAll') : t('selectOne')}</p>
         <div className="flex flex-col gap-2">
           {(ex.choices || []).map(c => {

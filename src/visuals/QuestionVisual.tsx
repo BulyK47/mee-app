@@ -1013,6 +1013,16 @@ function PowerTri({ p }: { p: Params }) {
   )
 }
 
+// Guess a figure from the wording, for the eleven exercises in the bank that declare none. It is a
+// HEURISTIC, and callers who cannot afford a wrong guess pass guess={false} — see the exam player.
+//
+// The cost of getting it wrong is not symmetric, and 'shunt' is where that shows: sunt is there
+// for "rezistorul sunt" written without its diacritic, but it also matches the ordinary Romanian verb
+// "sunt" — "Care dintre următoarele **sunt** mărimi pasive" — and hands that question a current-shunt
+// schematic. Inside a lesson the declared visual wins and this never runs; the exam was the one place
+// it did, because withholding a concept figure there passed `undefined`, which is also the signal
+// that turns this on. Measured on the bank: 44 of the 185 concept questions were being given a
+// guessed figure in the exam, 17 of them a shunt schematic on this very word.
 function keywordKind(prompt: string): string | null {
   const p = prompt.toLowerCase()
   if (/osciloscop|oscilloscope|volts?\s*\/\s*div|time\s*\/\s*div|form[aă] de und|waveform|sinusoid/.test(p)) return 'scope'
@@ -1151,8 +1161,8 @@ const FIGURE_LABEL: Record<string, { ro: string; en: string }> = {
   symbols: { ro: 'simboluri de aparate de măsură', en: 'measuring-instrument symbols' },
 }
 
-export function QuestionVisual(props: { visual?: { kind: string; params?: Params }; prompt: string; image?: string; alt?: string; lang?: string }) {
-  const kind = props.visual?.kind ?? keywordKind(props.prompt)
+export function QuestionVisual(props: { visual?: { kind: string; params?: Params }; prompt: string; image?: string; alt?: string; lang?: string; guess?: boolean }) {
+  const kind = props.visual?.kind ?? (props.guess === false ? null : keywordKind(props.prompt))
   const drawn = QuestionFigure(props)
   const label = kind ? FIGURE_LABEL[kind] : undefined
   // A table stays a real <table> so its rows and columns can be navigated, and a formula card is
@@ -1173,8 +1183,8 @@ export function QuestionVisual(props: { visual?: { kind: string; params?: Params
   )
 }
 
-function QuestionFigure({ visual, prompt, image, alt, lang = 'ro' }: { visual?: { kind: string; params?: Params }; prompt: string; image?: string; alt?: string; lang?: string }) {
-  const kind = visual?.kind ?? keywordKind(prompt)
+function QuestionFigure({ visual, prompt, image, alt, lang = 'ro', guess = true }: { visual?: { kind: string; params?: Params }; prompt: string; image?: string; alt?: string; lang?: string; guess?: boolean }) {
+  const kind = visual?.kind ?? (guess ? keywordKind(prompt) : null)
   const params = visual?.params ?? {}
   // A real figure (schematic / diagram) beats a generic formula card — show the
   // figure, keeping the formula below it as a hint.

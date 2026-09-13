@@ -149,7 +149,7 @@ export default function Settings({ onClose, onDiploma, onIntro }: { onClose: () 
             <Tile label={t('level')} value={`Lv ${levelInfo(xp).level}`} />
             <Tile label={t('xp')} value={`${xp}`} />
             <Tile label={t('coins')} value={`${coins}`} />
-            <Tile label="streak" value={counted(streakLive, lang, lang === 'ro' ? 'zi' : 'day', t('streakDays'))} />
+            <Tile label={t('streakL')} value={counted(streakLive, lang, lang === 'ro' ? 'zi' : 'day', t('streakDays'))} />
             <Tile label={t('lessonsDone')} value={`${doneCount}/${total}`} />
             <Tile label={t('courseComplete')} value={`${pct}%`} />
           </div>
