@@ -13,6 +13,7 @@ import { keysLocal, readLocal, writeLocal, removeLocal } from '../storage'
 import { copyText, isAbort } from '../ui/clipboard'
 import { saveTextFile } from '../ui/saveFile'
 import { openStoreListing } from '../ui/review'
+import PrivacySheet from './PrivacySheet'
 
 // Paste a web form URL here to collect structured feedback; empty = opens the student's email app.
 const FEEDBACK_URL = ''
@@ -39,6 +40,7 @@ export default function Settings({ onClose, onDiploma, onIntro }: { onClose: () 
   const [notice, setNotice] = useState('')
   const [showFeedback, setShowFeedback] = useState(false)
   const [showQuiz, setShowQuiz] = useState(false)
+  const [showPrivacy, setShowPrivacy] = useState(false)
   const say = (m: string) => { setNotice(m); setTimeout(() => setNotice(''), 2600) }
   const total = ALL_LESSONS.length
   // Count only lessons that still exist. `completed` keeps every id ever finished, including ones
@@ -202,7 +204,11 @@ export default function Settings({ onClose, onDiploma, onIntro }: { onClose: () 
         <Section title={t('appearance')}>
           <Seg options={[['ro', 'Română'], ['en', 'English']]} value={lang} onChange={v => setLang(v as 'ro' | 'en')} />
           <div className="mt-2">
-            <Seg options={[['dark', t('darkL')], ['light', t('lightL')]]} value={theme} onChange={setTheme} />
+            {/* Three options, not two. "Sistem" follows the phone — including the scheduled flip
+                at sunset — and is resolved in App.tsx plus the boot script in index.html, so a
+                light phone does not get a dark frame before React starts. The stored value is the
+                PREFERENCE; the palette is derived from it. */}
+            <Seg options={[['dark', t('darkL')], ['light', t('lightL')], ['system', t('systemL')]]} value={theme} onChange={setTheme} />
           </div>
         </Section>
 
@@ -285,6 +291,18 @@ export default function Settings({ onClose, onDiploma, onIntro }: { onClose: () 
                 : 'Everything stays on your phone: no account, no ads, no data sent anywhere. Progress is saved locally — which is what the backup button above is for.'}
             </p>
           </div>
+          {/* The sentence above is the summary; this is the document. It was already written and
+              already the URL on the store listing, but it lived only on GitHub — where a student
+              never looks. The text is compiled in from PRIVACY.md, so there is one policy rather
+              than two that can drift, and it opens with no connection. */}
+          <button onClick={() => setShowPrivacy(true)}
+            className="mt-2 flex w-full items-center gap-3 rounded-xl border border-border px-3 py-2.5 text-left transition-colors hover:border-primary hover:bg-panel">
+            <Icon name="lock" size={16} className="shrink-0 text-primary" />
+            <span className="min-w-0">
+              <span className="block text-sm font-semibold text-fg">{t('privacyPolicy')}</span>
+              <span className="block text-[0.6875rem] leading-relaxed text-faint">{t('privacyPolicyHint')}</span>
+            </span>
+          </button>
         </Section>
 
         {/* test-only shortcut: present while developing, stripped from the production bundle */}
@@ -330,6 +348,7 @@ export default function Settings({ onClose, onDiploma, onIntro }: { onClose: () 
         }}
         onCancel={() => setPendingImport(null)} />
 
+      {showPrivacy && <PrivacySheet onClose={() => setShowPrivacy(false)} />}
       <FeedbackDialog open={showFeedback} stats={feedbackStats()} onCopied={say} onClose={() => setShowFeedback(false)} />
 
       <QuizDialog open={showQuiz}

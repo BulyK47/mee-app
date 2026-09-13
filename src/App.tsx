@@ -48,7 +48,32 @@ export default function App() {
   // which asks for the language again and cannot be dismissed — wrong on both counts for somebody
   // who only wanted to re-read the tour.
   const [tour, setTour] = useState(false)
-  const theme = game?.theme ?? 'dark'
+
+  // "Sistem" is the one theme setting whose answer lives outside the app, so it is resolved here
+  // rather than stored: `meem_theme` keeps the PREFERENCE ('dark' | 'light' | 'system') and this
+  // turns it into the palette actually painted. The subscription matters as much as the first
+  // reading — Android flips to its dark theme on a schedule and at sunset, and an app that only
+  // looked once sits in yesterday's palette until it is restarted.
+  //
+  // The default stays 'dark'. Making 'system' the default would repaint the app for every existing
+  // student who never opened the theme setting, and most phones are in light mode — that is a
+  // change to what the app looks like, not a new option, and it is not one to make on their behalf.
+  const pref = game?.theme ?? 'dark'
+  const [sysLight, setSysLight] = useState(() => {
+    try { return !!window.matchMedia?.('(prefers-color-scheme: light)').matches } catch { return false }
+  })
+  useEffect(() => {
+    if (pref !== 'system') return
+    let mq: MediaQueryList
+    try { mq = window.matchMedia('(prefers-color-scheme: light)') } catch { return }
+    const read = () => setSysLight(mq.matches)
+    read()
+    // addListener is the pre-Chrome-79 spelling. The minimum WebView here is old enough to need it,
+    // and a missing listener is invisible: the theme simply stops following the phone.
+    if (mq.addEventListener) { mq.addEventListener('change', read); return () => mq.removeEventListener('change', read) }
+    mq.addListener(read); return () => mq.removeListener(read)
+  }, [pref])
+  const theme = pref === 'system' ? (sysLight ? 'light' : 'dark') : pref
 
   useEffect(() => {
     const root = document.documentElement

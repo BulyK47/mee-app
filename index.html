@@ -25,11 +25,16 @@
       malformed value must not stop the app from booting, so anything unexpected simply leaves the
       dark default in place, which is what the app looked like a moment ago anyway.
       The value is JSON ("light" with quotes), because usePersisted writes it with JSON.stringify.
+      "system" has to be resolved HERE as well, not only in React: it is the one setting whose
+      answer the app does not hold, and a phone in light mode would otherwise get the same dark
+      flash this script exists to prevent. matchMedia is guarded because this must never throw.
     -->
     <script>
       try {
         var t = JSON.parse(localStorage.getItem('meem_theme') || '""')
-        if (t === 'light') {
+        var sysLight = t === 'system' && window.matchMedia &&
+          window.matchMedia('(prefers-color-scheme: light)').matches
+        if (t === 'light' || sysLight) {
           document.documentElement.dataset.theme = 'light'
           var m = document.querySelector('meta[name="theme-color"]')
           if (m) m.setAttribute('content', '#F4F7F5')

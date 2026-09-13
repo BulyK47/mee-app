@@ -52,6 +52,8 @@ const STR = {
     hintLab: 'Cele trei file de mai sus sunt trei bancuri diferite, fiecare cu magazinul lui. Un instrument cumpărat apare direct pe bancul lui.',
     replayIntro: 'Revezi prezentarea', replayIntroHint: 'Redeschide pașii de la prima pornire și readuce indiciile pe care le-ai închis.',
     rateApp: 'Evaluează aplicația', rateAppHint: 'Deschide pagina din Google Play. O notă ajută alți studenți să o găsească.',
+    systemL: 'Sistem',
+    privacyPolicy: 'Politica de confidențialitate', privacyPolicyHint: 'Textul complet, în aplicație. Se citește și fără internet.',
   },
   en: {
     learn: 'Learn', lab: 'My Lab', check: 'Check', cont: 'Continue', hint: 'Hint',
@@ -92,6 +94,8 @@ const STR = {
     hintLab: 'The three tabs above are three different workbenches, each with its own shop. An instrument you buy appears straight on its bench.',
     replayIntro: 'Replay the walkthrough', replayIntroHint: 'Reopens the first-launch walkthrough and brings back any hints you closed.',
     rateApp: 'Rate this app', rateAppHint: 'Opens the Google Play page. A rating helps other students find it.',
+    systemL: 'System',
+    privacyPolicy: 'Privacy policy', privacyPolicyHint: 'The full text, inside the app. It reads without a connection.',
   },
 } as const
 
