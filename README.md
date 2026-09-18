@@ -1,5 +1,8 @@
 # MEE — Laboratorul meu
 
+[![Google Play](https://img.shields.io/badge/Google_Play-install-0F7651?logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=ro.mee.laborator)
+[![Licence](https://img.shields.io/badge/code-Apache--2.0-blue)](LICENSE)
+
 A bilingual (RO/EN) learning app for the university course **Măsurări Electrice și Electronice**
 (*Electrical and Electronic Measurements*), built as an offline-capable progressive web app.
 
@@ -190,7 +193,11 @@ src/
 
 If this app, or its instructional design, is useful in your teaching or research, please cite it.
 GitHub renders [`CITATION.cff`](CITATION.cff) as a ready-made citation ("Cite this repository"), or
-use:
+use the entry below.
+
+Each tagged release is archived on Zenodo, which mints a DOI for it. Cite the **all-versions** DOI —
+it resolves to the newest release, where a per-version DOI freezes on one — and add it to the entry
+below once it exists.
 
 ```bibtex
 @software{voicila_seritan_enache_mee_2026,
