@@ -1,6 +1,7 @@
 # MEE — Laboratorul meu
 
 [![Google Play](https://img.shields.io/badge/Google_Play-install-0F7651?logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=ro.mee.laborator)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23105028.svg)](https://doi.org/10.5281/zenodo.23105028)
 [![Licence](https://img.shields.io/badge/code-Apache--2.0-blue)](LICENSE)
 
 A bilingual (RO/EN) learning app for the university course **Măsurări Electrice și Electronice**
@@ -195,9 +196,11 @@ If this app, or its instructional design, is useful in your teaching or research
 GitHub renders [`CITATION.cff`](CITATION.cff) as a ready-made citation ("Cite this repository"), or
 use the entry below.
 
-Each tagged release is archived on Zenodo, which mints a DOI for it. Cite the **all-versions** DOI —
-it resolves to the newest release, where a per-version DOI freezes on one — and add it to the entry
-below once it exists.
+Each tagged release is archived on Zenodo. Cite the **all-versions** DOI,
+[10.5281/zenodo.23105028](https://doi.org/10.5281/zenodo.23105028), which always resolves to the newest
+release. Version 1.0.0 on its own is
+[10.5281/zenodo.23105029](https://doi.org/10.5281/zenodo.23105029) — use that only when you need to
+point at exactly that release.
 
 ```bibtex
 @software{voicila_seritan_enache_mee_2026,
@@ -206,6 +209,7 @@ below once it exists.
   title   = {{MEE — a bilingual gamified learning application for Electrical
              and Electronic Measurements, with app-generated instrument figures}},
   year    = {2026},
+  doi     = {10.5281/zenodo.23105028},
   url     = {https://github.com/BulyK47/mee-app},
   license = {Apache-2.0}
 }

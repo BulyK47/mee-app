@@ -16,6 +16,14 @@ authors:
     family-names: Enache
     affiliation: "National University of Science and Technology POLITEHNICA Bucharest"
     orcid: "https://orcid.org/0000-0001-9979-3837"
+# The CONCEPT DOI, which resolves to the newest release; the per-version DOI of
+# 1.0.0 is 10.5281/zenodo.23105029 and freezes on that one release. Safe to keep
+# here across future releases: Zenodo's CFF reader (zenodo-rdm, github/schemas.py)
+# loads title, abstract, authors, keywords, license and message only — it has no
+# handling for `doi` at all, so this field feeds GitHub's "Cite this repository"
+# and nothing else. Do not swap it for the version DOI, which goes stale on the
+# next release.
+doi: "10.5281/zenodo.23105028"
 repository-code: "https://github.com/BulyK47/mee-app"
 abstract: >-
   A bilingual (Romanian/English) progressive web application that teaches the
