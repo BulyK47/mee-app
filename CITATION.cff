@@ -28,8 +28,8 @@ repository-code: "https://github.com/BulyK47/mee-app"
 abstract: >-
   A bilingual (Romanian/English) progressive web application that teaches the
   university course "Măsurări Electrice și Electronice" through short,
-  gamified lessons. The design combines a Duolingo-style lesson ladder with a
-  domain-specific twist: every figure is a parametric SVG instrument rendered
+  gamified lessons. The design pairs a step-by-step lesson ladder (lives,
+  daily streaks, a progress map) with a domain-specific twist: every figure is a parametric SVG instrument rendered
   from the exercise data (analog meters, oscilloscope screens, bridges,
   wattmeter connections, operational-amplifier configurations), formulas are
   typeset natively with MathML, and progress is rewarded with instruments for

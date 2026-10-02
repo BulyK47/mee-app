@@ -28,8 +28,8 @@ Exercise screens are not shown here: they would put graded items in a public pag
 
 ## 🇷🇴 Pe scurt
 
-Aplicație de învățare bilingvă pentru disciplina **Măsurări Electrice și Electronice**, în stilul
-Duolingo: lecții scurte, hartă de progres, vieți și serii zilnice, plus un **laborator virtual** în
+Aplicație de învățare bilingvă pentru disciplina **Măsurări Electrice și Electronice**, gamificată:
+lecții scurte, hartă de progres, vieți și serii zilnice, plus un **laborator virtual** în
 care aparatele se deblochează pe măsură ce termini module.
 
 Ce o deosebește de un simplu chestionar:

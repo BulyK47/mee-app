@@ -6,7 +6,7 @@
   "engines": {
     "node": ">=22.18.0"
   },
-  "description": "Bilingual (RO/EN) Duolingo-style learning app for the Electrical and Electronic Measurements course — offline PWA with parametric instrument figures and native MathML formulas.",
+  "description": "Bilingual (RO/EN) gamified learning app for the Electrical and Electronic Measurements course — offline PWA with parametric instrument figures and native MathML formulas.",
   "license": "Apache-2.0",
   "author": "Iulian-Teodor Voicila <https://orcid.org/0000-0002-6033-2934>",
   "homepage": "https://github.com/BulyK47/mee-app",
