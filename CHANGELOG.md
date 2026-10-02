@@ -9,7 +9,7 @@ user.
 
 ## [Unreleased]
 
-## [1.0.0] — 2026-09-18 · Play versionCode 11
+## [1.0.0] — 2026-10-02 · Play versionCode 11
 
 First public release, on Google Play.
 
