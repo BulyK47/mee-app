@@ -25,23 +25,49 @@ authors:
 # next release.
 doi: "10.5281/zenodo.23105028"
 repository-code: "https://github.com/BulyK47/mee-app"
+# Kept word for word identical to the description of the Zenodo record, which
+# was edited to match on 2026-10-04. "Virtual instrument bench" and "virtual
+# instruments", not "virtual laboratory": in education research that term means
+# simulated experiments, and MEE's lab is a reward bench, not a place where
+# measurements are made.
 abstract: >-
-  A bilingual (Romanian/English) progressive web application that teaches the
-  university course "Măsurări Electrice și Electronice" through short,
-  gamified lessons. The design pairs a step-by-step lesson ladder (lives,
-  daily streaks, a progress map) with a domain-specific twist: every figure is a parametric SVG instrument rendered
-  from the exercise data (analog meters, oscilloscope screens, bridges,
-  wattmeter connections, operational-amplifier configurations), formulas are
-  typeset natively with MathML, and progress is rewarded with instruments for
-  a virtual laboratory bench. It also includes spaced repetition of mistakes
-  and an exam simulation mode. The question bank itself is not distributed.
+  MEE is a bilingual (Romanian/English), gamified educational application
+  designed to support the teaching and learning of Electrical and Electronic
+  Measurements in higher education. It combines structured learning content,
+  interactive exercises with immediate feedback, spaced repetition of
+  mistakes, a timed exam simulation, and a virtual instrument bench that the
+  student equips by progressing through the course.
+
+
+  A distinctive feature of MEE is the parametric generation of technical
+  figures directly from exercise data: analog instrument dials, oscilloscope
+  traces, bridge circuits, wattmeter connections and operational-amplifier
+  measurement circuits are drawn by the application rather than reproduced as
+  images, so students practise reading the instruments themselves.
+  Mathematical expressions are rendered with MathML, and the modular
+  architecture supports bilingual content and the continuous extension of
+  lessons and exercises. The application runs entirely offline, requires no
+  account and collects no personal data.
+
+
+  MEE is intended to complement conventional teaching by promoting active
+  learning, repeated practice, formative self-assessment, and the development
+  of problem-solving and instrument-interpretation skills in electrical
+  measurement and instrumentation. This archive contains the complete
+  application source code and a demonstration module; the question bank used
+  for assessment is not distributed.
 keywords:
   - engineering education
-  - gamification
+  - electrical engineering education
+  - measurement education
   - electrical measurements
-  - progressive web app
+  - gamification
+  - interactive learning
   - spaced repetition
+  - virtual instruments
   - bilingual learning
+  - STEM education
+  - progressive web app
 # ONE licence, deliberately, even though three instructional content files are
 # dual-licensed under CC BY 4.0 as well — that is documented in NOTICE and in
 # README, both of which travel inside the Zenodo archive.
